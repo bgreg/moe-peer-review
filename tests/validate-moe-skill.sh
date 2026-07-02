@@ -132,17 +132,17 @@ else
   fail "Missing exchange cap"
 fi
 
-if contains "Early satisfaction" "$SKILL" || contains "early satisfaction" "$SKILL"; then
-  pass "Early satisfaction rule present"
+if contains "Satisfaction" "$SKILL" || contains "satisfied" "$SKILL"; then
+  pass "Satisfaction handling documented"
 else
-  fail "Missing early satisfaction rule"
+  fail "Missing satisfaction handling rule"
 fi
 
 printf "\niMessage Format\n"
-if contains "Dr. Dara Mitchell ->" "$SKILL"; then
+if contains "Dr. Dara Mitchell\*\* ->" "$SKILL"; then
   pass "Moderator -> Persona format in SKILL.md"
 else
-  fail "Missing 'Dr. Dara Mitchell ->' format"
+  fail "Missing 'Dr. Dara Mitchell -> Persona' format"
 fi
 
 if contains "blockquoted" "$SKILL" || contains "blockquote" "$SKILL"; then

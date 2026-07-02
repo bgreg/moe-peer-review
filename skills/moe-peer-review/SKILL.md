@@ -94,6 +94,11 @@ During The Huddle, format agent-to-agent exchanges:
 
 The thread must read top-to-bottom like a live conversation, not batched questions followed by batched answers.
 
+**Format rules the validator enforces (follow them in every phase, including Synthesis):**
+- Use the ASCII arrow `->` (hyphen then greater-than) in every speaker label. NEVER use the Unicode arrow `→`; the validator matches ASCII only and Unicode arrows fail the check.
+- Every phase uses this same first-person, blockquoted chat-bubble format. This includes Phase 2 (Clarifying Questions): quote each persona's questions in first person under their own `**Name**:` header and the moderator's answer under `**Dr. Dara Mitchell** -> Name:`. Do NOT narrate a persona in third person ("Beyonce asked about X") in any phase.
+- Agent-to-agent Huddle exchanges use `**Name** -> **Name**:` with each name in its own bold and the colon outside the bold.
+
 # State Management
 
 ## State File
@@ -120,9 +125,7 @@ Write to this file on EVERY state change (phase transition, agent spawn, agent d
   "phases": {
     "kick-off": { "status": "pending|in_progress|completed", "task_id": "" },
     "clarifying-questions": { "status": "pending|in_progress|completed", "task_id": "" },
-    "interactive-round-3": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
-    "interactive-round-4": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
-    "interactive-round-5": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
+    "interactive-session": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
     "the-huddle": { "status": "pending|in_progress|completed", "task_id": "" },
     "synthesis": { "status": "pending|in_progress|completed", "task_id": "" }
   },
@@ -139,11 +142,9 @@ Tasks to create:
 
 1. **Kick-Off** (activeForm: "Presenting material to the panel")
 2. **Clarifying Questions** (activeForm: "Panel asking clarifying questions", blockedBy: [1])
-3. **Interactive Session Round 3** (activeForm: "Agents challenging and debating", blockedBy: [2])
-4. **Interactive Session Round 4** (activeForm: "Continuing interactive debate", blockedBy: [3])
-5. **Interactive Session Round 5** (activeForm: "Final interactive round", blockedBy: [4])
-6. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [5])
-7. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [6])
+3. **Interactive Session** (activeForm: "Agents challenging and debating", blockedBy: [2])
+4. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [3])
+5. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [4])
 
 Store agent IDs in task metadata so they survive compaction:
 ```
@@ -233,29 +234,25 @@ Print `## Phase 2: Clarifying Questions` then for each persona, print their ques
 
 Update state file and mark Clarifying Questions task as completed.
 
-## Phases 3-5: Interactive Sessions
+## Phase 3: Interactive Session
 
-Three rounds of adversarial engagement. Agents challenge the moderator, make suggestions, and push back. The moderator does not simply accept every assertion but validates claims against source material and code.
+This is the maximum-adversarial fact-checking round: **moderator versus agent.** The moderator's default posture is disbelief. The moderator believes nothing an agent asserts until the agent proves it, or until the moderator independently verifies it against source material and code. The burden of proof is on the agent. The moderator's job here is not to collect opinions but to try to falsify every claim: assume each finding is wrong and hunt for the evidence that would disprove it. A claim survives only when it withstands that attempt. (Agent-versus-agent debate happens later, in Phase 4: The Huddle.)
 
-**Exchange cap**: 100 question-and-answer exchanges per agent per round.
+Agents challenge the moderator, make suggestions, and push back. The moderator does not simply accept any assertion; every claim is verified or refuted against source material and code.
 
-**Early satisfaction**: After any interactive round, if an agent states they have no further concerns and no new recommendations, mark them as **satisfied** and do not resume them for subsequent rounds. If ALL agents are satisfied, skip remaining interactive rounds and proceed to The Huddle.
+**Exchange cap**: 100 question-and-answer exchanges per agent for this round.
 
-**Strict satisfaction gating**: Only unqualified "I am satisfied" with zero open items triggers early exit. The following do NOT qualify for early exit and the agent MUST be resumed in the next round:
-- "Satisfied except [X]" (has an open blocker)
-- "Conditionally satisfied pending [X]" (has unmet conditions)
-- "Satisfied on findings but not on [X]" (has unresolved concerns)
-Restate the agent's open items when resuming them.
+**Satisfaction**: At the end of the round, record each agent's explicit stance. An agent either states "I am satisfied" with zero open items, or lists its remaining open items. Open items (blockers, conditions, unresolved concerns) are carried forward to The Huddle and Synthesis; the moderator does not resume agents for additional interactive rounds.
 
-**Exchange count tracking**: After each Interactive Session round, append to the thread output: "Exchange counts this round: [agent]: [count], ..." This makes cap compliance visible.
+**Exchange count tracking**: After the round, append to the thread output: "Exchange counts this round: [agent]: [count], ..." This makes cap compliance visible.
 
-For each round (3, 4, 5), resume active agents:
+Resume all 8 agents:
 
 ```
 Here are answers to your previous questions:
 [ANSWERS]
 
-Phase [N] (Interactive Session): Based on these answers:
+Phase 3 (Interactive Session): Based on these answers:
 1. Challenge any answers that don't fully address your concerns
 2. Provide specific recommendations (what to add, change, or call out)
 3. Push back on any claims you believe are incorrect or insufficiently supported
@@ -263,40 +260,36 @@ Phase [N] (Interactive Session): Based on these answers:
 
 Be concrete. If you recommend something, specify exactly what. If you disagree with the moderator's response, say so directly and explain why.
 
-You may declare yourself satisfied if all your concerns have been addressed. State "I am satisfied" explicitly.
+State your final stance explicitly: either "I am satisfied" (zero open items) or a list of your remaining open items.
 ```
 
-**Moderator behavior during Interactive Sessions:**
+**Moderator behavior during the Interactive Session:**
 - Validate every factual claim before accepting it. Read the code. Check the docs.
 - Every factual claim from an agent MUST receive one of exactly three responses:
   - "I verified this: [specific evidence from source material, with file:line or document section]."
   - "I cannot verify this: [what was checked and why it was inconclusive]."
   - "This is incorrect: [specific evidence contradicting the claim]."
 - NEVER use bulk acceptance ("All requirements accepted," "Validated," "Accepted") without per-item evidence. Each claim gets its own verification.
-- If more than 30% of responses in a round lack one of the three templates above, pause and re-verify before continuing.
+- If more than 30% of responses lack one of the three templates above, pause and re-verify before continuing.
+- **Adversarially re-test every Blocker-severity finding before accepting it.** For each claim you would carry to Synthesis as a Blocker, do not stop at confirming the structural fact; try to disprove that the fact actually causes the claimed harm (check the surrounding call path, guards, and any compensating step). Record the re-test outcome. A Blocker that was only structurally confirmed, never attacked, is not verified.
 - Seek consensus but accept "no consensus" as a valid outcome. When two agents take opposing positions on the same issue and neither concedes, label it explicitly: "No consensus between [Agent A] and [Agent B] on [topic]. Both positions carried to synthesis."
 - Name disagreements explicitly: "[Agent A] and [Agent B] disagree on X."
 
-**Moderator self-check before The Huddle:** Before proceeding from Interactive Sessions to The Huddle, the moderator must answer: "Did I reject any claim from any agent in this review? If not, why not?" Print this self-assessment in the thread. If zero claims were rejected, explicitly state why and whether that indicates insufficient rigor.
+**Moderator self-check before The Huddle:** Before proceeding to The Huddle, the moderator must answer: "Did I reject any claim from any agent in this review? If not, why not?" Print this self-assessment in the thread. If zero claims were rejected, explicitly state why and whether that indicates insufficient rigor.
 
-**Persona voice reminders**: When resuming agents for Phases 3-5, include a voice reminder in the prompt referencing their agent file's communication style. Examples:
+**Persona voice reminders**: When resuming agents for the Interactive Session, include a voice reminder in the prompt referencing their agent file's communication style. Examples:
 - Erykah Badu-Johnson: "Remember your style: use 'Have we considered how this affects...' openers. Include at least one art/music metaphor."
 - Jill Scott-Williams: "Start from genuine confusion before arriving at insight. Use 'maybe this is a dumb question but...' framing."
 - Janelle Monae Robinson: "Deploy your dry humor at least once. Reference a 3 AM failure scenario."
 - Lauryn Hill-Washington: "Frame at least one finding as an attack narrative: 'An attacker with access to X could exploit Y to achieve Z.'"
 
-Print `## Phase [N]: Interactive Session` then for each active persona, print the exchange and moderator response.
+Print `## Phase 3: Interactive Session` then for each persona, print the exchange and moderator response.
 
-If all agents satisfied after any round, print:
-```
-## Phase [N+1]-5: Skipped (all personas satisfied)
-```
+Update state file and mark the Interactive Session task as completed.
 
-Update state file and mark round tasks as completed (or skipped).
+## Phase 4: The Huddle
 
-## Phase 6: The Huddle
-
-Agent-to-agent round. The moderator steps back and lets experts engage directly. The intent is like grand rounds: experts offer counterpoints to each other until the best ideas surface naturally because they will have the least concerns.
+This is the **agent-versus-agent** round, the counterpart to Phase 3's moderator-versus-agent fact-check. The moderator steps back and lets experts challenge each other directly. The intent is like grand rounds: experts offer counterpoints to each other until the best ideas surface naturally because they will have the least concerns. Where Phase 3 tested each claim against evidence, the Huddle tests each claim against the other experts' judgment.
 
 **Caps**: Each agent can ask up to 100 questions to any other agent and provide up to 100 responses to others.
 
@@ -306,7 +299,7 @@ Agent-to-agent round. The moderator steps back and lets experts engage directly.
 - The moderator intervenes only when conversation becomes circular, when someone is being steamrolled, or when ChaoticCarl is being ignored.
 - The moderator calls "last word" when exchanges plateau.
 
-**Mandatory participation**: Any agent who exits Phases 3-5 with open items, conditions, blockers, or exceptions MUST participate in at least one Huddle exchange. Satisfied agents with zero open items may optionally participate. The moderator must not skip any agent with unresolved concerns.
+**Mandatory participation**: Any agent who exits the Interactive Session with open items, conditions, blockers, or exceptions MUST participate in at least one Huddle exchange. Satisfied agents with zero open items may optionally participate. The moderator must not skip any agent with unresolved concerns.
 
 **Moderator Huddle seeding**: Before launching Huddle exchanges, the moderator identifies 3-5 unresolved cross-persona tensions and seeds targeted exchanges. Example seeds:
 - "[Agent A] has an open [blocker/concern]. [Agent B] proposed a fix in that area. Discuss whether the fix addresses the concern."
@@ -337,11 +330,11 @@ Huddle Participation:
 ```
 Mark any non-participating agent with open items as `[GAP]`. If gaps exist, the moderator must explain why those exchanges were not seeded.
 
-Print `## Phase 6: The Huddle` then print all exchanges in chronological order using the agent-to-agent format, followed by the participation checklist.
+Print `## Phase 4: The Huddle` then print all exchanges in chronological order using the agent-to-agent format, followed by the participation checklist.
 
 Update state file and mark The Huddle task as completed.
 
-## Phase 7: Synthesis
+## Phase 5: Synthesis
 
 After all agents declare done or hit limits, the moderator launches the final aggregation.
 
@@ -401,39 +394,38 @@ Create a `moe-reviews/` subdirectory inside `<project-data>/branches/<branch>/` 
 
 ## Self-Validation
 
-After writing the transcript file, run the transcript validator:
+After writing the transcript file, run the transcript validator and print its full output to the user:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/tests/validate-moe-transcript.sh <path-to-transcript.md>
 ```
 
-If any checks fail, fix the transcript file to address the failures before presenting the synthesis. Common fixes:
-- Missing `Dr. Dara Mitchell ->` exchanges: reformat to interleaved iMessage chat style
-- Bare "Carl" references: replace with "ChaoticCarl"
-- Missing synthesis sections: add the missing section headers and content
-- Missing blockquotes: wrap persona and moderator messages in `>` blocks
+The validator is a diagnostic signal, NOT a transcript-cleanup step. Do not rewrite, patch, or reformat the transcript to make failing checks pass. The transcript is a faithful record of what the review actually produced; editing it to satisfy the validator would hide the very problem the validator is reporting.
 
-Re-run the validator after fixes to confirm all checks pass.
+Report the validator output verbatim and interpret it: each failure indicates that either the model's execution or the plugin's guidance needs tuning, because a correctly executed review should already satisfy every check. Name which failures point at model execution (e.g. a persona narrated in third person, a Unicode arrow emitted) versus plugin guidance (e.g. a required section the workflow never instructed the model to produce). Carry those observations into the Quality Assessment remediation plan so the next run improves. The only case for touching the transcript afterward is a genuine transcription slip you are correcting for accuracy, never to game a check.
 
-## Quality Assessment
+## Quality Assessment and Plugin Improvement
 
-After self-validation passes, spawn a background Task agent to assess the review quality:
+After running the validator, capture its full output (save it to `[OUTPUT_DIR]/moe-reviews/validator-output.txt`) and spawn a background Task agent. Feed it BOTH the transcript AND the validator output. Its job is to score the review and to propose concrete improvements to THIS PLUGIN so the observed problems do not recur.
 
 ```
-Read the transcript at [PATH]. Score the review on these dimensions (1-10):
+Read the MOE transcript at [PATH] and the validator output at [VALIDATOR_OUTPUT_PATH].
 
+Part 1 - Score the review (1-10 each), citing specific transcript excerpts:
 1. Phase discipline: Did each phase follow its rules? Were caps respected?
-2. Moderator rigor: Did the moderator validate claims or just accept them?
-3. Persona fidelity: Did each agent stay in character?
+2. Moderator rigor: Did the moderator disbelieve-until-proven, adversarially falsify claims, and reject/correct any? Or rubber-stamp?
+3. Persona fidelity: Did each agent stay in character and in its domain lens?
 4. Huddle productivity: Did agents challenge each other? Did the best ideas surface?
 5. Consensus quality: Were disagreements named explicitly? Was "no consensus" documented when warranted?
-6. Live chatter format: Was the iMessage interleaving correct throughout?
+6. Live chatter format: Was the first-person interleaving correct throughout, ASCII arrows only?
 
-For each dimension, cite specific transcript excerpts showing where things went well or off-track.
+Part 2 - Plugin improvement (this is the priority output). For EACH validator failure and each quality dimension that scored below 8, determine the root cause and classify it:
+- MODEL EXECUTION: the plugin's guidance was adequate but the model did not follow it. Propose a sharper, harder-to-miss instruction that would have forced compliance.
+- PLUGIN GUIDANCE: the plugin never told the model to do the thing, or told it ambiguously. Propose the specific fix.
 
-Write a remediation plan to [OUTPUT_DIR]/moe-reviews/remediation-plan.md with specific, actionable changes for improving the next run.
+Then write concrete, ready-to-apply plugin edits to [OUTPUT_DIR]/moe-reviews/plugin-improvements.md. Each suggestion must name the exact plugin file (SKILL.md, agents/*.md, or tests/validate-moe-transcript.sh), quote the current text if it exists, and give the proposed replacement. These are SUGGESTIONS for the maintainer to review, not changes to apply automatically.
 ```
 
-The remediation plan is available for the next review. Before starting any new MOE run, check for a previous `remediation-plan.md` in the same project and incorporate its recommendations.
+Present the plugin-improvements suggestions to the user when the agent completes. Applying them is the user's decision. Before starting any new MOE run, check for a previous `plugin-improvements.md` and surface its recommendations so the maintainer can decide whether to fold them into the plugin first.
 
 **STOP.** Present the full synthesis to the user. Do not apply, implement, or modify any project files based on these findings. Wait for the user to explicitly select which action items to pursue.

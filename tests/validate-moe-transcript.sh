@@ -20,13 +20,17 @@ warn() {
 
 if [ $# -lt 1 ]; then
   printf "Usage: %s <path-to-moe-transcript.md>\n" "$0"
-  printf "  Validates an MOE review transcript for format compliance.\n"
+  printf "  Diagnostic check on an MOE review transcript.\n"
+  printf "  Reports findings only. A failure is a signal that the model's execution\n"
+  printf "  or the plugin's guidance needs tuning -- it is NOT an instruction to edit\n"
+  printf "  the transcript to make checks pass.\n"
   exit 1
 fi
 
 TRANSCRIPT="$1"
 
-printf "\n=== MOE Transcript Validation ===\n"
+printf "\n=== MOE Transcript Diagnostic ===\n"
+printf "Findings only. Failures indicate model/plugin tuning is needed, not transcript edits.\n"
 printf "File: %s\n\n" "$TRANSCRIPT"
 
 if [ ! -f "$TRANSCRIPT" ]; then
@@ -182,8 +186,12 @@ else
 fi
 
 printf "\n=== Results ===\n"
-printf "%d passed, %d failed, %d warnings\n\n" "$PASS" "$FAIL" "$WARN"
+printf "%d passed, %d failed, %d warnings\n" "$PASS" "$FAIL" "$WARN"
 
 if [ "$FAIL" -gt 0 ]; then
+  printf "\nFailures above are a tuning signal. Do NOT edit the transcript to clear them:\n"
+  printf "the transcript is a faithful record. Trace each failure to its cause (model\n"
+  printf "execution vs. plugin guidance) and feed it into the remediation plan.\n\n"
   exit 1
 fi
+printf "\n"
