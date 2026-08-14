@@ -61,7 +61,7 @@ else
   fail "SKILL.md missing 'moderator' terminology"
 fi
 
-if contains "Dr. Dara Mitchell" "$SKILL"; then
+if contains "Dr. Nina Simone-Bennett" "$SKILL"; then
   pass "Moderator persona named in SKILL.md"
 else
   fail "Missing moderator persona name"
@@ -139,10 +139,10 @@ else
 fi
 
 printf "\niMessage Format\n"
-if contains "Dr. Dara Mitchell\*\* ->" "$SKILL"; then
+if contains "Dr. Nina Simone-Bennett\*\* ->" "$SKILL"; then
   pass "Moderator -> Persona format in SKILL.md"
 else
-  fail "Missing 'Dr. Dara Mitchell -> Persona' format"
+  fail "Missing 'Dr. Nina Simone-Bennett -> Persona' format"
 fi
 
 if contains "blockquoted" "$SKILL" || contains "blockquote" "$SKILL"; then
@@ -225,9 +225,9 @@ agents=(
   "beyonce:Beyonce Carter"
   "jill-scott:Jill Scott-Williams"
   "janelle-monae:Janelle Monae Robinson"
-  "lauryn-hill:Lauryn Hill-Washington"
+  "sza:SZA"
   "erykah-badu:Erykah Badu-Johnson"
-  "ashanti:Ashanti Douglas"
+  "doechii:Doechii"
   "whitney-houston:Whitney Houston-Davis"
   "chaotic-carl:ChaoticCarl"
 )
@@ -242,7 +242,7 @@ for entry in "${agents[@]}"; do
 done
 
 printf "\nAgent Files\n"
-agent_files=(beyonce jill-scott janelle-monae lauryn-hill erykah-badu ashanti whitney-houston chaotic-carl moe-moderator)
+agent_files=(beyonce jill-scott janelle-monae sza erykah-badu doechii whitney-houston chaotic-carl moe-moderator)
 for agent in "${agent_files[@]}"; do
   agent_file="$AGENTS_DIR/$agent.md"
   if [ -f "$agent_file" ]; then

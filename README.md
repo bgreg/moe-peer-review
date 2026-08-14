@@ -20,13 +20,13 @@ Output reads like a live group chat so you can watch the deliberation unfold.
 
 | Persona | Role | Model |
 |---------|------|-------|
-| Dr. Dara Mitchell | Moderator / facilitator | (runs in main context) |
+| Dr. Nina Simone-Bennett | Moderator / facilitator | (runs in main context) |
 | Beyonce Carter | Sr. Engineer | opus |
 | Jill Scott-Williams | Jr. Developer | haiku |
 | Janelle Monae Robinson | DevOps Engineer | sonnet |
-| Lauryn Hill-Washington | Security Engineer | sonnet |
+| SZA | Security Engineer | sonnet |
 | Erykah Badu-Johnson | Platform Generalist | opus |
-| Ashanti Douglas | PCI/HIPAA Compliance | sonnet |
+| Doechii | PCI/HIPAA Compliance | sonnet |
 | Whitney Houston-Davis | Dynamic domain specialist (assigned per review) | opus |
 | ChaoticCarl | End user (assigned a backstory per review) | haiku |
 

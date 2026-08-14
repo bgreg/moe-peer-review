@@ -24,13 +24,13 @@ Run: `${CLAUDE_PLUGIN_ROOT}/tests/validate-moe-skill.sh`
 
 Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 - Plugin structure: plugin.json, SKILL.md, hooks.json all exist
-- Terminology: "moderator" not "orchestrator", "Dr. Dara Mitchell" named
+- Terminology: "moderator" not "orchestrator", "Dr. Nina Simone-Bennett" named
 - Naming: "ChaoticCarl" with abbreviation prevention, no bare "Carl"
 - Required sections: Guardrail, Roster, Dynamic Assignment, Naming, No Bash, Live Thread, State Management, The Huddle
 - Phase structure: all 7 phases referenced (Kick-Off through Synthesis)
 - Exchange cap (100) mentioned
 - Early satisfaction rule present
-- iMessage format: interleaved, blockquoted, "Dr. Dara Mitchell ->" pattern
+- iMessage format: interleaved, blockquoted, "Dr. Nina Simone-Bennett ->" pattern
 - Review-only guardrail: STOP directive and "do not apply" language
 - State management: moe-state.json, TaskCreate, compaction recovery
 - Synthesis structure: all 7 subsections present
@@ -48,7 +48,7 @@ After running the MOE skill, verify:
 - Exchange caps respected (100 per agent per round)
 - Early satisfaction correctly applied
 
-### Moderator Rigor (Dr. Dara Mitchell)
+### Moderator Rigor (Dr. Nina Simone-Bennett)
 - Validated factual claims by reading code/docs before accepting
 - Named disagreements explicitly between agents
 - Reported "no consensus" when appropriate
@@ -57,14 +57,14 @@ After running the MOE skill, verify:
 ### iMessage Chat Format
 - Each phase prints as interleaved persona/moderator exchanges
 - Persona messages are blockquoted
-- Moderator responses use "Dr. Dara Mitchell -> [Name]:" format
+- Moderator responses use "Dr. Nina Simone-Bennett -> [Name]:" format
 - The Huddle uses agent-to-agent format
 - No batched questions followed by batched answers
 
 ### Naming
 - All persona names match the roster exactly
 - "ChaoticCarl" appears as one word, never "Carl"
-- "Dr. Dara Mitchell" used for moderator, never "Moderator" alone
+- "Dr. Nina Simone-Bennett" used for moderator, never "Moderator" alone
 - Task descriptions use full persona names
 
 ### No Bash

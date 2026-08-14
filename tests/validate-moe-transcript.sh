@@ -85,11 +85,11 @@ else
 fi
 
 printf "\niMessage Chat Format\n"
-moderator_arrows=$(count_matches "Dr. Dara Mitchell ->")
+moderator_arrows=$(count_matches "Dr. Nina Simone-Bennett ->")
 if [ "$moderator_arrows" -gt 0 ]; then
-  pass "Dr. Dara Mitchell -> Persona format found ($moderator_arrows instances)"
+  pass "Dr. Nina Simone-Bennett -> Persona format found ($moderator_arrows instances)"
 else
-  fail "No 'Dr. Dara Mitchell -> Persona' exchanges found (not interleaved)"
+  fail "No 'Dr. Nina Simone-Bennett -> Persona' exchanges found (not interleaved)"
 fi
 
 agent_arrows=$(grep -c '\*\*.*-> \*\*' "$TRANSCRIPT" 2>/dev/null) || true
@@ -112,9 +112,9 @@ personas=(
   "Beyonce Carter"
   "Jill Scott-Williams"
   "Janelle Monae Robinson"
-  "Lauryn Hill-Washington"
+  "SZA"
   "Erykah Badu-Johnson"
-  "Ashanti Douglas"
+  "Doechii"
   "Whitney Houston-Davis"
   "ChaoticCarl"
 )
@@ -126,10 +126,10 @@ for name in "${personas[@]}"; do
   fi
 done
 
-if contains "Dr. Dara Mitchell"; then
-  pass "Moderator appears: Dr. Dara Mitchell"
+if contains "Dr. Nina Simone-Bennett"; then
+  pass "Moderator appears: Dr. Nina Simone-Bennett"
 else
-  fail "Missing moderator: Dr. Dara Mitchell"
+  fail "Missing moderator: Dr. Nina Simone-Bennett"
 fi
 
 printf "\nNaming Violations\n"

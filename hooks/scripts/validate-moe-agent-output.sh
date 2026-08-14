@@ -6,7 +6,7 @@ INPUT=$(cat)
 AGENT_TYPE=$(printf '%s' "$INPUT" | jq -r '.agent_type // empty')
 LAST_MSG=$(printf '%s' "$INPUT" | jq -r '.last_assistant_message // empty')
 
-MOE_AGENTS="beyonce jill-scott janelle-monae lauryn-hill erykah-badu ashanti whitney-houston chaotic-carl"
+MOE_AGENTS="beyonce jill-scott janelle-monae sza erykah-badu doechii whitney-houston chaotic-carl"
 
 is_moe_agent=false
 for agent in $MOE_AGENTS; do
