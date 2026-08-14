@@ -1,5 +1,5 @@
 {
   "name": "moe-peer-review",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Mixture of Experts peer review with 9 specialized personas (8 reviewers + 1 moderator). Multi-phase structured deliberation with agent-to-agent debate."
 }

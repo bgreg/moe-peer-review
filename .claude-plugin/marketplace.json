@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "moe-peer-review-local",
+  "description": "Local marketplace hosting the moe-peer-review plugin.",
+  "owner": {
+    "name": "Greg McGuirk"
+  },
+  "plugins": [
+    {
+      "name": "moe-peer-review",
+      "description": "Mixture of Experts peer review with 9 specialized personas (8 reviewers + 1 moderator). Multi-phase structured deliberation with agent-to-agent debate.",
+      "author": {
+        "name": "Greg McGuirk"
+      },
+      "category": "review",
+      "source": "./"
+    }
+  ]
+}
