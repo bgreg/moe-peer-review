@@ -85,7 +85,8 @@ else
 fi
 
 printf "\niMessage Chat Format\n"
-moderator_arrows=$(count_matches "Dr. Nina Simone-Bennett ->")
+moderator_arrows=$(grep -cE 'Dr\. Nina Simone-Bennett(\*\*)? ->' "$TRANSCRIPT" 2>/dev/null) || true
+moderator_arrows=${moderator_arrows:-0}
 if [ "$moderator_arrows" -gt 0 ]; then
   pass "Dr. Nina Simone-Bennett -> Persona format found ($moderator_arrows instances)"
 else
@@ -133,15 +134,13 @@ else
 fi
 
 printf "\nNaming Violations\n"
-carl_bare=$(grep -cP '(?<![A-Za-z])Carl(?![A-Za-z])' "$TRANSCRIPT" 2>/dev/null) || true
-carl_chaotic=$(grep -c 'ChaoticCarl' "$TRANSCRIPT" 2>/dev/null) || true
-carl_bare=${carl_bare:-0}
-carl_chaotic=${carl_chaotic:-0}
-carl_solo=$((carl_bare - carl_chaotic))
-if [ "$carl_solo" -le 0 ]; then
+carl_solo=$(grep -oE '[A-Za-z]*Carl[A-Za-z]*' "$TRANSCRIPT" 2>/dev/null | grep -cx 'Carl') || true
+carl_solo=${carl_solo:-0}
+if [ "$carl_solo" -eq 0 ]; then
   pass "No bare 'Carl' without 'Chaotic' prefix"
 else
-  fail "Found $carl_solo bare 'Carl' references (should be 'ChaoticCarl')"
+  fail "Found $carl_solo bare 'Carl' reference(s) (should be 'ChaoticCarl')"
+  grep -nE '(^|[^A-Za-z])Carl([^A-Za-z]|$)' "$TRANSCRIPT" 2>/dev/null | sed 's/^/          /'
 fi
 
 if grep -qi "orchestrator" "$TRANSCRIPT" 2>/dev/null; then
@@ -177,10 +176,64 @@ else
   fail "Missing STOP directive in synthesis (required guardrail)"
 fi
 
+printf "\nWorkflow Artifacts\n"
+if contains "Exchange counts"; then
+  pass "Phase 3 exchange counts recorded"
+else
+  fail "Missing 'Exchange counts this round' line (SKILL.md Phase 3)"
+fi
+
+if contains "Huddle Participation"; then
+  pass "Huddle participation checklist present"
+else
+  fail "Missing Huddle participation checklist (SKILL.md Phase 4)"
+fi
+
+if contains "Blocker Re-Test Ledger"; then
+  pass "Blocker re-test ledger present"
+else
+  fail "Missing Blocker Re-Test Ledger (SKILL.md Phase 3)"
+fi
+
+if contains "Self-check before The Huddle"; then
+  pass "Pre-Huddle moderator self-check present"
+else
+  fail "Missing 'Self-check before The Huddle' (SKILL.md Phase 3)"
+fi
+
+if contains "Consensus Ledger"; then
+  pass "Consensus Ledger present"
+else
+  fail "Missing Consensus Ledger (SKILL.md Phase 3 and Phase 4)"
+fi
+
+printf "\nFirst-Person Discipline\n"
+third_person=$(grep -cE '^> *(Demanded |Wants to |wants to know|Asked |Reviewed the |Caught the |Confirms |confirms |Noted that )' "$TRANSCRIPT" 2>/dev/null) || true
+third_person=${third_person:-0}
+if [ "$third_person" -eq 0 ]; then
+  pass "No third-person narration markers inside blockquotes"
+else
+  fail "Found $third_person blockquote line(s) with third-person narration (SKILL.md: first person only)"
+  grep -nE '^> *(Demanded |Wants to |wants to know|Asked |Reviewed the |Caught the |Confirms |confirms |Noted that )' "$TRANSCRIPT" 2>/dev/null | sed 's/^/          /'
+fi
+
 printf "\nState Management\n"
 transcript_dir=$(dirname "$TRANSCRIPT")
-if [ -f "$transcript_dir/moe-state.json" ]; then
+STATE="$transcript_dir/moe-state.json"
+if [ -f "$STATE" ]; then
   pass "State file exists alongside transcript"
+  if grep -q '"synthesis"[^}]*"completed"' "$STATE" 2>/dev/null; then
+    if grep -qE '"(kick-off|clarifying-questions|interactive-session|the-huddle)"[^}]*"(pending|in_progress)"' "$STATE" 2>/dev/null; then
+      fail "State file inconsistent: synthesis completed while an earlier phase is pending/in_progress"
+    else
+      pass "State file phase statuses are internally consistent"
+    fi
+    if grep -q '"huddle_exchanges": *{ *}' "$STATE" 2>/dev/null; then
+      fail "State file: huddle_exchanges is empty after a completed Huddle"
+    else
+      pass "State file: huddle exchanges recorded"
+    fi
+  fi
 else
   warn "No moe-state.json found alongside transcript"
 fi

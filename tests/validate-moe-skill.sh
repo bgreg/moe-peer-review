@@ -80,15 +80,15 @@ else
   fail "SKILL.md missing abbreviation prevention for ChaoticCarl"
 fi
 
-carl_bare=$(grep -cP '(?<![A-Za-z])Carl(?![A-Za-z])' "$SKILL" 2>/dev/null) || true
-carl_chaotic=$(grep -c 'ChaoticCarl' "$SKILL" 2>/dev/null) || true
-carl_bare=${carl_bare:-0}
-carl_chaotic=${carl_chaotic:-0}
-carl_solo=$((carl_bare - carl_chaotic))
-if [ "$carl_solo" -le 0 ]; then
+carl_solo=$(grep -vE 'never (be )?(shorten|abbreviat)|is one word' "$SKILL" 2>/dev/null \
+  | grep -oE '[A-Za-z]*Carl[A-Za-z]*' 2>/dev/null | grep -cx 'Carl') || true
+carl_solo=${carl_solo:-0}
+if [ "$carl_solo" -eq 0 ]; then
   pass "No bare 'Carl' without 'Chaotic' prefix in SKILL.md"
 else
-  fail "Found $carl_solo bare 'Carl' references in SKILL.md"
+  fail "Found $carl_solo bare 'Carl' reference(s) in SKILL.md"
+  grep -vE 'never (be )?(shorten|abbreviat)|is one word' "$SKILL" \
+    | grep -nE '(^|[^A-Za-z])Carl([^A-Za-z]|$)' 2>/dev/null | sed 's/^/          /'
 fi
 
 printf "\nRequired Sections\n"

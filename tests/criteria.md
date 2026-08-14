@@ -27,9 +27,9 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 - Terminology: "moderator" not "orchestrator", "Dr. Nina Simone-Bennett" named
 - Naming: "ChaoticCarl" with abbreviation prevention, no bare "Carl"
 - Required sections: Guardrail, Roster, Dynamic Assignment, Naming, No Bash, Live Thread, State Management, The Huddle
-- Phase structure: all 7 phases referenced (Kick-Off through Synthesis)
+- Phase structure: all 5 phases referenced (Kick-Off through Synthesis)
 - Exchange cap (100) mentioned
-- Early satisfaction rule present
+- Satisfaction handling rule present
 - iMessage format: interleaved, blockquoted, "Dr. Nina Simone-Bennett ->" pattern
 - Review-only guardrail: STOP directive and "do not apply" language
 - State management: moe-state.json, TaskCreate, compaction recovery
@@ -44,9 +44,11 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 After running the MOE skill, verify:
 
 ### Phase Discipline
-- All 7 phases executed in order (or skipped with documented reason)
-- Exchange caps respected (100 per agent per round)
-- Early satisfaction correctly applied
+- All 5 phases executed in order (Kick-Off, Clarifying Questions, Interactive Session, The Huddle, Synthesis)
+- Exchange caps respected (100 per agent)
+- Exchange-count line printed at the end of Phase 3
+- Every persona received a moderator response in Phase 3 (2N blocks for N personas)
+- Blocker Re-Test Ledger present, with a row for every Blocker reaching Synthesis
 
 ### Moderator Rigor (Dr. Nina Simone-Bennett)
 - Validated factual claims by reading code/docs before accepting
@@ -95,5 +97,5 @@ After running the MOE skill, verify:
 
 ### Quality Assessment
 - Quality assessment agent spawned after synthesis
-- Remediation plan written to moe-reviews/remediation-plan.md
+- Plugin improvement suggestions written to moe-reviews/plugin-improvements.md
 - Scores provided for all 6 dimensions

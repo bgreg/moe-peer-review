@@ -94,9 +94,37 @@ During The Huddle, format agent-to-agent exchanges:
 
 The thread must read top-to-bottom like a live conversation, not batched questions followed by batched answers.
 
+**Live thread versus transcript file.** The live thread prints each persona's full response verbatim so
+the user can watch the review unfold. The transcript file may condense a long response, subject to three
+rules:
+1. First person is preserved. Condensing never converts a persona's words into a third-person report.
+2. Every finding keeps its severity label, its file:line citation, and its exact quoted claim.
+3. A condensed turn is marked at its end with `[condensed]` so a reader knows the live thread carried more.
+
+Never condense the moderator's verification responses; the specific evidence is the whole point of the record.
+
 **Format rules the validator enforces (follow them in every phase, including Synthesis):**
-- Use the ASCII arrow `->` (hyphen then greater-than) in every speaker label. NEVER use the Unicode arrow `→`; the validator matches ASCII only and Unicode arrows fail the check.
-- Every phase uses this same first-person, blockquoted chat-bubble format. This includes Phase 2 (Clarifying Questions): quote each persona's questions in first person under their own `**Name**:` header and the moderator's answer under `**Dr. Nina Simone-Bennett** -> Name:`. Do NOT narrate a persona in third person ("Beyonce asked about X") in any phase.
+- Use the ASCII arrow `->` (hyphen then greater-than) in every speaker label, and in every
+  `complaint -> root cause -> fix` chain in Synthesis. The validator matches ASCII only, so a Unicode
+  arrow `→` in either place fails the check. Inside quoted persona content a Unicode arrow is harmless
+  (for example `54→51 fields`), but prefer ASCII everywhere for consistency.
+- Every phase uses this same first-person, blockquoted chat-bubble format. This includes Phase 2 (Clarifying Questions): quote each persona's questions in first person under their own `**Name**:` header and the moderator's answer under `**Dr. Nina Simone-Bennett** -> Name:`.
+- Do NOT narrate a persona in third person in any phase. Everything inside a persona's blockquote is that
+  persona speaking, in their own voice, in first person. All of these are violations:
+  - "Beyonce asked about X" (third-person report)
+  - "wants to know which SHA the diff came from" / "hasn't verified whether one exists" (third-person
+    verbs with the subject dropped)
+  - "Demanded concrete answers to 5 questions:" (summarizing the turn instead of quoting it)
+  - "[Caught the stale packet before reviewing the working tree.]" (bracketed stage direction)
+  - "confirms Beyonce's finding independently" (third-person attribution)
+
+  Write each of those as the persona would say it: "I want to know which SHA the diff came from", "I have
+  not verified whether one exists", "I need five things answered in plain language:", "I checked the
+  packet against the working tree first and it did not match", "I reached Beyonce's finding
+  independently."
+
+  Stage directions and editorial context belong OUTSIDE the blockquote, in the moderator's own voice,
+  under a `**Dr. Nina Simone-Bennett** -> Name:` header.
 - Agent-to-agent Huddle exchanges use `**Name** -> **Name**:` with each name in its own bold and the colon outside the bold.
 
 # State Management
@@ -174,6 +202,35 @@ Read the content to review. Required inputs:
 - Context notes explaining purpose and background
 - Source material for answering questions (docs, research notes)
 
+**Source-of-truth rule for code reviews.** When the content is a code change, build the packet from the
+LOCAL working state, never from the remote's view of it:
+
+- Use `git diff <base>...HEAD` (three dots). That is the true branch state.
+- Do NOT use `gh pr diff <N>`, `gh api` diffs, or a GitHub web diff. Those reflect only commits already
+  pushed. A branch under active local development routinely has unpushed commits, and the context notes
+  will describe those commits as landed while the packet does not contain them. Every persona then
+  reviews code that does not exist, and the review has to be rewound.
+- Confirm the working state before building the packet. `git status --porcelain` must be empty, or every
+  uncommitted file must be named in the provenance header below. If `git log --oneline @{u}..HEAD` prints
+  anything, the branch has unpushed commits and the header must say so.
+
+**Required provenance header.** The first section of `moe_section_<N>_content.md` must be:
+
+    ## Packet provenance
+    - Command: <exact command used to generate the diff>
+    - HEAD SHA: <sha>
+    - Base: <base ref and sha>
+    - Unpushed commits at packet time: <count, or "none">
+    - Working tree: <clean | list of dirty paths>
+    - Generated: <YYYY-MM-DD HH:MM local>
+
+Do not spawn Kick-Off agents until this header exists and its "Unpushed commits" line is either "none" or
+explicitly acknowledged in the context notes.
+
+The moderator may not run Bash (see "No Bash"), so the moderator cannot generate the diff or verify sync.
+Whoever prepares the packet is responsible for the header. The moderator's job is to REFUSE to start
+Kick-Off if the header is absent.
+
 ### Step 1.2: Present to Panel
 
 Spawn 8 Task agents in parallel using the subagent_type from the roster.
@@ -185,6 +242,8 @@ Here is the content to review:
 [CONTENT]
 
 Context: [CONTEXT_NOTES]
+
+Phase 1 (Kick-Off), Step 0 (do this BEFORE any findings): the packet above may be stale. Pick 3 specific claims the context notes make about the current state (a named function, a named constant, a described fix) and verify each one against the actual repository with Read or Grep. If the packet and the repository disagree, report it as PROCESS FLAG at the very top of your response, name the exact mismatch, and review the REPOSITORY, not the packet. Do not assume you have misread the packet; the packet is the thing most likely to be wrong.
 
 Phase 1 (Kick-Off): You are receiving this material for the first time. Provide your initial impressions and reactions from your professional perspective. Note 5-7 specific observations, concerns, or areas you want to explore further. Reference exact fields, values, or details from the content.
 ```
@@ -210,9 +269,21 @@ Context: [CONTEXT_NOTES - translated to non-technical language]
 Phase 1 (Kick-Off): React to this as a user. What confuses you? What frustrates you? What can't you find? What did you try that didn't work? Give 5-7 specific complaints or questions, in your own words.
 ```
 
-After all 8 agents return, record agent IDs in the state file and task metadata. Print `## Phase 1: Kick-Off` then for each persona, print their initial reactions. The moderator acknowledges each perspective but does not answer questions yet. Just confirms receipt: "Noted, [Name]. We'll address that."
+ChaoticCarl has no repository access in his prompt and cannot perform Step 0. If any panelist raises a
+PROCESS FLAG, the moderator must regenerate the content packet per Step 1.1 before Phase 2, and state in
+the thread whether Kick-Off responses are being kept or discarded, and why.
+
+After all 8 agents return, record agent IDs in the state file and task metadata. Print `## Phase 1: Kick-Off` then for each persona, print their initial reactions. The moderator acknowledges each perspective but does not answer questions yet. Just confirms receipt: "Noted, [Name]. We'll address that." Use the persona's full name; never shorten ChaoticCarl to "Carl".
 
 Update state file and mark Kick-Off task as completed.
+
+Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
+any that are wrong:
+1. `current_phase` names the phase you are about to start.
+2. No earlier phase is still `pending` or `in_progress`.
+3. Every agent's `status` and `exchanges` reflect the phase just finished.
+4. After The Huddle, `huddle_exchanges` is non-empty.
+
 
 ## Phase 2: Clarifying Questions
 
@@ -233,6 +304,14 @@ After all 8 agents return, formulate answers using context notes, source docs, a
 Print `## Phase 2: Clarifying Questions` then for each persona, print their questions and the moderator's response as an interleaved chat exchange.
 
 Update state file and mark Clarifying Questions task as completed.
+
+Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
+any that are wrong:
+1. `current_phase` names the phase you are about to start.
+2. No earlier phase is still `pending` or `in_progress`.
+3. Every agent's `status` and `exchanges` reflect the phase just finished.
+4. After The Huddle, `huddle_exchanges` is non-empty.
+
 
 ## Phase 3: Interactive Session
 
@@ -271,21 +350,68 @@ State your final stance explicitly: either "I am satisfied" (zero open items) or
   - "This is incorrect: [specific evidence contradicting the claim]."
 - NEVER use bulk acceptance ("All requirements accepted," "Validated," "Accepted") without per-item evidence. Each claim gets its own verification.
 - If more than 30% of responses lack one of the three templates above, pause and re-verify before continuing.
-- **Adversarially re-test every Blocker-severity finding before accepting it.** For each claim you would carry to Synthesis as a Blocker, do not stop at confirming the structural fact; try to disprove that the fact actually causes the claimed harm (check the surrounding call path, guards, and any compensating step). Record the re-test outcome. A Blocker that was only structurally confirmed, never attacked, is not verified.
+- **Adversarially re-test every Blocker-severity finding before accepting it.** For each claim you would carry to Synthesis as a Blocker, do not stop at confirming the structural fact; try to disprove that the fact actually causes the claimed harm (check the surrounding call path, guards, and any compensating step). A Blocker that was only structurally confirmed, never attacked, is not verified.
+
+  Record every re-test in a table printed at the end of Phase 3, before the self-check. Every Blocker that
+  appears in the Synthesis Verdict Scoreboard must have a row here. A Blocker with no row is not eligible
+  for Synthesis:
+
+  **Blocker Re-Test Ledger**
+
+  | Blocker | Raised by | Attack attempted (what would disprove it) | Outcome |
+  |---|---|---|---|
+  | ... | ... | ... | Survived / Downgraded to Warning / Refuted |
 - Seek consensus but accept "no consensus" as a valid outcome. When two agents take opposing positions on the same issue and neither concedes, label it explicitly: "No consensus between [Agent A] and [Agent B] on [topic]. Both positions carried to synthesis."
 - Name disagreements explicitly: "[Agent A] and [Agent B] disagree on X."
+- **Consensus is a required output, not a conditional one.** At the end of Phase 3 AND at the end of The
+  Huddle, print a `Consensus Ledger` block. If there were no unresolved disagreements, print
+  `Consensus Ledger: no unresolved disagreements this round.` Never print nothing.
 
-**Moderator self-check before The Huddle:** Before proceeding to The Huddle, the moderator must answer: "Did I reject any claim from any agent in this review? If not, why not?" Print this self-assessment in the thread. If zero claims were rejected, explicitly state why and whether that indicates insufficient rigor.
+  Consensus Ledger
+  - Converged: [topic] -- [Agent A] and [Agent B] reached the same position. Final position: [...]
+  - Resolved: [topic] -- [Agent A] conceded [specific point] to [Agent B]. Not conceded: [...]
+  - No consensus: [topic] -- [Agent A] holds [position]; [Agent B] holds [position]. Neither conceded.
+    Both carried to Synthesis.
 
-**Persona voice reminders**: When resuming agents for the Interactive Session, include a voice reminder in the prompt referencing their agent file's communication style. Examples:
-- Erykah Badu-Johnson: "Remember your style: use 'Have we considered how this affects...' openers. Include at least one art/music metaphor."
-- Jill Scott-Williams: "Start from genuine confusion before arriving at insight. Use 'maybe this is a dumb question but...' framing."
+**Moderator self-check before The Huddle:** Before proceeding to The Huddle, the moderator must answer: "Did I reject any claim from any agent in this review? If not, why not?" Print this self-assessment in the thread under the exact header `**Self-check before The Huddle**:` so it is machine-checkable. If zero claims were rejected, explicitly state why and whether that indicates insufficient rigor.
+
+**Persona voice reminders**: When resuming agents for the Interactive Session, append the REQUIRED voice
+reminder below to that agent's prompt, verbatim. This is not optional and it is not a sample list; every
+one of the eight personas gets its line. A response that does not carry its persona's voice marker should
+be sent back once with the reminder repeated.
+
+- Beyonce Carter: "Lead with the single most important thing, then rank the rest. Name the blast radius of at least one finding."
+- Jill Scott-Williams: "Start from genuine confusion before arriving at insight. Use 'maybe this is a dumb question but...' framing at least once."
 - Janelle Monae Robinson: "Deploy your dry humor at least once. Reference a 3 AM failure scenario."
 - SZA: "Frame at least one finding as an attack narrative: 'An attacker with access to X could exploit Y to achieve Z.'"
+- Erykah Badu-Johnson: "Use 'Have we considered how this affects...' openers. Include at least one art/music metaphor."
+- Doechii: "Cite the specific regulation and subsection for every compliance finding. State Blocker vs. documentation gap explicitly for each."
+- Whitney Houston-Davis: "Ground at least one finding in a named principle from your assigned specialty, and say which principle."
+- ChaoticCarl: "Stay in plain language. Use zero technical terms. Say what you tried and what happened, not what the code does."
 
-Print `## Phase 3: Interactive Session` then for each persona, print the exchange and moderator response.
+Print `## Phase 3: Interactive Session`. This phase produces exactly 2N blocks for N personas: one
+`**Persona Name** -> **Dr. Nina Simone-Bennett**:` block and one `**Dr. Nina Simone-Bennett** -> Persona Name:`
+block, in that order, for EVERY persona. Eight personas means sixteen blocks. There are no exceptions: a
+persona who states "I am satisfied" still gets a moderator response naming which claims were verified and
+which were not. ChaoticCarl is a persona and is included; his prompt is translated to plain language, but
+he is never skipped.
+
+Before printing the phase, count your moderator blocks. If that count does not equal the number of
+personas, you have skipped someone. Go back and answer them. This is the maximum-adversarial round; an
+unanswered claim is an unverified claim, and an unverified claim must not reach Synthesis.
+
+End the phase with, on its own line:
+`Exchange counts this round: [Persona]: [count], [Persona]: [count], ...` listing all 8 personas.
 
 Update state file and mark the Interactive Session task as completed.
+
+Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
+any that are wrong:
+1. `current_phase` names the phase you are about to start.
+2. No earlier phase is still `pending` or `in_progress`.
+3. Every agent's `status` and `exchanges` reflect the phase just finished.
+4. After The Huddle, `huddle_exchanges` is non-empty.
+
 
 ## Phase 4: The Huddle
 
@@ -334,6 +460,14 @@ Print `## Phase 4: The Huddle` then print all exchanges in chronological order u
 
 Update state file and mark The Huddle task as completed.
 
+Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
+any that are wrong:
+1. `current_phase` names the phase you are about to start.
+2. No earlier phase is still `pending` or `in_progress`.
+3. Every agent's `status` and `exchanges` reflect the phase just finished.
+4. After The Huddle, `huddle_exchanges` is non-empty.
+
+
 ## Phase 5: Synthesis
 
 After all agents declare done or hit limits, the moderator launches the final aggregation.
@@ -355,6 +489,12 @@ Print `## Synthesis` and compile across all 8 personas. ALL sections below are R
 
 **Overall**: X/8 personas say ready. Y blockers, Z warnings across all reviewers.
 
+ChaoticCarl does not assign severities himself. The moderator derives his counts from the User Experience
+Failures section: a complaint whose root cause is already an accepted Blocker counts as a Blocker for his
+row; one that maps to an accepted Warning counts as a Warning; the rest are Suggestions. Never leave his
+counts blank or as dashes. His row must total the same way every other row does, or the Overall line
+undercounts the end-user impact.
+
 **Production Gates** (blockers identified by 2+ personas):
 - Gate with identifying personas
 
@@ -372,6 +512,9 @@ Print `## Synthesis` and compile across all 8 personas. ALL sections below are R
 
 **Improvements** (content/framing changes):
 - Table: Improvement | Source Persona | Severity
+
+**Unresolved Disagreements** (carried from the Consensus Ledgers; "None identified." if empty)
+- [topic]: [Agent A]'s position vs. [Agent B]'s position, both carried forward
 
 **Key Insight** (single most important finding across all reviewers)
 
