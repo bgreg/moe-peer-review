@@ -192,7 +192,7 @@ anyone with unresolved concerns who did not is marked `[GAP]` with an explanatio
 
 `synthesis` · moderator alone
 
-Nine required sections, deduplicated across personas, ordered by severity. A section with nothing in it
+Ten required sections, deduplicated across personas, ordered by severity. A section with nothing in it
 still prints its header with "None identified", so silence never looks like absence of a category.
 
 | Section | Contents |

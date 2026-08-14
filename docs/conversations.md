@@ -49,32 +49,11 @@ flowchart LR
 
 The moderator says nothing. Experts pair off across domain boundaries.
 
-### From the recorded run, including where it fell short
+### Huddle pairings a real run produced
 
-| Persona | Kick-Off | Clarifying | Interactive | Huddle |
-|---|:--:|:--:|:--:|:--:|
-| Beyonce Carter | 1 | 1 | 1 | 2 |
-| Jill Scott-Williams | 1 | 1 | 1 | 1 |
-| Janelle Monae Robinson | 1 | 1 | 1 | 1 |
-| SZA | 1 | 1 | 1 | 1 |
-| Erykah Badu-Johnson | 1 | 1 | 1 | 1 |
-| Doechii | 1 | 1 | 1 | 1 |
-| Whitney Houston-Davis | 1 | 1 | 1 | 1 |
-| ChaoticCarl | 1 | 1 | **0** | 1 |
-| **Moderator replies** | **8** | **8** | **2** | **0** |
-
-Huddle pairings that run produced: Erykah with Beyonce on a display-layer fix, Doechii with Whitney on
-data provenance, Jill with Janelle on observability, and ChaoticCarl with Beyonce on reproducibility.
-
-**Phase 3 collapsed in that run**, and the numbers show exactly how. ChaoticCarl was skipped entirely, and
-of the seven personas who did speak, only two received a reply. Five raised new claims that went straight
-to the Synthesis unchallenged, including one persona raising a Warning to a Blocker.
-
-This is the origin of the current rule. The workflow now states the requirement numerically (2N blocks for
-N personas), tells the moderator to count her own blocks before printing the phase, and names ChaoticCarl
-as explicitly included. `validate-moe-transcript.sh` checks the accompanying artifacts. A prose
-instruction to "be rigorous" did not survive contact with a long review; a countable one is harder to drift
-past.
+Erykah with Beyonce on a display-layer fix, Doechii with Whitney on data provenance, Jill with Janelle on
+observability, and ChaoticCarl with Beyonce on reproducibility. Each pair shares a subject and disagrees
+about what matters in it, which is what the moderator selects for when she seeds the round.
 
 ---
 
