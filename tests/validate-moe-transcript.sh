@@ -158,6 +158,7 @@ synthesis_parts=(
   "User Experience Failures"
   "Mandatory Production Standards"
   "Improvements"
+  "Unresolved Disagreements"
   "Key Insight"
   "Action Items"
 )

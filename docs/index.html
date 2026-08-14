@@ -1,0 +1,490 @@
+<title>MOE Peer Review</title>
+<style>
+  :root {
+    --paper:#F1F4F3; --surface:#FBFCFC; --surface-2:#E7ECEA;
+    --ink:#12181A; --ink-soft:#46524F; --ink-faint:#6E7A77;
+    --rule:#C6D0CD; --rule-soft:#DBE3E0;
+    --accent:#0A5C66; --accent-br:#0E8A96; --accent-wash:#DCEBEC;
+    --opus:#8046E0; --sonnet:#008B9A; --haiku:#9A6200;
+    --good:#1F7A4D; --warn:#9A6B00; --crit:#B0342A;
+    --f-display:'Avenir Next Condensed','Helvetica Neue Condensed','Arial Narrow','Roboto Condensed',ui-sans-serif,system-ui,sans-serif;
+    --f-body:Charter,'Iowan Old Style','Palatino Linotype',Palatino,Georgia,ui-serif,serif;
+    --f-mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:#0D1214; --surface:#141B1E; --surface-2:#1C2528;
+      --ink:#E2E9E7; --ink-soft:#A6B3B0; --ink-faint:#7B8885;
+      --rule:#2B3639; --rule-soft:#202A2D;
+      --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
+      --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
+      --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:#0D1214; --surface:#141B1E; --surface-2:#1C2528;
+    --ink:#E2E9E7; --ink-soft:#A6B3B0; --ink-faint:#7B8885;
+    --rule:#2B3639; --rule-soft:#202A2D;
+    --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
+    --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
+    --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
+  }
+
+  * { box-sizing:border-box; }
+  body {
+    background:var(--paper); color:var(--ink); font-family:var(--f-body);
+    font-size:17px; line-height:1.62; margin:0; padding:0 20px 110px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:1080px; margin:0 auto; }
+  .col { max-width:660px; }
+
+  .masthead { border-bottom:2px solid var(--ink); padding:60px 0 20px; }
+  .eyebrow { font-family:var(--f-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 16px; }
+  h1 { font-family:var(--f-display); font-weight:700; font-size:clamp(46px,9vw,92px); line-height:.94; letter-spacing:-.015em; text-transform:uppercase; margin:0 0 18px; text-wrap:balance; }
+  .standfirst { font-size:20px; line-height:1.5; color:var(--ink-soft); max-width:640px; margin:0 0 30px; text-wrap:pretty; }
+
+  .docket { display:grid; grid-template-columns:repeat(auto-fit,minmax(122px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); margin:0 0 20px; }
+  .docket div { background:var(--paper); padding:13px 15px; }
+  .docket dt { font-family:var(--f-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 6px; }
+  .docket dd { font-family:var(--f-display); font-size:29px; font-weight:700; line-height:1; margin:0; font-variant-numeric:tabular-nums; }
+  .docket dd small { font-family:var(--f-body); font-size:13px; font-weight:400; color:var(--ink-faint); }
+
+  .nav { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 52px; }
+  .nav a {
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    border:1px solid var(--rule); padding:7px 12px; color:var(--ink-soft); text-decoration:none; border-radius:2px;
+  }
+  .nav a:hover { border-color:var(--accent); color:var(--accent); }
+  .nav a:focus-visible { outline:2px solid var(--accent-br); outline-offset:2px; }
+
+  section { margin:0 0 74px; scroll-margin-top:16px; }
+  .sec-head { display:flex; align-items:baseline; gap:14px; border-top:1px solid var(--rule); padding-top:14px; margin-bottom:24px; }
+  .sec-num { font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; color:var(--accent); flex:none; }
+  h2 { font-family:var(--f-display); font-weight:700; text-transform:uppercase; font-size:clamp(28px,4.4vw,40px); line-height:1.04; margin:0; text-wrap:balance; }
+  h3 { font-family:var(--f-display); font-weight:700; font-size:21px; margin:36px 0 10px; text-wrap:balance; }
+  p { margin:0 0 16px; max-width:660px; text-wrap:pretty; }
+  ul { max-width:660px; padding-left:22px; margin:0 0 16px; }
+  li { margin-bottom:7px; }
+  li::marker { color:var(--ink-faint); }
+  a { color:var(--accent); text-underline-offset:2px; }
+  code { font-family:var(--f-mono); font-size:.85em; background:var(--surface-2); padding:.1em .38em; border-radius:3px; word-break:break-word; }
+  .caption { font-size:14.5px; color:var(--ink-faint); }
+  .kicker { font-family:var(--f-display); font-size:clamp(22px,3.4vw,29px); font-weight:700; line-height:1.24; max-width:700px; margin:0 0 20px; text-wrap:balance; }
+
+  figure { margin:32px 0; background:var(--surface); border:1px solid var(--rule); padding:24px 22px 16px; overflow-x:auto; }
+  figure svg { display:block; width:100%; max-width:100%; height:auto; color:var(--ink); }
+  figcaption { font-size:14px; line-height:1.5; color:var(--ink-soft); margin-top:16px; padding-top:13px; border-top:1px solid var(--rule-soft); max-width:730px; }
+  .svg-label { font-family:var(--f-mono); font-size:11px; fill:currentColor; }
+  .svg-title { font-family:var(--f-display); font-size:13px; font-weight:700; fill:currentColor; letter-spacing:.05em; }
+  .svg-note { font-family:var(--f-mono); font-size:10px; fill:var(--ink-faint); }
+  .svg-big { font-family:var(--f-display); font-size:25px; font-weight:700; fill:currentColor; }
+  .svg-box { fill:var(--surface-2); stroke:currentColor; stroke-width:1.2; }
+  .svg-box-a { fill:var(--accent-wash); stroke:var(--accent); stroke-width:1.6; }
+  .svg-line { stroke:currentColor; stroke-width:1.3; fill:none; }
+  .svg-line-a { stroke:var(--accent); stroke-width:1.9; fill:none; }
+  .svg-dash { stroke:var(--ink-faint); stroke-width:1.2; fill:none; stroke-dasharray:4 4; }
+
+  .panel { display:grid; grid-template-columns:repeat(auto-fill,minmax(262px,1fr)); gap:13px; margin:26px 0; }
+  .np { background:var(--surface); border:1px solid var(--rule); border-top:3px solid var(--tier); padding:15px 16px 16px; display:flex; flex-direction:column; gap:7px; }
+  .np-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .np-name { font-family:var(--f-display); font-weight:700; font-size:19px; line-height:1.1; }
+  .np-model { font-family:var(--f-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; border:1px solid var(--tier); color:var(--tier); padding:2px 6px; flex:none; border-radius:2px; }
+  .np-role { font-family:var(--f-mono); font-size:11px; letter-spacing:.06em; color:var(--ink-faint); text-transform:uppercase; margin-top:-3px; }
+  .np-lens { font-size:14.5px; line-height:1.45; color:var(--ink-soft); margin:0; }
+  .np-tell { font-size:13.5px; line-height:1.45; border-left:2px solid var(--rule); padding-left:10px; margin:2px 0 0; font-style:italic; }
+  .np-dyn { font-family:var(--f-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--warn); }
+  .np.outlier { border-style:dashed; border-top-style:solid; }
+
+  .phases { border-left:2px solid var(--rule); margin:28px 0; padding-left:0; list-style:none; }
+  .phase { position:relative; padding:0 0 30px 30px; }
+  .phase::before { content:attr(data-n); position:absolute; left:-13px; top:2px; width:24px; height:24px; border-radius:50%; background:var(--accent); color:var(--paper); font-family:var(--f-mono); font-size:11px; font-weight:700; display:grid; place-items:center; }
+  .phase-name { font-family:var(--f-display); font-weight:700; font-size:22px; margin:0 0 3px; }
+  .phase-key { font-family:var(--f-mono); font-size:11px; color:var(--ink-faint); margin:0 0 9px; }
+  .phase p { margin-bottom:10px; }
+
+  .thread { background:var(--surface); border:1px solid var(--rule); padding:18px 20px; margin:20px 0; }
+  .thread-tag { font-family:var(--f-mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--rule-soft); }
+  .msg { margin-bottom:15px; }
+  .msg:last-child { margin-bottom:0; }
+  .msg-who { font-family:var(--f-display); font-weight:700; font-size:15px; letter-spacing:.02em; margin-bottom:3px; }
+  .msg-who em { font-family:var(--f-mono); font-weight:400; font-style:normal; font-size:11px; color:var(--ink-faint); }
+  .msg blockquote { margin:0; padding-left:12px; border-left:2px solid var(--rule); font-size:15px; line-height:1.5; color:var(--ink-soft); }
+  .msg blockquote b { color:var(--ink); }
+
+  .tw { overflow-x:auto; margin:22px 0; border:1px solid var(--rule); }
+  table { border-collapse:collapse; width:100%; min-width:520px; font-size:14.5px; background:var(--surface); }
+  th, td { text-align:left; padding:9px 13px; border-bottom:1px solid var(--rule-soft); vertical-align:top; }
+  th { font-family:var(--f-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); font-weight:600; background:var(--surface-2); border-bottom:1px solid var(--rule); }
+  tbody tr:last-child td { border-bottom:none; }
+  td code { background:transparent; padding:0; }
+  td.n { font-family:var(--f-mono); font-variant-numeric:tabular-nums; text-align:center; }
+  .zero { color:var(--crit); font-weight:700; }
+
+  .note { border:1px solid var(--rule); border-left:4px solid var(--tone,var(--accent)); background:var(--surface); padding:15px 18px; margin:22px 0; }
+  .note-tag { font-family:var(--f-mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--tone,var(--accent)); font-weight:600; margin-bottom:7px; }
+  .note p { margin-bottom:10px; font-size:15.5px; }
+  .note p:last-child { margin-bottom:0; }
+  .note.crit { --tone:var(--crit); }
+  .note.warn { --tone:var(--warn); }
+  .note.good { --tone:var(--good); }
+
+  .sev { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin:20px 0; }
+  .sev div { border:1px solid var(--rule); border-top:3px solid var(--tone); background:var(--surface); padding:12px 14px; }
+  .sev b { font-family:var(--f-display); font-size:17px; text-transform:uppercase; color:var(--tone); display:block; margin-bottom:4px; }
+  .sev p { font-size:14px; margin:0; color:var(--ink-soft); }
+
+  .legend { display:flex; gap:18px; flex-wrap:wrap; font-family:var(--f-mono); font-size:11px; color:var(--ink-faint); margin:14px 0 0; }
+  .legend span { display:flex; align-items:center; gap:6px; }
+  .chip { width:12px; height:12px; border-radius:2px; flex:none; }
+
+  footer { border-top:2px solid var(--ink); padding-top:18px; margin-top:36px; font-family:var(--f-mono); font-size:12px; color:var(--ink-faint); line-height:1.7; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+  @media (max-width:620px) { body { font-size:16px; padding:0 16px 70px; } .docket dd { font-size:25px; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="eyebrow">Claude Code plugin &middot; v2.2.0 &middot; documentation</p>
+    <h1>MOE Peer<br>Review</h1>
+    <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
+  </header>
+
+  <dl class="docket">
+    <div><dt>Personas</dt><dd>9 <small>8 + mod</small></dd></div>
+    <div><dt>Phases</dt><dd>5</dd></div>
+    <div><dt>Exchange cap</dt><dd>100 <small>/agent</small></dd></div>
+    <div><dt>Model tiers</dt><dd>3</dd></div>
+    <div><dt>Validators</dt><dd>2</dd></div>
+    <div><dt>Writes to repo</dt><dd>0</dd></div>
+  </dl>
+
+  <nav class="nav">
+    <a href="#idea">The idea</a>
+    <a href="#panel">The panel</a>
+    <a href="#exec">Execution</a>
+    <a href="#phases">Phases</a>
+    <a href="#talk">Conversations</a>
+    <a href="#rigor">Rigor</a>
+    <a href="#guard">Guardrails</a>
+    <a href="README.md">Markdown docs</a>
+  </nav>
+
+  <section id="idea">
+    <div class="sec-head"><span class="sec-num">01</span><h2>The idea</h2></div>
+    <div class="col">
+      <p class="kicker">A single reviewer has one blind-spot map. Eight reviewers with deliberately incompatible priorities have almost none, provided something forces them to argue.</p>
+      <p>Ordinary AI review collapses to one voice with one set of instincts. This plugin breaks that voice into eight agents who cannot agree by construction: a security engineer who reads everything as an attack surface, a compliance officer who reads it as an audit exhibit, and a furious non-technical end user who cannot read it at all.</p>
+      <p>Findings are squeezed along two independent axes before reaching you. <strong>Phase 3 tests claims against evidence</strong>, with the moderator trying to falsify each one against the actual code. <strong>Phase 4 tests claims against other experts</strong>, with the moderator stepping out entirely. The bet is that these two filters fail differently, so what survives both is unusually likely to be real.</p>
+    </div>
+    <div class="note">
+      <div class="note-tag">Review-only, and it is enforced</div>
+      <p>The guarantee is not a promise in a prompt. The eight persona agents are declared with <code>tools: [Read, Grep, Glob]</code>, so they do not possess a tool capable of writing a file. Every run ends with a literal <code>STOP</code> before anything is acted on.</p>
+    </div>
+  </section>
+
+  <section id="panel">
+    <div class="sec-head"><span class="sec-num">02</span><h2>The panel</h2></div>
+    <div class="col">
+      <p>Each persona file is a full character: education, career history, emotional affect, pet peeves, and an explicit list of who they clash with in debate. That last section is a wiring diagram of which arguments will happen, and it is what manufactures the disagreement the process depends on.</p>
+      <p>Two constraints keep the characters from becoming noise. <strong>Stay in your lane</strong> forbids reviewing outside your domain, capped at one sentence for cross-lane concerns. <strong>Graduated severity</strong> forces every finding into one of three buckets.</p>
+    </div>
+
+    <div class="sev">
+      <div style="--tone:var(--crit)"><b>Blocker</b><p>Production failure, data loss, security breach, or audit failure.</p></div>
+      <div style="--tone:var(--warn)"><b>Warning</b><p>Fix before launch; not immediately dangerous.</p></div>
+      <div style="--tone:var(--good)"><b>Suggestion</b><p>Raises quality. Not required.</p></div>
+    </div>
+
+    <div class="panel">
+      <div class="np" style="--tier:var(--opus)">
+        <div class="np-top"><div class="np-name">Beyonce Carter</div><div class="np-model">opus</div></div>
+        <div class="np-role">Sr. Engineer &middot; beyonce</div>
+        <p class="np-lens">Architecture and system design. Edge cases, failure paths, idempotency, scalability at 10&times; load, maintainability by someone who didn't write it.</p>
+        <p class="np-tell">Asks whether the solution was designed or just assembled.</p>
+      </div>
+      <div class="np" style="--tier:var(--haiku)">
+        <div class="np-top"><div class="np-name">Jill Scott-Williams</div><div class="np-model">haiku</div></div>
+        <div class="np-role">Jr. Developer &middot; jill-scott</div>
+        <p class="np-lens">Learning gaps and onboarding hostility. Jargon, tribal knowledge, docs that explain "what" but never "why", errors that don't say what to do next.</p>
+        <p class="np-tell">Reviews as the person who joined Monday and must ship by Friday.</p>
+      </div>
+      <div class="np" style="--tier:var(--sonnet)">
+        <div class="np-top"><div class="np-name">Janelle Monae Robinson</div><div class="np-model">sonnet</div></div>
+        <div class="np-role">DevOps &middot; janelle-monae</div>
+        <p class="np-lens">Operational readiness. Failure cascades, monitoring coverage, blast radius, rollback procedures and whether they were ever tested.</p>
+        <p class="np-tell">"What's the rollback plan?" is the catchphrase her file assigns her.</p>
+      </div>
+      <div class="np" style="--tier:var(--sonnet)">
+        <div class="np-top"><div class="np-name">SZA</div><div class="np-model">sonnet</div></div>
+        <div class="np-role">Security &middot; sza</div>
+        <p class="np-lens">Credential scope, least privilege, audit trails, injection, session management, dependency vulnerabilities, errors that leak internals.</p>
+        <p class="np-tell">Files findings as attack narratives: attacker with X exploits Y to reach Z.</p>
+      </div>
+      <div class="np" style="--tier:var(--opus)">
+        <div class="np-top"><div class="np-name">Erykah Badu-Johnson</div><div class="np-model">opus</div></div>
+        <div class="np-role">Platform Generalist &middot; erykah-badu</div>
+        <p class="np-lens">Cross-system coherence. Naming across code, API, database and UI; documentation gaps; whether the system tells one story or five.</p>
+        <p class="np-tell">Most likely to say "these four concerns are one concern", and be right.</p>
+      </div>
+      <div class="np" style="--tier:var(--sonnet)">
+        <div class="np-top"><div class="np-name">Doechii</div><div class="np-model">sonnet</div></div>
+        <div class="np-role">PCI / HIPAA &middot; doechii</div>
+        <p class="np-lens">PCI DSS v4.0, HIPAA Security and Privacy Rules, SOC2 CC6&ndash;CC8, CCPA. Audit trails, retention, data classification, BAA coverage.</p>
+        <p class="np-tell">Every finding cites the specific rule and a remediation path.</p>
+      </div>
+      <div class="np" style="--tier:var(--opus)">
+        <div class="np-top"><div class="np-name">Whitney Houston-Davis</div><div class="np-model">opus</div></div>
+        <div class="np-role">Domain Specialist &middot; whitney-houston</div>
+        <div class="np-dyn">&#9670; specialty assigned per run</div>
+        <p class="np-lens">A PhD lens matched to the content: Database Systems, Distributed Systems, HCI, Applied Cryptography, Cloud Computing, Data Engineering, Biomedical Informatics, and others.</p>
+        <p class="np-tell">Offers evidence-backed positions, not opinions, and names the principle.</p>
+      </div>
+      <div class="np outlier" style="--tier:var(--haiku)">
+        <div class="np-top"><div class="np-name">ChaoticCarl</div><div class="np-model">haiku</div></div>
+        <div class="np-role">End User &middot; chaotic-carl</div>
+        <div class="np-dyn">&#9670; backstory assigned per run</div>
+        <p class="np-lens">Discoverability, workflow friction, useless error messages, every moment a real user gets stuck. Receives a plain-language brief, never raw code.</p>
+        <p class="np-tell">Never reads instructions. His complaints are treated as bugs in the software, not in him.</p>
+      </div>
+      <div class="np" style="--tier:var(--opus)">
+        <div class="np-top"><div class="np-name">Dr. Nina Simone-Bennett</div><div class="np-model">opus</div></div>
+        <div class="np-role">Moderator &middot; not a subagent</div>
+        <p class="np-lens">PhD in Group Decision Science, running an adapted Delphi method. The only participant who may write, and only to the review output directory.</p>
+        <p class="np-tell">"What's your evidence for that?" Draws out quiet participants, protects ChaoticCarl from dismissal.</p>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i class="chip" style="background:var(--opus)"></i> opus &middot; 4 seats</span>
+      <span><i class="chip" style="background:var(--sonnet)"></i> sonnet &middot; 3 seats</span>
+      <span><i class="chip" style="background:var(--haiku)"></i> haiku &middot; 2 seats</span>
+    </div>
+
+    <div class="note">
+      <div class="note-tag">Tiering is a deliberate cost decision</div>
+      <p>The two haiku seats are Jill Scott-Williams and ChaoticCarl, the personas whose value comes from <em>not</em> reasoning deeply. A junior's confusion and a frustrated user's complaint are both signals about surface legibility, and a cheaper model produces them at least as authentically.</p>
+    </div>
+  </section>
+
+  <section id="exec">
+    <div class="sec-head"><span class="sec-num">03</span><h2>How it executes</h2></div>
+    <div class="col">
+      <p>The most important structural decision: <strong>the moderator is not a subagent.</strong> Her file says so explicitly. The main conversation reads it and becomes her.</p>
+      <p>The reason is visibility. A subagent's work is compressed into a final report, and only its return value reaches you. Because the moderator runs in the main context, every exchange prints live and you watch the review happen.</p>
+      <p>The eight personas are spawned once, in parallel, then <em>resumed</em>, never respawned. Their agent IDs live in <code>moe-state.json</code>, which is what lets a persona carry its Phase 1 memory into Phase 4, and what makes recovery after context compaction possible.</p>
+    </div>
+
+    <figure>
+      <svg viewBox="0 0 880 296" role="img" aria-label="The moderator runs in the main conversation context and spawns eight persona subagents once in parallel, then resumes those same agent IDs across every later phase.">
+        <defs>
+          <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <polygon points="0,1 9,5 0,9" fill="var(--accent)"/>
+          </marker>
+        </defs>
+        <rect x="0" y="0" width="880" height="126" fill="var(--accent-wash)" stroke="var(--accent)" stroke-width="1"/>
+        <text class="svg-title" x="16" y="24" fill="var(--accent)">MAIN CONVERSATION CONTEXT, visible to you</text>
+        <rect class="svg-box-a" x="16" y="38" width="188" height="52" rx="2"/>
+        <text class="svg-label" x="30" y="59">Dr. Nina Simone-Bennett</text>
+        <text class="svg-note" x="30" y="77">moderator + you watching</text>
+        <rect class="svg-box" x="220" y="38" width="150" height="52" rx="2"/>
+        <text class="svg-label" x="234" y="59">Live thread</text><text class="svg-note" x="234" y="77">blockquoted chat</text>
+        <rect class="svg-box" x="386" y="38" width="150" height="52" rx="2"/>
+        <text class="svg-label" x="400" y="59">moe-state.json</text><text class="svg-note" x="400" y="77">every change</text>
+        <rect class="svg-box" x="552" y="38" width="150" height="52" rx="2"/>
+        <text class="svg-label" x="566" y="59">Task list</text><text class="svg-note" x="566" y="77">mirrors state</text>
+        <text class="svg-note" x="16" y="110">Moderator tools: Read, Grep, Glob, Write, Edit, Task. No Bash.</text>
+
+        <line class="svg-line-a" x1="108" y1="126" x2="108" y2="168" marker-end="url(#m1)"/>
+        <text class="svg-note" x="120" y="150">Task() × 8, parallel, once</text>
+        <text class="svg-title" x="0" y="192">ISOLATED SUBAGENT CONTEXTS, you see only what the moderator prints</text>
+
+        <rect class="svg-box" x="0" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
+        <text class="svg-label" x="10" y="224" fill="var(--opus)">beyonce</text><text class="svg-note" x="10" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="112" y="204" width="104" height="52" rx="2" stroke="var(--haiku)"/>
+        <text class="svg-label" x="122" y="224" fill="var(--haiku)">jill-scott</text><text class="svg-note" x="122" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="224" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
+        <text class="svg-label" x="234" y="224" fill="var(--sonnet)">janelle-…</text><text class="svg-note" x="234" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="336" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
+        <text class="svg-label" x="346" y="224" fill="var(--sonnet)">sza</text><text class="svg-note" x="346" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="448" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
+        <text class="svg-label" x="458" y="224" fill="var(--opus)">erykah-…</text><text class="svg-note" x="458" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="560" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
+        <text class="svg-label" x="570" y="224" fill="var(--sonnet)">doechii</text><text class="svg-note" x="570" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="672" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
+        <text class="svg-label" x="682" y="224" fill="var(--opus)">whitney-…</text><text class="svg-note" x="682" y="242">Read Grep Glob</text>
+        <rect class="svg-box" x="784" y="204" width="96" height="52" rx="2" stroke="var(--haiku)" stroke-dasharray="5 3"/>
+        <text class="svg-label" x="794" y="224" fill="var(--haiku)">chaotic-…</text><text class="svg-note" x="794" y="242">plain lang.</text>
+
+        <text class="svg-note" x="0" y="282">Same agent_id resumed for Phase 2, Phase 3, and each Huddle relay. Memory persists across all five phases.</text>
+      </svg>
+      <figcaption><strong>One spawn, four resumes.</strong> Border color marks the model tier. Because agents are resumed rather than re-spawned, Beyonce Carter argues in the Huddle from what she personally said in Phase 1.</figcaption>
+    </figure>
+  </section>
+
+  <section id="phases">
+    <div class="sec-head"><span class="sec-num">04</span><h2>The five phases</h2></div>
+    <ol class="phases">
+      <li class="phase" data-n="1">
+        <div class="phase-name">Kick-Off</div>
+        <div class="phase-key">kick-off &middot; 8 agents spawned in parallel</div>
+        <p>Material presented cold, with conversation context deliberately withheld so reactions aren't anchored to prior conclusions. Each persona first verifies three claims against the real repository, then returns 5&ndash;7 observations. The moderator only confirms receipt.</p>
+      </li>
+      <li class="phase" data-n="2">
+        <div class="phase-name">Clarifying Questions</div>
+        <div class="phase-key">clarifying-questions &middot; 8 agents resumed</div>
+        <p>Each persona asks 5&ndash;7 precise questions. The moderator answers from source material and by reading actual code, and must admit "not documented" where the gap is real rather than inventing coverage.</p>
+      </li>
+      <li class="phase" data-n="3">
+        <div class="phase-name">Interactive Session</div>
+        <div class="phase-key">interactive-session &middot; moderator vs. agent &middot; cap 100/agent</div>
+        <p>The adversarial fact-check. Default posture is disbelief; the burden of proof sits with the agent. The phase must produce exactly 2N blocks for N personas, and closes with a Blocker Re-Test Ledger, a Consensus Ledger, and the moderator's public self-check.</p>
+      </li>
+      <li class="phase" data-n="4">
+        <div class="phase-name">The Huddle</div>
+        <div class="phase-key">the-huddle &middot; agent vs. agent &middot; cap 100 + 100/agent</div>
+        <p>The moderator steps back and relays messages between experts. Anyone leaving Phase 3 with open items must participate. Closes with a participation checklist marking gaps.</p>
+      </li>
+      <li class="phase" data-n="5">
+        <div class="phase-name">Synthesis</div>
+        <div class="phase-key">synthesis &middot; moderator alone</div>
+        <p>Ten required sections, deduplicated, ordered by severity. An empty section still prints its header with "None identified". Then a literal <code>STOP</code>.</p>
+      </li>
+    </ol>
+  </section>
+
+  <section id="talk">
+    <div class="sec-head"><span class="sec-num">05</span><h2>What it sounds like</h2></div>
+    <div class="col">
+      <p>Every phase prints as a first-person, blockquoted chat thread. Third-person narration is banned, because summarizing a persona is exactly how a model quietly drops the specifics. The exchanges below are adapted from a recorded 728-line review, condensed for length.</p>
+    </div>
+
+    <div class="thread">
+      <div class="thread-tag">Phase 1 &middot; the moderator confirms receipt and answers nothing</div>
+      <div class="msg">
+        <div class="msg-who">ChaoticCarl <em>(End User, compliance-analyst backstory)</em></div>
+        <blockquote>Category A is still coming back "Unknown" and I can't tell if it's actually fixed. How would I even tell the difference between "actually fixed" and "broken again" from the report alone? And why do I have to deal with AI behavior at all? If I run the same vendor twice and get different scores, how do I explain that to Legal?</blockquote>
+      </div>
+      <div class="msg">
+        <div class="msg-who">Dr. Nina Simone-Bennett -&gt; ChaoticCarl</div>
+        <blockquote>Noted. Your first and last points aren't separate complaints, they're the same worry three technical reviewers found independently from three different angles. Beyonce found the model call that decides your score has no temperature set. Janelle found the test meant to catch that regression is off by default in CI. Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</blockquote>
+      </div>
+    </div>
+
+    <div class="thread">
+      <div class="thread-tag">Phase 3 &middot; verify, refuse, or refute &mdash; there is no fourth option</div>
+      <div class="msg">
+        <div class="msg-who">SZA -&gt; Dr. Nina Simone-Bennett</div>
+        <blockquote>An attacker with read access to the job queue could replay a completed payload and overwrite the verdict field. There is no nonce and no idempotency key on that path.</blockquote>
+      </div>
+      <div class="msg">
+        <div class="msg-who">Dr. Nina Simone-Bennett -&gt; SZA</div>
+        <blockquote><b>I cannot verify this:</b> I read the queue consumer and found no nonce, which matches your structural claim. But I could not establish that the verdict field is writable post-completion, since the status guard may block it. Carrying as a Warning, not a Blocker, until the call path is confirmed.</blockquote>
+      </div>
+    </div>
+
+    <div class="note good">
+      <div class="note-tag">The exchange that justifies the design</div>
+      <p>Two specialists propose fixes that look complementary. The collision reveals that one would break the other, and produces a third design neither had proposed.</p>
+    </div>
+
+    <div class="thread">
+      <div class="thread-tag">Phase 4 &middot; the moderator is silent; experts collide</div>
+      <div class="msg">
+        <div class="msg-who">Doechii -&gt; Whitney Houston-Davis</div>
+        <blockquote>Your fabrication finding is sharper than mine and I'm not contesting it. But they're not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is trust-calibration on data that <em>is</em> present, where a cited legal document and an uncited guess get the identical "exact and authoritative" stamp.</blockquote>
+      </div>
+      <div class="msg">
+        <div class="msg-who">Whitney Houston-Davis -&gt; Doechii</div>
+        <blockquote>Orthogonal, both must ship. <b>Critical warning:</b> if your gate is built as a <em>filter</em> that drops sub-threshold facts, it converts populated-but-uncertain cells into empty ones, which is indistinguishable from never-measured. That makes my fabrication bug <em>worse</em>, not better. Recommend: label, don't filter. A three-state provenance model as two fields on one type, not two separate patches.</blockquote>
+      </div>
+      <div class="msg">
+        <div class="msg-who">ChaoticCarl -&gt; Beyonce Carter</div>
+        <blockquote>Explain it like I'm five. What does "temperature zero" actually look like for me? What's the override command? And would Monday's score and Wednesday's score match?</blockquote>
+      </div>
+      <div class="msg">
+        <div class="msg-who">Beyonce Carter -&gt; ChaoticCarl</div>
+        <blockquote>Temperature zero is one line in a config file, invisible to you, and worth doing. But it does <b>not</b> guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless of the randomness dial. There is no override flag anywhere in the CLI. Same vendor Monday and Wednesday: no guarantee of an identical number. Nobody has measured how much it moves, which is exactly the missing data point.</blockquote>
+      </div>
+    </div>
+
+    <div class="col">
+      <p class="caption">A non-technical demand for plain language forced a senior engineer to trace a claim to its end, and the trace ended at an unmeasured variable nobody had noticed. ChaoticCarl did not find that. He caused it to be found.</p>
+    </div>
+  </section>
+
+  <section id="rigor">
+    <div class="sec-head"><span class="sec-num">06</span><h2>What stops the rubber stamp</h2></div>
+    <div class="col">
+      <p>The obvious failure mode for a panel of agreeable AI reviewers is unanimous, evidence-free approval. Six mechanisms exist to prevent it, and most of them were added because a real run drifted past a softer version of the same rule.</p>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Mechanism</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Three-response rule</td><td>Every factual claim gets "I verified this" with <code>file:line</code>, "I cannot verify this", or "This is incorrect". Bulk acceptance is forbidden.</td></tr>
+          <tr><td>2N block count</td><td>Phase 3 produces one persona block and one moderator block per persona. The moderator counts her own blocks before printing.</td></tr>
+          <tr><td>Blocker Re-Test Ledger</td><td>Try to disprove that a confirmed fact causes the claimed harm. Every Blocker reaching Synthesis needs a row, or it is not eligible.</td></tr>
+          <tr><td>30% self-audit</td><td>If more than 30% of responses lack one of the three templates, pause and re-verify.</td></tr>
+          <tr><td>Self-incrimination check</td><td>Before the Huddle, answer publicly: "Did I reject any claim? If not, why not?"</td></tr>
+          <tr><td>Consensus Ledger</td><td>Printed every round even when there is nothing to report, so "no disagreements" is a stated finding rather than an absence.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Where a real run fell short</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Persona</th><th class="n">P1</th><th class="n">P2</th><th class="n">P3</th><th class="n">P4</th></tr></thead>
+        <tbody>
+          <tr><td>Beyonce Carter</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">2</td></tr>
+          <tr><td>Jill Scott-Williams</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>Janelle Monae Robinson</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>SZA</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>Erykah Badu-Johnson</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>Doechii</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>Whitney Houston-Davis</td><td class="n">1</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr>
+          <tr><td>ChaoticCarl</td><td class="n">1</td><td class="n">1</td><td class="n zero">0</td><td class="n">1</td></tr>
+          <tr><td><strong>Moderator replies</strong></td><td class="n">8</td><td class="n">8</td><td class="n zero">2</td><td class="n">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+      <p>ChaoticCarl was skipped entirely in the adversarial round, and of the seven personas who did speak, only two received a reply. Five raised new claims that reached the Synthesis unchallenged. The 2N rule, the block count, and the validator's artifact checks all exist because of this run. A prose instruction to "be rigorous" did not survive a long review; a countable one is harder to drift past.</p>
+    </div>
+  </section>
+
+  <section id="guard">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Guardrails and self-validation</h2></div>
+    <div class="col">
+      <p>Read-only enforcement is layered five deep, and the layer doing the real work is the least conspicuous: the persona agents literally do not possess a tool that writes. The skill preamble, the per-persona "No file modifications" line, and the closing <code>STOP</code> are reinforcement.</p>
+      <p>After writing the transcript, the moderator runs the transcript validator and prints its output verbatim. <strong>The validator diagnoses; it does not clean up.</strong> The transcript is never edited to make a failing check pass, because it is a faithful record and editing it would hide the very problem the check reported.</p>
+    </div>
+
+    <div class="tw">
+      <table>
+        <thead><tr><th>Layer</th><th>Mechanism</th><th>Strength</th></tr></thead>
+        <tbody>
+          <tr><td>Skill preamble</td><td>"NEVER apply any recommendation"</td><td>Instruction</td></tr>
+          <tr><td><strong>Agent frontmatter</strong></td><td><code>tools: [Read, Grep, Glob]</code></td><td><strong>Hard capability restriction</strong></td></tr>
+          <tr><td>Persona body text</td><td>"No file modifications." in all eight cards</td><td>Reinforcement</td></tr>
+          <tr><td>Synthesis STOP</td><td>Halts before acting on findings</td><td>Instruction, validator-checked</td></tr>
+          <tr><td>SubagentStop hook</td><td>Greps agent output for edit-like language</td><td>Advisory warning</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <div class="note-tag">The improvement loop</div>
+      <p>A background agent receives the transcript <em>and</em> the validator output, scores the run on six dimensions, and classifies every failure as MODEL EXECUTION (the guidance was adequate and was not followed) or PLUGIN GUIDANCE (the plugin never asked, or asked ambiguously). Suggestions land in <code>plugin-improvements.md</code> with the exact file, current text, and proposed replacement. Nothing is applied automatically, and the next run reads that file first.</p>
+    </div>
+  </section>
+
+  <footer>
+    MOE Peer Review v2.3.0 · nine personas · five phases · MIT licensed<br>
+    Full documentation: README.md · architecture.md · personas.md · workflow.md · conversations.md<br>
+    Example exchanges adapted from a recorded 728-line review; turn counts measured from its transcript
+  </footer>
+
+</div>

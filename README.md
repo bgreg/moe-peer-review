@@ -10,11 +10,25 @@ Given content to review (a design, config, mockup, technical doc, code, or plan)
 
 1. Presents the material to an 8-persona panel (Kick-Off).
 2. Collects clarifying questions and answers them against source material.
-3. Runs several rounds of adversarial interactive debate between the panel and the moderator.
+3. Runs one maximum-adversarial round between the panel and the moderator, where her default posture is
+   disbelief and every claim is verified, refused, or refuted.
 4. Runs "The Huddle" — direct agent-to-agent challenges until the strongest ideas surface.
-5. Synthesizes a verdict scoreboard, blockers, warnings, and prioritized action items.
+5. Synthesizes a verdict scoreboard, blockers, warnings, and prioritized action items, then stops.
 
 Output reads like a live group chat so you can watch the deliberation unfold.
+
+## Documentation
+
+Full documentation lives in [`docs/`](docs/README.md):
+
+| Page | What it covers |
+|---|---|
+| [Architecture](docs/architecture.md) | The parts, the execution model, state, guardrails, self-validation |
+| [The Panel](docs/personas.md) | All nine personas, their lenses, and the two assigned per run |
+| [Workflow](docs/workflow.md) | The five phases in order, with the prompts each one sends |
+| [Conversations](docs/conversations.md) | Annotated example exchanges and the interaction map |
+
+A single-page visual version is at [`docs/index.html`](docs/index.html).
 
 ## The panel
 
