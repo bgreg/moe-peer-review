@@ -182,6 +182,12 @@
   }
   .xch-hd b { color:var(--ink-soft); font-weight:600; }
 
+  .unanswered {
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.04em; color:var(--crit);
+    margin:4px 0 0 4px; display:flex; align-items:center; gap:5px;
+  }
+  .unanswered::before { content:"!"; display:inline-grid; place-items:center; width:13px; height:13px; border-radius:50%; border:1.3px solid var(--crit); font-size:9px; font-weight:700; }
+
   .imsg-note { text-align:center; font-size:13.5px; line-height:1.5; color:var(--ink-faint); font-style:italic; margin:14px auto 18px; max-width:80%; }
   .imsg-legend { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin:18px 0 0; padding-top:14px; border-top:1px solid var(--rule-soft); font-family:var(--f-mono); font-size:10.5px; color:var(--ink-faint); }
   .imsg-legend span { display:flex; align-items:center; gap:6px; }
@@ -194,7 +200,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.4.2 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.4.3 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -641,7 +647,7 @@
           <div class="bubble out"><b>32</b> &middot; Yes, confirmed. The step that decides your score has no consistency setting at all. The test is off by default and excluded from every automated check. Worse: even manually enabled it only tests the scenario that already works, never the one that was broken. <b>This isn't something you should have to remember to fix. It reads like an engineering gap, not an analyst responsibility.</b></div>
         </div>
       </div>
-      <div class="imsg-day">Round 3 &middot; Interactive Session &middot; 10 blocks &middot; moderator versus agent</div>
+      <div class="imsg-day">Round 3 &middot; Interactive Session &middot; moderator versus agent &middot; 7 personas spoke, 2 were answered</div>
 
       <div class="imsg-row" style="--who:var(--w-bey)">
         <div class="avatar">BC</div>
@@ -662,6 +668,7 @@
         <div class="imsg-col">
           <div class="imsg-hd">Jill Scott-Williams <span>Jr. Developer</span></div>
           <div class="bubble in"><b>35</b> &middot; Found it: the floor rule is conditional on absent intake, confirmed by reading the ternary directly. <b>Not satisfied.</b> One Blocker: the floor rule must always apply regardless of intake presence.</div>
+          <div class="unanswered">No moderator response</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -669,6 +676,7 @@
         <div class="imsg-col">
           <div class="imsg-hd">Janelle Monae Robinson <span>DevOps</span></div>
           <div class="bubble in"><b>36</b> &middot; Traced the retry chain further than you could: the two calls do get independent budgets, but a second-call failure discards the first call's already-paid-for output with no reuse path. <b>Raising this from Warning to Blocker</b>, since the fix for a bug that already reached production once now has a test that structurally cannot detect it regressing. <b>Not satisfied.</b></div>
+          <div class="unanswered">No moderator response</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-sza)">
@@ -676,6 +684,7 @@
         <div class="imsg-col">
           <div class="imsg-hd">SZA <span>Security</span></div>
           <div class="bubble in"><b>37</b> &middot; Not accepting "theoretical" framing on the coercion. The repo's own guide requires citing the API skill for any structured-output claim, and nobody has. Merging two findings into one chain: the one case where Category A gets a safety net depends entirely on an unvetted signal. <b>Not satisfied, 2 Blockers.</b></div>
+          <div class="unanswered">No moderator response</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-ery)">
@@ -683,6 +692,7 @@
         <div class="imsg-col">
           <div class="imsg-hd">Erykah Badu-Johnson <span>Platform Generalist</span></div>
           <div class="bubble in"><b>38</b> &middot; These are one finding, not two, and together they compound. I'm not challenging your worst-case-decision or SDK-internals answers; both are legitimately closed or open as stated. <b>Not satisfied, 7 open items across 5 files.</b></div>
+          <div class="unanswered">No moderator response</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-doe)">
@@ -690,6 +700,7 @@
         <div class="imsg-col">
           <div class="imsg-hd">Doechii <span>PCI / HIPAA</span></div>
           <div class="bubble in"><b>39</b> &middot; Challenging the "one inferential step removed" framing: the model's narrative has to restate the sensitive fact to justify its own score, so logging the narrative isn't meaningfully safer than logging the raw prompt. A second tracing variable was never addressed. <b>Not satisfied, 3 Blockers. Will not sign off until they close.</b></div>
+          <div class="unanswered">No moderator response</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-whit)">
@@ -866,7 +877,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.4.2 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.4.3 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>

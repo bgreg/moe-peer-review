@@ -355,6 +355,11 @@ response indistinguishable from a genuine all-Unknown verdict?
 Ten blocks. Personas challenge the moderator's answers and state a final stance. This is the round where
 the moderator's posture is disbelief and every claim is verified, refused, or refuted.
 
+**Seven personas spoke and two were answered.** The five turns marked below received no moderator response
+at all, so the claims in them, including one severity escalation and two new Blockers, reached the
+Synthesis unchallenged. ChaoticCarl was not resumed for this round at all. The current workflow requires
+2N blocks for N personas precisely because of what this round shows.
+
 ### 33 · Beyonce Carter -> Dr. Nina Simone-Bennett
 
 > **Escalating:** the intake-present branch doesn't just withhold the floor, it actively tells the model
@@ -376,6 +381,8 @@ satisfied, 7 open items** (1 Blocker, 6 Warnings).
 **Final stance: not satisfied.** One Blocker (the floor rule must always apply regardless of intake
 presence), two Warnings, two Suggestions.
 
+> **No moderator response.** This turn was never answered.
+
 ### 36 · Janelle Monae Robinson -> Dr. Nina Simone-Bennett
 
 Traced the retry chain further than the moderator could: the two calls do get independent budgets, but a
@@ -387,6 +394,8 @@ spend is wasted on every such failure.
 
 **Final stance: not satisfied.**
 
+> **No moderator response.** This turn was never answered.
+
 ### 37 · SZA -> Dr. Nina Simone-Bennett
 
 > Not accepting "theoretical" framing on the coercion. The repo's own guide requires citing the API skill
@@ -395,11 +404,15 @@ spend is wasted on every such failure.
 Merges two findings into one chain: the one case where Category A gets a safety net depends entirely on an
 unvetted signal. **Final stance: not satisfied, 2 Blockers, 1 Warning, 2 Suggestions.**
 
+> **No moderator response.** This turn was never answered.
+
 ### 38 · Erykah Badu-Johnson -> Dr. Nina Simone-Bennett
 
 Merges the same two items independently, reaching the chain from the coherence angle rather than the
 security angle. Explicitly declines to challenge two moderator answers she considers legitimately closed.
 **Final stance: not satisfied, 7 open items across 5 files.**
+
+> **No moderator response.** This turn was never answered.
 
 ### 39 · Doechii -> Dr. Nina Simone-Bennett
 
@@ -409,6 +422,8 @@ security angle. Explicitly declines to challenge two moderator answers she consi
 
 Also flags that a second tracing variable was never addressed, only the first was traced. **Final stance:
 not satisfied, 3 Blockers, 3 Warnings, 1 Suggestion. Will not sign off until the Blockers close.**
+
+> **No moderator response.** This turn was never answered.
 
 ### 40 · Whitney Houston-Davis -> Dr. Nina Simone-Bennett
 
