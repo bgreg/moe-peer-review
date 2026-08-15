@@ -86,7 +86,7 @@ Warnings on 25 of the rubric's 100 points being evidence-unreachable in a defaul
 being structurally unreachable when Category A is Unknown, and on parsing errors rendering identically to
 an API outage.
 
-### 2 · Dr. Nina Simone-Bennett -> Beyonce Carter
+### 2 · Dr. Nina Simone-Bennett @Beyonce Carter
 
 > Noted, @Beyonce. The stale-packet catch and the temperature finding both go straight to Round 2.
 
@@ -102,7 +102,7 @@ enum rather than asking nicely in prose. `RISK_INTERNAL_SYSTEMS_TO_CHECK` reads 
 model calls are named generically even though the debug output calls them CALL 1 and CALL 2, so a future
 refactor could parallelize two calls that are actually sequential and dependent.
 
-### 4 · Dr. Nina Simone-Bennett -> Jill Scott-Williams
+### 4 · Dr. Nina Simone-Bennett @Jill Scott-Williams
 
 > You were right to be suspicious. The diff you were handed was genuinely stale, and several of your
 > fellow panelists independently caught the same thing by reading the actual repo. Your instinct to flag
@@ -119,7 +119,7 @@ flag:** she caught the stale diff independently via grep and asks which SHA it w
 closes by asking what the rollback plan is if the live canary starts failing after merge, noting that
 right now it is "someone notices a bad report."
 
-### 6 · Dr. Nina Simone-Bennett -> Janelle Monae Robinson
+### 6 · Dr. Nina Simone-Bennett @Janelle Monae Robinson
 
 > The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both going to be central
 > in Round 2. They connect directly to what @Beyonce and @Whitney found too.
@@ -137,7 +137,7 @@ survives is hers alone:
 She also flags that internal system names are being sent into every Category C prompt with no
 data-handling caveat, and credits the response-schema constraint as real defense in depth.
 
-### 8 · Dr. Nina Simone-Bennett -> SZA
+### 8 · Dr. Nina Simone-Bennett @SZA
 
 > I can already tell you findings one and two are stale-diff artifacts, but we'll re-verify formally in
 > Round 2 rather than take my word for it. Your third is a real, still-open finding on the actual code.
@@ -156,7 +156,7 @@ Plus: a vendor product name leaked into a durable capability-name constant, two 
 with no mention in the PR description, two comma-separated env vars parsed in two different places, and a
 schema test that is tautological because it compares `"Unknown"` to `"Unknown"`.
 
-### 10 · Dr. Nina Simone-Bennett -> Erykah Badu-Johnson
+### 10 · Dr. Nina Simone-Bennett @Erykah Badu-Johnson
 
 > The dual "regulatory frameworks" label collision is a sharp catch, and it's a live ambiguity in the real
 > prompt, not a stale-diff artifact.
@@ -173,7 +173,7 @@ The highest-severity finding of the round, and it does not depend on the packet 
 She cites 45 CFR 164.502(b) and 164.308(b)(1), notes that whether a signed BAA exists determines Blocker
 versus documentation gap, and asks three specific questions she wants answered before Round 2.
 
-### 12 · Dr. Nina Simone-Bennett -> Doechii
+### 12 · Dr. Nina Simone-Bennett @Doechii
 
 > Your first finding doesn't depend on line numbers or the stale-diff incident at all. It's true on the
 > real branch exactly as you describe it, and it's the single highest-severity finding of this entire
@@ -191,7 +191,7 @@ no error, rendered identically to "the agent looked and found nothing," when the
 transform failure. Warnings on three materially different upstream states collapsing into one
 indistinguishable output, and on two magic thresholds whose boundary is moot by luck rather than design.
 
-### 14 · Dr. Nina Simone-Bennett -> Whitney Houston-Davis
+### 14 · Dr. Nina Simone-Bennett @Whitney Houston-Davis
 
 Confirms receipt and routes the malformed-response finding to Round 2.
 
@@ -206,7 +206,7 @@ meetings, does not read TypeScript, and needs the report to survive Legal.
 > run a review, post it, and get questions from Legal I can't answer. And why do I have to deal with AI
 > behavior at all? If I run the same vendor twice and get different scores, how do I explain that?
 
-### 16 · Dr. Nina Simone-Bennett -> ChaoticCarl
+### 16 · Dr. Nina Simone-Bennett @ChaoticCarl
 
 > Your first and last points aren't separate complaints, they're the same worry three technical reviewers
 > found independently from three different angles. @Beyonce found the model call that decides your score
@@ -245,7 +245,7 @@ criterion excluded one field from extraction when a similar one was included? Is
 intended? Why does the Category A floor live in prompt text rather than in code, where it could be
 unit-tested?
 
-### 18 · Dr. Nina Simone-Bennett -> Beyonce Carter
+### 18 · Dr. Nina Simone-Bennett @Beyonce Carter
 
 > Verified each claim directly. Temperature: confirmed absent on grounded, present on structuring, real
 > and unmitigated, no five-run sample (costs API spend). Fail-unreachable: confirmed by arithmetic.
@@ -260,7 +260,7 @@ builder still receive the field the context notes said was removed? If both sour
 Category A silently default to Unknown again? Does the response schema hard-enforce its enum or just
 suggest it? What happens if Call 1 succeeds and Call 2 fails?
 
-### 20 · Dr. Nina Simone-Bennett -> Jill Scott-Williams
+### 20 · Dr. Nina Simone-Bennett @Jill Scott-Williams
 
 > The prompt args have exactly four fields, no `priorFindings` anywhere. Your Kick-Off confusion was
 > entirely the stale packet, now resolved. The floor instruction is real but scoped only to the no-intake
@@ -274,7 +274,7 @@ job running the live canary, or does it only fire by hand? Has anyone run this a
 how often one hiccup crosses the threshold? Is a systematic schema-violation problem invisible outside a
 debug run?
 
-### 22 · Dr. Nina Simone-Bennett -> Janelle Monae Robinson
+### 22 · Dr. Nina Simone-Bennett @Janelle Monae Robinson
 
 > Your Kick-Off process flag is resolved. Retry: **partially verified.** Generic retry infrastructure
 > exists but I couldn't confirm independent budgets from what I read. No scheduled job found in the
@@ -286,7 +286,7 @@ Does the extractor gate on citation basis before calling a fact "exact and autho
 rule apply when intake is present-but-thin, not just absent? Can the numeric coercion be tricked into a
 false-positive band match? Can the summary wave override this job's conservative verdict upward?
 
-### 24 · Dr. Nina Simone-Bennett -> SZA
+### 24 · Dr. Nina Simone-Bennett @SZA
 
 > Confirmed: no basis filter exists, only Unknown/blank checks. Real and unmitigated. Confirmed, and
 > **this is the most important finding of Round 2:** the floor rule is scoped only to the no-intake
@@ -301,7 +301,7 @@ Which of the two "regulatory frameworks" facts is the floor supposed to fire on?
 context exactly, and does URL mode ever get one? Was removing the attacker-scenario content a confirmed
 product decision? Does the live canary cover the actual bug branch?
 
-### 26 · Dr. Nina Simone-Bennett -> Erykah Badu-Johnson
+### 26 · Dr. Nina Simone-Bennett @Erykah Badu-Johnson
 
 > No reconciliation rule exists between the two facts. Confirmed real and unresolved. Intake context is
 > the raw, unsanitized full Jira description; URL mode never assigns it. Attacker-scenario removal: no
@@ -315,7 +315,7 @@ narrative, and where does that data land? Does the intake ever reach the search 
 Is Category B now scored with no persisted audit trail? Is there any mitigation path short of disabling
 the whole feature?
 
-### 28 · Dr. Nina Simone-Bennett -> Doechii
+### 28 · Dr. Nina Simone-Bennett @Doechii
 
 > BAA: **cannot verify**, outside what source code can settle. Debug tracing: confirmed the mechanism
 > writes to stderr only and never itself writes a file, BUT this repo's own guide documents the standard
@@ -330,7 +330,7 @@ Is the floor rule deliberately scoped to the absent-intake branch? What behavior
 string-presence, coverage does it have? Should the result type carry an absence channel? Is a malformed
 response indistinguishable from a genuine all-Unknown verdict?
 
-### 30 · Dr. Nina Simone-Bennett -> Whitney Houston-Davis
+### 30 · Dr. Nina Simone-Bennett @Whitney Houston-Davis
 
 > All confirmed as you describe. The floor rule's only behavioral test always supplies intake, so it never
 > touches the branch with the fix. The result type has exactly one field; three materially different
@@ -344,7 +344,7 @@ response indistinguishable from a genuine all-Unknown verdict?
 > legitimate "we don't know"? What's my escape hatch if this goes live and gets flaky? Whose job is it to
 > turn the test on?
 
-### 32 · Dr. Nina Simone-Bennett -> ChaoticCarl
+### 32 · Dr. Nina Simone-Bennett @ChaoticCarl
 
 > Yes, confirmed. The step that decides your score has no consistency setting at all. The test is
 > confirmed off by default and excluded from every automated check; worse, even manually enabled it only
@@ -364,7 +364,7 @@ persona who declares themselves satisfied still gets a response naming what was 
 is included rather than skipped. The moderator counts her own blocks before printing the round, because an
 unanswered claim is an unverified claim and an unverified claim must not reach the Synthesis.
 
-### 33 · Beyonce Carter -> Dr. Nina Simone-Bennett
+### 33 · Beyonce Carter @Dr. Nina Simone-Bennett
 
 > **Escalating:** the intake-present branch doesn't just withhold the floor, it actively tells the model
 > that a bare "Vendor URL: X" ticket body *is* "what data we will share with the vendor," pushing Category
@@ -372,24 +372,24 @@ unanswered claim is an unverified claim and an unverified claim must not reach t
 
 **Final stance: not satisfied, 7 open items.**
 
-### 34 · Dr. Nina Simone-Bennett -> Beyonce Carter
+### 34 · Dr. Nina Simone-Bennett @Beyonce Carter
 
 > **I verified this:** re-read the prompt's static wrapper text, confirmed exactly as you describe. **I
 > verified** your citation against the contract file, exact match. Both carried.
 
-### 35 · Jill Scott-Williams -> Dr. Nina Simone-Bennett
+### 35 · Jill Scott-Williams @Dr. Nina Simone-Bennett
 
 > Found it: the floor rule is conditional on absent intake, confirmed by reading the ternary directly.
 
 **Final stance: not satisfied.** One Blocker: the floor rule must always apply regardless of intake.
 
-### 36 · Dr. Nina Simone-Bennett -> Jill Scott-Williams
+### 36 · Dr. Nina Simone-Bennett @Jill Scott-Williams
 
 > **I verified this:** I read the same ternary and the floor instruction sits inside the no-intake branch
 > only. Your Blocker is confirmed, and it is the same defect @SZA, @Erykah and @Whitney reached
 > independently, which raises it to a Production Gate.
 
-### 37 · Janelle Monae Robinson -> Dr. Nina Simone-Bennett
+### 37 · Janelle Monae Robinson @Dr. Nina Simone-Bennett
 
 Traced the retry chain further than the moderator could: the two calls get independent budgets, but a
 second-call failure discards the first call's already-paid-for output with no reuse path.
@@ -397,14 +397,14 @@ second-call failure discards the first call's already-paid-for output with no re
 > Raising this from Warning to **Blocker**, since the fix for a bug that already reached production once
 > now has a test that structurally cannot detect it regressing.
 
-### 38 · Dr. Nina Simone-Bennett -> Janelle Monae Robinson
+### 38 · Dr. Nina Simone-Bennett @Janelle Monae Robinson
 
 > **I verified this:** independent budgets confirmed, discarded narrative confirmed. On the escalation I
 > ran the re-test: I tried to show the canary could still catch a regression by some other path, and it
 > cannot, because it always supplies intake and the fix lives in the branch without it. **Escalation
 > accepted**, and recorded in the ledger.
 
-### 39 · SZA -> Dr. Nina Simone-Bennett
+### 39 · SZA @Dr. Nina Simone-Bennett
 
 > Not accepting "theoretical" framing on the coercion. The repo's own guide requires citing the API skill
 > for any structured-output claim, and nobody has.
@@ -412,26 +412,26 @@ second-call failure discards the first call's already-paid-for output with no re
 Merges two findings into one chain: the one case where Category A gets a safety net depends entirely on an
 unvetted signal. **Final stance: not satisfied, 2 Blockers.**
 
-### 40 · Dr. Nina Simone-Bennett -> SZA
+### 40 · Dr. Nina Simone-Bennett @SZA
 
 > You are right that I did not cite the required source, so **I cannot verify this** and I will not
 > characterise enforcement strictness without it. That leaves your chain standing: **I verified** the
 > absence of any basis filter directly. Both Blockers carried; the coercion sub-claim stays open rather
 > than dismissed.
 
-### 41 · Erykah Badu-Johnson -> Dr. Nina Simone-Bennett
+### 41 · Erykah Badu-Johnson @Dr. Nina Simone-Bennett
 
 Merges the same two items independently, reaching the chain from the coherence angle rather than the
 security angle. Declines to challenge two answers she considers legitimately closed. **Final stance: not
 satisfied, 7 open items across 5 files.**
 
-### 42 · Dr. Nina Simone-Bennett -> Erykah Badu-Johnson
+### 42 · Dr. Nina Simone-Bennett @Erykah Badu-Johnson
 
 > **I verified this:** the merge is correct, the floor gap and the basis gap share a single failure path.
 > Recording them as one Blocker with two required fixes rather than two Blockers, which changes the count
 > on your row and not the work.
 
-### 43 · Doechii -> Dr. Nina Simone-Bennett
+### 43 · Doechii @Dr. Nina Simone-Bennett
 
 > Challenging the "one inferential step removed" framing: the model's narrative has to restate the
 > sensitive fact to justify its own score, so logging the narrative isn't meaningfully safer than logging
@@ -440,14 +440,14 @@ satisfied, 7 open items across 5 files.**
 Also flags that a second tracing variable was never addressed. **Final stance: not satisfied, 3 Blockers.
 Will not sign off until they close.**
 
-### 44 · Dr. Nina Simone-Bennett -> Doechii
+### 44 · Dr. Nina Simone-Bennett @Doechii
 
 > **This is correct and my earlier framing was wrong:** a narrative that justifies a score necessarily
 > restates what it scored. **I verified** the second tracing variable writes JSONL to disk by default,
 > which I had not checked when I answered you in Round 2. **I cannot verify** the BAA question from source
 > at all; it leaves this repository. Your three Blockers carry, one now better evidenced than when raised.
 
-### 45 · Whitney Houston-Davis -> Dr. Nina Simone-Bennett
+### 45 · Whitney Houston-Davis @Dr. Nina Simone-Bennett
 
 Corrects the moderator directly:
 
@@ -459,19 +459,19 @@ Corrects the moderator directly:
 denominator anywhere in the inputs, driving two categories to their combined maximum. **Final stance: not
 satisfied, 5 Blockers.**
 
-### 46 · Dr. Nina Simone-Bennett -> Whitney Houston-Davis
+### 46 · Dr. Nina Simone-Bennett @Whitney Houston-Davis
 
 > **I verified this:** all three log citations byte-for-byte against the actual files. Every quote is
 > exact. "74% organizational adoption" confirmed fabricated. I attacked it before accepting it and could
 > not find a denominator anywhere. **This is now the headline finding of the review.**
 
-### 47 · ChaoticCarl -> Dr. Nina Simone-Bennett
+### 47 · ChaoticCarl @Dr. Nina Simone-Bennett
 
 > You said it's an engineering gap and not my job. Fine. But that doesn't tell me what to do on MONDAY
 > when I have to run one of these and send it to Legal. Do I run it twice and compare? Do I put a warning
 > on the report? Nobody has told me what I'm supposed to actually DO.
 
-### 48 · Dr. Nina Simone-Bennett -> ChaoticCarl
+### 48 · Dr. Nina Simone-Bennett @ChaoticCarl
 
 > Fair, and you are owed an answer, not just a diagnosis. Until the fix lands: run it once, and if the
 > score sits on a band boundary, say so in the ticket rather than presenting the number as settled. **I
@@ -521,7 +521,7 @@ correctness, and the moderator **reverses herself** when a persona shows she ans
 Nine turns, no moderator replies. She seeds the pairings and then relays messages between isolated agents
 who cannot address each other directly.
 
-### 52 · Erykah Badu-Johnson -> Beyonce Carter
+### 52 · Erykah Badu-Johnson @Beyonce Carter
 
 Verifies Beyonce's arithmetic and sharpens it, then refuses her framing:
 
@@ -531,7 +531,7 @@ Verifies Beyonce's arithmetic and sharpens it, then refuses her framing:
 Supports it anyway with a refinement, and flags that her own stronger version moves a verdict rather than
 a rendering, so it is the author's call and not hers.
 
-### 53 · Beyonce Carter -> Erykah Badu-Johnson
+### 53 · Beyonce Carter @Erykah Badu-Johnson
 
 > Verified your unreachability proof line-by-line. Adopting your stronger framing: dead code on every Jira
 > review, not just thin ones.
@@ -540,14 +540,14 @@ Traces the propagation path further than either had: an understated risk level i
 a human, it becomes a premise in the summary agent's own prompt and gets laundered into the final verdict.
 **Concedes the exact wording, refuses the substance.**
 
-### 54 · Doechii -> Whitney Houston-Davis
+### 54 · Doechii @Whitney Houston-Davis
 
 > Your fabrication finding is sharper and more urgent than mine, and I'm not contesting it. But they're
 > not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is
 > trust-calibration on data that *is* present, where a cited legal document and an uncited guess get the
 > identical "exact and authoritative" stamp.
 
-### 55 · Whitney Houston-Davis -> Doechii
+### 55 · Whitney Houston-Davis @Doechii
 
 The exchange that justifies the whole design:
 
@@ -563,7 +563,7 @@ The exchange that justifies the whole design:
 Neither persona could have produced this alone. Doechii proposed a fix; Whitney showed the fix would
 amplify her own separate bug; the output is a third design neither had proposed.
 
-### 56 · Jill Scott-Williams -> Janelle Monae Robinson
+### 56 · Jill Scott-Williams @Janelle Monae Robinson
 
 > Agree they're the same problem: this shipped a non-deterministic, multi-call pipeline with the
 > observability posture of the deterministic code it replaced. My naming concerns and your retry and
@@ -572,13 +572,13 @@ amplify her own separate bug; the output is a third design neither had proposed.
 The junior developer is the one who collapses six findings into one. She receives no reply, the only
 one-way exchange of the round.
 
-### 57 · ChaoticCarl -> Beyonce Carter
+### 57 · ChaoticCarl @Beyonce Carter
 
 > Explain it like I'm five. What does "temperature zero" actually look like for me? What does a passing or
 > failing test look like and who runs it? How do I tell broken from honest-Unknown in the actual report
 > text? What's the override command? And would Monday's score and Wednesday's score match?
 
-### 58 · Beyonce Carter -> ChaoticCarl
+### 58 · Beyonce Carter @ChaoticCarl
 
 > Temperature zero is one line in a config file, invisible to you, and worth doing. But it does **not**
 > guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless
@@ -590,7 +590,7 @@ one-way exchange of the round.
 A non-technical demand for plain language forced a senior engineer to trace a claim to its end, and the
 trace ended at an unmeasured variable nobody had noticed.
 
-### 59 · SZA -> Dr. Nina Simone-Bennett
+### 59 · SZA @Dr. Nina Simone-Bennett
 
 Responding to the Doechii and Whitney provenance resolution rather than to a peer:
 
@@ -602,7 +602,7 @@ Narrows her demand to two concrete options, then adds a **new, distinct fourth B
 grading answers "how well-sourced," not "do these two fields mean the same thing." She recommends a
 code-enforced token allowlist rather than trusting prompt phrasing.
 
-### 60 · Janelle Monae Robinson -> Dr. Nina Simone-Bennett
+### 60 · Janelle Monae Robinson @Dr. Nina Simone-Bennett
 
 > Independently re-verified both citations against the actual code and log file before responding.
 > Confirmed.
