@@ -8,6 +8,16 @@ appears in the order it was spoken, with who addressed whom and what they actual
 
 Text is condensed for length. The substance, the severities, and the voices are the panel's own.
 
+> **Provenance of this transcript.** This review was recorded on 14 August 2026 under the workflow as it
+> stood at the time. Three rules that the current version requires did not yet exist: the 2N block
+> requirement in Round 3, the Blocker Re-Test Ledger, and the Consensus Ledger. Where this run falls short
+> of a rule stated elsewhere in these docs, that is because the run is what produced the rule, not because
+> the rule is optional. Under the current workflow Round 3 would produce sixteen blocks rather than nine.
+>
+> Counts on this page are measured from the saved transcript, which is the only surviving record. At the
+> time of this run the plugin did not distinguish live thread output from the transcript file, so a turn
+> absent here is absent from the record, which is the strongest claim the evidence supports.
+
 ## Turn budget
 
 | Round | Persona turns | Moderator turns | Total |
@@ -357,8 +367,12 @@ the moderator's posture is disbelief and every claim is verified, refused, or re
 
 **Seven personas spoke and two were answered.** The five turns marked below received no moderator response
 at all, so the claims in them, including one severity escalation and two new Blockers, reached the
-Synthesis unchallenged. ChaoticCarl was not resumed for this round at all. The current workflow requires
-2N blocks for N personas precisely because of what this round shows.
+Synthesis unchallenged. ChaoticCarl was not resumed for this round at all.
+
+This is the round that produced the current rule. The workflow now requires 2N blocks for N personas,
+tells the moderator to count her own blocks before printing the phase, and names ChaoticCarl as explicitly
+included. **A run under the current workflow would show sixteen blocks here, not nine.** The shortfall is
+preserved rather than tidied away because it is the evidence for the rule.
 
 ### 33 · Beyonce Carter -> Dr. Nina Simone-Bennett
 

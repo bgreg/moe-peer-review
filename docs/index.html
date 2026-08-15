@@ -200,7 +200,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.4.3 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.4.4 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -413,6 +413,12 @@
     <div class="col">
       <p>The plugin's own spec asks for output that reads like a group thread, so that is how it is presented here. Below is a complete recorded review: <strong>51 turns</strong> across four rounds, none skipped. Grey bubbles are the panel; blue bubbles are the moderator.</p>
       <p class="caption">Adapted from a 728-line transcript reviewing a pull request that rebuilt an LLM risk-scoring pipeline. Condensed for length; the substance, severities, and voices are the panel's own.</p>
+    </div>
+
+    <div class="note warn">
+      <div class="note-tag">Provenance of this transcript</div>
+      <p>This review was recorded on 14 August 2026 under the workflow as it stood at the time. <strong>Three rules the current version requires did not yet exist:</strong> the 2N block requirement in Round 3, the Blocker Re-Test Ledger, and the Consensus Ledger. Where this run falls short of a rule stated elsewhere in these docs, that is because the run is what produced the rule. Under the current workflow, Round 3 would produce sixteen blocks rather than nine.</p>
+      <p>Counts are measured from the saved transcript, the only surviving record. At the time of this run the plugin did not distinguish live thread output from the transcript file, so a turn absent here is absent from the record, which is the strongest claim the evidence supports.</p>
     </div>
 
     <div class="imsg">
@@ -724,7 +730,7 @@
           <div class="bubble out"><b>42</b> &middot; <b>Self-check before The Huddle.</b> Did I reject any claim this round? <b>Yes.</b> I refuted the <code>Number("")</code> sub-claim, since the empty-string path is already guarded, and I declined to characterize structured-output enforcement strictness without citing this repo's required source. Claims were both confirmed and refuted, not rubber-stamped.</div>
         </div>
       </div>
-      <div class="imsg-note">ChaoticCarl received no turn this round, and only two of seven speaking personas got a reply. Five raised new claims that reached the Synthesis unchallenged. The workflow now states the requirement numerically, 2N blocks for N personas.</div>
+      <div class="imsg-note"><b>This is the round that produced the current rule.</b> ChaoticCarl was never resumed, and only two of seven speaking personas got a reply, so five raised new claims that reached the Synthesis unchallenged. The workflow now requires 2N blocks for N personas and tells the moderator to count her own blocks before printing. A run under the current workflow would show sixteen blocks here, not nine. The shortfall is preserved rather than tidied away because it is the evidence for the rule.</div>
 
       <div class="imsg-day">Round 4 &middot; The Huddle &middot; 9 turns &middot; agent versus agent, moderator silent</div>
 
@@ -877,7 +883,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.4.3 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.4.4 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>
