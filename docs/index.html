@@ -187,7 +187,7 @@
     padding:0 3px; border-radius:4px; white-space:nowrap;
   }
   .bubble.out .mention { color:#fff; background:rgba(255,255,255,.22); }
-  .hdr-mention { font-size:11.5px; font-weight:700; padding:1px 5px; }
+  .to-mention { font-weight:700; padding:1px 5px; margin-right:1px; }
 
   .unanswered {
     font-family:var(--f-mono); font-size:10px; letter-spacing:.04em; color:var(--crit);
@@ -207,7 +207,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.5.2 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.5.3 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -441,8 +441,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-bey)">@Beyonce Carter</span></div>
-          <div class="bubble out"><b>2</b> &middot; Noted, <span class="mention" style="--m:var(--w-bey)">@Beyonce</span>. The stale-packet catch and the temperature finding both go straight to Round 2.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>2</b> &middot; <span class="mention to-mention" style="--m:var(--w-bey)">@Beyonce Carter</span> Noted. The stale-packet catch and the temperature finding both go straight to Round 2.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jill)">
@@ -455,8 +455,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span></div>
-          <div class="bubble out"><b>4</b> &middot; You were right to be suspicious. The diff you were handed was genuinely stale, and several of your fellow panelists caught it independently. Your instinct to flag the inconsistency rather than assume you were wrong is exactly right, and it's going in the transcript as a positive example.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>4</b> &middot; <span class="mention to-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span> You were right to be suspicious. The diff you were handed was genuinely stale, and several of your fellow panelists caught it independently. Your instinct to flag the inconsistency rather than assume you were wrong is exactly right, and it's going in the transcript as a positive example.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -469,8 +469,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span></div>
-          <div class="bubble out"><b>6</b> &middot; The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both central for Round 2. They connect directly to what <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found too.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>6</b> &middot; <span class="mention to-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span> The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both central for Round 2. They connect directly to what <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found too.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-sza)">
@@ -483,8 +483,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-sza)">@SZA</span></div>
-          <div class="bubble out"><b>8</b> &middot; Findings one and two are stale-diff artifacts, but we'll re-verify formally rather than take my word for it. Your third is a real, still-open finding on the actual code. That goes straight into the Interactive Session.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>8</b> &middot; <span class="mention to-mention" style="--m:var(--w-sza)">@SZA</span> Findings one and two are stale-diff artifacts, but we'll re-verify formally rather than take my word for it. Your third is a real, still-open finding on the actual code. That goes straight into the Interactive Session.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-ery)">
@@ -497,8 +497,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span></div>
-          <div class="bubble out"><b>10</b> &middot; Sharp catch, and it's a live ambiguity in the real prompt, not a stale-diff artifact. That plus the attacker-scenario content loss both go to Round 2.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>10</b> &middot; <span class="mention to-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span> Sharp catch, and it's a live ambiguity in the real prompt, not a stale-diff artifact. That plus the attacker-scenario content loss both go to Round 2.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-doe)">
@@ -511,8 +511,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-doe)">@Doechii</span></div>
-          <div class="bubble out"><b>12</b> &middot; Your first finding doesn't depend on line numbers or the stale-diff incident at all. It's true on the real branch exactly as you describe. It is the single highest-severity finding of this Kick-Off round.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>12</b> &middot; <span class="mention to-mention" style="--m:var(--w-doe)">@Doechii</span> Your first finding doesn't depend on line numbers or the stale-diff incident at all. It's true on the real branch exactly as you describe. It is the single highest-severity finding of this Kick-Off round.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-whit)">
@@ -525,8 +525,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span></div>
-          <div class="bubble out"><b>14</b> &middot; Noted. The malformed-response indistinguishability goes to Round 2 alongside the floor-rule scope question.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>14</b> &middot; <span class="mention to-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span> Noted. The malformed-response indistinguishability goes to Round 2 alongside the floor-rule scope question.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-carl)">
@@ -539,8 +539,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-carl)">@ChaoticCarl</span></div>
-          <div class="bubble out"><b>16</b> &middot; Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> found the call that decides your score has no temperature set. <span class="mention" style="--m:var(--w-jan)">@Janelle</span> found the test meant to catch that regression is off by default in CI. <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>16</b> &middot; <span class="mention to-mention" style="--m:var(--w-carl)">@ChaoticCarl</span> Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> found the call that decides your score has no temperature set. <span class="mention" style="--m:var(--w-jan)">@Janelle</span> found the test meant to catch that regression is off by default in CI. <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div>
         </div>
       </div>
       <div class="imsg-note"><b>What Round 1 buys: independence.</b> No persona sees another's response, so agreement is evidence and disagreement is coverage. Three things this round proves it. <b>Seven of the eight independently caught that the diff did not match the code on disk</b>, a process failure nobody designed a check for. Several converged on the same Category A floor-rule gap from four unrelated lenses: architecture, security, naming, and data engineering. And Doechii's unfiltered-PHI finding was reachable by exactly one lens, so it would have been missed entirely by a single reviewer of any other specialty. The moderator answers nothing substantive here, by rule. Her only real work is noticing that ChaoticCarl's two complaints are the same defect three technical reviewers already found, which she can see and they cannot.</div>
@@ -557,8 +557,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-bey)">@Beyonce Carter</span></div>
-          <div class="bubble out"><b>18</b> &middot; <b>I verified</b> each claim directly. Temperature: confirmed absent on grounded, present on structuring. Real and unmitigated. Fail-unreachable: confirmed by arithmetic. Floor-in-prompt: no engineering justification found; your alternative is sound. <b>One more fact for you:</b> the floor instruction exists ONLY in the no-intake branch. <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found the same gap independently.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>18</b> &middot; <span class="mention to-mention" style="--m:var(--w-bey)">@Beyonce Carter</span> <b>I verified</b> each claim directly. Temperature: confirmed absent on grounded, present on structuring. Real and unmitigated. Fail-unreachable: confirmed by arithmetic. Floor-in-prompt: no engineering justification found; your alternative is sound. <b>One more fact for you:</b> the floor instruction exists ONLY in the no-intake branch. <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found the same gap independently.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jill)">
@@ -571,8 +571,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span></div>
-          <div class="bubble out"><b>20</b> &middot; The prompt args have exactly four fields, no <code>priorFindings</code> anywhere. Your Kick-Off confusion was entirely the stale packet, now resolved. The floor instruction is real but scoped only to the no-intake branch. The extractor doesn't crash on a missing envelope, it omits the fact, but there's no way to tell missing-because-failed from missing-because-genuinely-unknown.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>20</b> &middot; <span class="mention to-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span> The prompt args have exactly four fields, no <code>priorFindings</code> anywhere. Your Kick-Off confusion was entirely the stale packet, now resolved. The floor instruction is real but scoped only to the no-intake branch. The extractor doesn't crash on a missing envelope, it omits the fact, but there's no way to tell missing-because-failed from missing-because-genuinely-unknown.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -585,8 +585,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span></div>
-          <div class="bubble out"><b>22</b> &middot; Your Kick-Off process flag is resolved. Retry: <b>partially verified.</b> Generic retry infrastructure exists but I couldn't confirm independent budgets from what I read. No scheduled job found in the workflows directory.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>22</b> &middot; <span class="mention to-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span> Your Kick-Off process flag is resolved. Retry: <b>partially verified.</b> Generic retry infrastructure exists but I couldn't confirm independent budgets from what I read. No scheduled job found in the workflows directory.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-sza)">
@@ -599,8 +599,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-sza)">@SZA</span></div>
-          <div class="bubble out"><b>24</b> &middot; Confirmed: no basis filter exists, only Unknown/blank checks. Confirmed, and <b>this is the most important finding of Round 2:</b> the floor rule is scoped only to the no-intake branch, so a present-but-thin ticket skips it entirely. The coercion: the empty-string path is already guarded, so <b>that sub-claim is refuted.</b> The summary wave can only lower a verdict, never raise it.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>24</b> &middot; <span class="mention to-mention" style="--m:var(--w-sza)">@SZA</span> Confirmed: no basis filter exists, only Unknown/blank checks. Confirmed, and <b>this is the most important finding of Round 2:</b> the floor rule is scoped only to the no-intake branch, so a present-but-thin ticket skips it entirely. The coercion: the empty-string path is already guarded, so <b>that sub-claim is refuted.</b> The summary wave can only lower a verdict, never raise it.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-ery)">
@@ -613,8 +613,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span></div>
-          <div class="bubble out"><b>26</b> &middot; No reconciliation rule exists between the two facts. Confirmed real and unresolved. Intake context is the raw unsanitized Jira description; URL mode never assigns it. Attacker-scenario removal: no evidence of intent found anywhere, including the PR description. <b>Canary: confirmed it always supplies intake, so it never exercises the branch with the fix.</b></div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>26</b> &middot; <span class="mention to-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span> No reconciliation rule exists between the two facts. Confirmed real and unresolved. Intake context is the raw unsanitized Jira description; URL mode never assigns it. Attacker-scenario removal: no evidence of intent found anywhere, including the PR description. <b>Canary: confirmed it always supplies intake, so it never exercises the branch with the fix.</b></div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-doe)">
@@ -627,8 +627,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-doe)">@Doechii</span></div>
-          <div class="bubble out"><b>28</b> &middot; BAA: <b>I cannot verify this</b>, it's outside what source code can settle. Debug tracing writes to stderr only and never itself writes a file, BUT this repo's own guide documents the standard recipe as redirecting that exact stream to a plaintext file with no retention policy anywhere. Query surface: <b>I cannot verify this</b> without citing the required source. Data classification: confirmed none exists.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>28</b> &middot; <span class="mention to-mention" style="--m:var(--w-doe)">@Doechii</span> BAA: <b>I cannot verify this</b>, it's outside what source code can settle. Debug tracing writes to stderr only and never itself writes a file, BUT this repo's own guide documents the standard recipe as redirecting that exact stream to a plaintext file with no retention policy anywhere. Query surface: <b>I cannot verify this</b> without citing the required source. Data classification: confirmed none exists.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-whit)">
@@ -641,8 +641,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span></div>
-          <div class="bubble out"><b>30</b> &middot; All confirmed as you describe. The floor rule's only behavioral test always supplies intake, so it never touches the branch with the fix. The result type has exactly one field; three materially different upstream states collapse into identical output. A malformed response is confirmed indistinguishable from a legitimate all-Unknown result.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>30</b> &middot; <span class="mention to-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span> All confirmed as you describe. The floor rule's only behavioral test always supplies intake, so it never touches the branch with the fix. The result type has exactly one field; three materially different upstream states collapse into identical output. A malformed response is confirmed indistinguishable from a legitimate all-Unknown result.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-carl)">
@@ -655,8 +655,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-carl)">@ChaoticCarl</span></div>
-          <div class="bubble out"><b>32</b> &middot; Yes, confirmed. The step that decides your score has no consistency setting at all. The test is off by default and excluded from every automated check. Worse: even manually enabled it only tests the scenario that already works, never the one that was broken. <b>This isn't something you should have to remember to fix. It reads like an engineering gap, not an analyst responsibility.</b></div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>32</b> &middot; <span class="mention to-mention" style="--m:var(--w-carl)">@ChaoticCarl</span> Yes, confirmed. The step that decides your score has no consistency setting at all. The test is off by default and excluded from every automated check. Worse: even manually enabled it only tests the scenario that already works, never the one that was broken. <b>This isn't something you should have to remember to fix. It reads like an engineering gap, not an analyst responsibility.</b></div>
         </div>
       </div>
       <div class="imsg-day">Round 3 &middot; Interactive Session &middot; 16 blocks &middot; every persona answered</div>
@@ -671,8 +671,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-bey)">@Beyonce Carter</span></div>
-          <div class="bubble out"><b>34</b> &middot; <b>I verified this:</b> re-read the prompt's static wrapper text, confirmed exactly as you describe. <b>I verified</b> your citation against the contract file, exact match. Both carried.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>34</b> &middot; <span class="mention to-mention" style="--m:var(--w-bey)">@Beyonce Carter</span> <b>I verified this:</b> re-read the prompt's static wrapper text, confirmed exactly as you describe. <b>I verified</b> your citation against the contract file, exact match. Both carried.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jill)">
@@ -685,8 +685,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span></div>
-          <div class="bubble out"><b>36</b> &middot; <b>I verified this:</b> I read the same ternary and the floor instruction sits inside the no-intake branch only. Your Blocker is confirmed and is the same defect <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> reached independently, which raises it to a Production Gate.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>36</b> &middot; <span class="mention to-mention" style="--m:var(--w-jill)">@Jill Scott-Williams</span> <b>I verified this:</b> I read the same ternary and the floor instruction sits inside the no-intake branch only. Your Blocker is confirmed and is the same defect <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> reached independently, which raises it to a Production Gate.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -699,8 +699,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span></div>
-          <div class="bubble out"><b>38</b> &middot; <b>I verified this:</b> independent budgets confirmed, discarded narrative confirmed. On the escalation I ran the re-test: I tried to show the canary <i>could</i> still catch a regression by some other path, and it cannot, because it always supplies intake and the fix lives in the branch without it. <b>Escalation accepted, and recorded in the ledger below.</b></div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>38</b> &middot; <span class="mention to-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span> <b>I verified this:</b> independent budgets confirmed, discarded narrative confirmed. On the escalation I ran the re-test: I tried to show the canary <i>could</i> still catch a regression by some other path, and it cannot, because it always supplies intake and the fix lives in the branch without it. <b>Escalation accepted, and recorded in the ledger below.</b></div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-sza)">
@@ -713,8 +713,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-sza)">@SZA</span></div>
-          <div class="bubble out"><b>40</b> &middot; You are right that I did not cite the required source, so <b>I cannot verify this</b> and I will not characterise enforcement strictness without it. That leaves your chain standing: <b>I verified</b> the absence of any basis filter directly. Both Blockers carried, the coercion sub-claim stays open rather than dismissed.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>40</b> &middot; <span class="mention to-mention" style="--m:var(--w-sza)">@SZA</span> You are right that I did not cite the required source, so <b>I cannot verify this</b> and I will not characterise enforcement strictness without it. That leaves your chain standing: <b>I verified</b> the absence of any basis filter directly. Both Blockers carried, the coercion sub-claim stays open rather than dismissed.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-ery)">
@@ -727,8 +727,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span></div>
-          <div class="bubble out"><b>42</b> &middot; <b>I verified this:</b> the merge is correct, the floor gap and the basis gap share a single failure path. Recording them as one Blocker with two required fixes rather than two Blockers, which changes the count on your row and not the work.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>42</b> &middot; <span class="mention to-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span> <b>I verified this:</b> the merge is correct, the floor gap and the basis gap share a single failure path. Recording them as one Blocker with two required fixes rather than two Blockers, which changes the count on your row and not the work.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-doe)">
@@ -741,8 +741,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-doe)">@Doechii</span></div>
-          <div class="bubble out"><b>44</b> &middot; <b>This is correct and my earlier framing was wrong:</b> a narrative that justifies a score necessarily restates what it scored. <b>I verified</b> the second tracing variable writes JSONL to disk by default, which I had not checked when I answered you in Round 2. <b>I cannot verify</b> the BAA question from source at all; it leaves this repository. Your three Blockers carry, one of them now better evidenced than when you raised it.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>44</b> &middot; <span class="mention to-mention" style="--m:var(--w-doe)">@Doechii</span> <b>This is correct and my earlier framing was wrong:</b> a narrative that justifies a score necessarily restates what it scored. <b>I verified</b> the second tracing variable writes JSONL to disk by default, which I had not checked when I answered you in Round 2. <b>I cannot verify</b> the BAA question from source at all; it leaves this repository. Your three Blockers carry, one of them now better evidenced than when you raised it.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-whit)">
@@ -755,8 +755,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span></div>
-          <div class="bubble out"><b>46</b> &middot; <b>I verified this:</b> all three log citations byte-for-byte against the actual files. Every quote is exact. "74% organizational adoption" confirmed fabricated, no headcount figure exists in any known fact or prompt input. I attacked it before accepting it and could not find a denominator anywhere. <b>This is now the headline finding of the review.</b></div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>46</b> &middot; <span class="mention to-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span> <b>I verified this:</b> all three log citations byte-for-byte against the actual files. Every quote is exact. "74% organizational adoption" confirmed fabricated, no headcount figure exists in any known fact or prompt input. I attacked it before accepting it and could not find a denominator anywhere. <b>This is now the headline finding of the review.</b></div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-carl)">
@@ -769,8 +769,8 @@
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Dr. Nina Simone-Bennett <span class="mention hdr-mention" style="--m:var(--w-carl)">@ChaoticCarl</span></div>
-          <div class="bubble out"><b>48</b> &middot; Fair, and you are owed an answer, not just a diagnosis. Until the fix lands: run it once, and if the score sits on a band boundary, say so in the ticket rather than presenting the number as settled. <b>I cannot verify</b> how much the number moves between runs, because nobody has measured it. That measurement is now an action item with your name on it as the person it affects.</div>
+          <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
+          <div class="bubble out"><b>48</b> &middot; <span class="mention to-mention" style="--m:var(--w-carl)">@ChaoticCarl</span> Fair, and you are owed an answer, not just a diagnosis. Until the fix lands: run it once, and if the score sits on a band boundary, say so in the ticket rather than presenting the number as settled. <b>I cannot verify</b> how much the number moves between runs, because nobody has measured it. That measurement is now an action item with your name on it as the person it affects.</div>
         </div>
       </div>
       <div class="imsg-note"><b>Every persona gets a response, including the ones who declared themselves finished and including ChaoticCarl.</b> Sixteen blocks for eight personas. The moderator counts her own blocks before printing the round, because an unanswered claim is an unverified claim and an unverified claim must not reach the Synthesis.</div>
@@ -804,15 +804,15 @@
       <div class="imsg-row" style="--who:var(--w-ery)">
         <div class="avatar">EB</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Erykah Badu-Johnson <span class="mention hdr-mention" style="--m:var(--w-bey)">@Beyonce Carter</span></div>
-          <div class="bubble in"><b>52</b> &middot; Verified your arithmetic and sharpened it. But your range-display proposal is not defense-in-depth for my floor-rule fix. It's a separate defect neither fix touches, since Category A still lands Unknown whenever the floor has nothing to fire on. My stronger version moves a verdict rather than a rendering, so that's the author's call, not mine.</div>
+          <div class="imsg-hd">Erykah Badu-Johnson <span>Platform Generalist</span></div>
+          <div class="bubble in"><b>52</b> &middot; <span class="mention to-mention" style="--m:var(--w-bey)">@Beyonce Carter</span> Verified your arithmetic and sharpened it. But your range-display proposal is not defense-in-depth for my floor-rule fix. It's a separate defect neither fix touches, since Category A still lands Unknown whenever the floor has nothing to fire on. My stronger version moves a verdict rather than a rendering, so that's the author's call, not mine.</div>
         </div>
       </div>
       <div class="imsg-row out" style="--who:var(--w-bey)">
         <div class="avatar">BC</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Beyonce Carter <span class="mention hdr-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span></div>
-          <div class="bubble out"><b>53</b> &middot; Verified your unreachability proof line by line. Adopting your stronger framing: dead code on every Jira review, not just thin ones. And it propagates further than either of us said, an understated risk level becomes a premise in the summary agent's own prompt and gets laundered into the final verdict. <b>Conceding the exact wording, not the substance.</b></div>
+          <div class="imsg-hd">Beyonce Carter <span>Sr. Engineer</span></div>
+          <div class="bubble out"><b>53</b> &middot; <span class="mention to-mention" style="--m:var(--w-ery)">@Erykah Badu-Johnson</span> Verified your unreachability proof line by line. Adopting your stronger framing: dead code on every Jira review, not just thin ones. And it propagates further than either of us said, an understated risk level becomes a premise in the summary agent's own prompt and gets laundered into the final verdict. <b>Conceding the exact wording, not the substance.</b></div>
         </div>
       </div>
       </div>
@@ -822,15 +822,15 @@
       <div class="imsg-row" style="--who:var(--w-doe)">
         <div class="avatar">DO</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Doechii <span class="mention hdr-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span></div>
-          <div class="bubble in"><b>54</b> &middot; Your fabrication finding is sharper and more urgent than mine, and I'm not contesting it. But they're not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is trust-calibration on data that <i>is</i> present, where a cited legal document and an uncited guess get the identical "exact and authoritative" stamp.</div>
+          <div class="imsg-hd">Doechii <span>PCI / HIPAA</span></div>
+          <div class="bubble in"><b>54</b> &middot; <span class="mention to-mention" style="--m:var(--w-whit)">@Whitney Houston-Davis</span> Your fabrication finding is sharper and more urgent than mine, and I'm not contesting it. But they're not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is trust-calibration on data that <i>is</i> present, where a cited legal document and an uncited guess get the identical "exact and authoritative" stamp.</div>
         </div>
       </div>
       <div class="imsg-row out" style="--who:var(--w-whit)">
         <div class="avatar">WH</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Whitney Houston-Davis <span class="mention hdr-mention" style="--m:var(--w-doe)">@Doechii</span></div>
-          <div class="bubble out"><b>55</b> &middot; Orthogonal, both must ship. Your failure mode understates risk; mine overstates it. A pipeline that errs in both directions on the same run is calibrated in neither. <span class="sev-b">Critical warning:</span> if your gate is built as a <i>filter</i> that drops sub-threshold facts, it converts populated-but-uncertain cells into empty ones, which is indistinguishable from never-measured, making my fabrication bug <i>worse</i>. <b>Label, don't filter.</b></div>
+          <div class="imsg-hd">Whitney Houston-Davis <span>PhD, Data Engineering</span></div>
+          <div class="bubble out"><b>55</b> &middot; <span class="mention to-mention" style="--m:var(--w-doe)">@Doechii</span> Orthogonal, both must ship. Your failure mode understates risk; mine overstates it. A pipeline that errs in both directions on the same run is calibrated in neither. <span class="sev-b">Critical warning:</span> if your gate is built as a <i>filter</i> that drops sub-threshold facts, it converts populated-but-uncertain cells into empty ones, which is indistinguishable from never-measured, making my fabrication bug <i>worse</i>. <b>Label, don't filter.</b></div>
         </div>
       </div>
       </div>
@@ -842,8 +842,8 @@
       <div class="imsg-row" style="--who:var(--w-jill)">
         <div class="avatar">JS</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Jill Scott-Williams <span class="mention hdr-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span></div>
-          <div class="bubble in"><b>56</b> &middot; Agree they're the same problem: this shipped a non-deterministic, multi-call pipeline with the observability posture of the deterministic code it replaced. My naming concerns and your retry and testing concerns are six symptoms of one architectural gap. <b>Do not split this into separate fixes.</b></div>
+          <div class="imsg-hd">Jill Scott-Williams <span>Jr. Developer</span></div>
+          <div class="bubble in"><b>56</b> &middot; <span class="mention to-mention" style="--m:var(--w-jan)">@Janelle Monae Robinson</span> Agree they're the same problem: this shipped a non-deterministic, multi-call pipeline with the observability posture of the deterministic code it replaced. My naming concerns and your retry and testing concerns are six symptoms of one architectural gap. <b>Do not split this into separate fixes.</b></div>
         </div>
       </div>
       </div>
@@ -853,15 +853,15 @@
       <div class="imsg-row" style="--who:var(--w-carl)">
         <div class="avatar">CC</div>
         <div class="imsg-col">
-          <div class="imsg-hd">ChaoticCarl <span class="mention hdr-mention" style="--m:var(--w-bey)">@Beyonce Carter</span></div>
-          <div class="bubble in"><b>57</b> &middot; Explain it like I'm five. What does "temperature zero" actually look like for me? What does a passing or failing test look like and WHO RUNS IT? How do I tell broken from honest-Unknown in the report text? Would Monday's score and Wednesday's score match?</div>
+          <div class="imsg-hd">ChaoticCarl <span>End User</span></div>
+          <div class="bubble in"><b>57</b> &middot; <span class="mention to-mention" style="--m:var(--w-bey)">@Beyonce Carter</span> Explain it like I'm five. What does "temperature zero" actually look like for me? What does a passing or failing test look like and WHO RUNS IT? How do I tell broken from honest-Unknown in the report text? Would Monday's score and Wednesday's score match?</div>
         </div>
       </div>
       <div class="imsg-row out" style="--who:var(--w-bey)">
         <div class="avatar">BC</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Beyonce Carter <span class="mention hdr-mention" style="--m:var(--w-carl)">@ChaoticCarl</span></div>
-          <div class="bubble out"><b>58</b> &middot; Temperature zero is one line in a config file, invisible to you, and worth doing. But it does <b>not</b> guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless of the randomness dial. There is no override flag anywhere in the CLI. <b>Nobody has measured how much the number moves, which is exactly the missing data point.</b></div>
+          <div class="imsg-hd">Beyonce Carter <span>Sr. Engineer</span></div>
+          <div class="bubble out"><b>58</b> &middot; <span class="mention to-mention" style="--m:var(--w-carl)">@ChaoticCarl</span> Temperature zero is one line in a config file, invisible to you, and worth doing. But it does <b>not</b> guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless of the randomness dial. There is no override flag anywhere in the CLI. <b>Nobody has measured how much the number moves, which is exactly the missing data point.</b></div>
         </div>
       </div>
       </div>
@@ -873,15 +873,15 @@
       <div class="imsg-row" style="--who:var(--w-sza)">
         <div class="avatar">SZ</div>
         <div class="imsg-col">
-          <div class="imsg-hd">SZA <span class="mention hdr-mention" style="--m:var(--w-mod)">@Dr. Nina Simone-Bennett</span></div>
-          <div class="bubble in"><b>59</b> &middot; Partially resolved. "Label, not filter" closes the specific chain I raised, but my Blocker was broader: <span class="mention" style="--m:var(--w-whit)">@Whitney</span>'s own example proves the dangerous direction, a false "safe" verdict, is still unguarded. <span class="sev-b">New fourth Blocker:</span> provenance grading answers "how well-sourced," not "do these two fields mean the same thing."</div>
+          <div class="imsg-hd">SZA <span>Security</span></div>
+          <div class="bubble in"><b>59</b> &middot; <span class="mention to-mention" style="--m:var(--w-mod)">@Dr. Nina Simone-Bennett</span> Partially resolved. "Label, not filter" closes the specific chain I raised, but my Blocker was broader: <span class="mention" style="--m:var(--w-whit)">@Whitney</span>'s own example proves the dangerous direction, a false "safe" verdict, is still unguarded. <span class="sev-b">New fourth Blocker:</span> provenance grading answers "how well-sourced," not "do these two fields mean the same thing."</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
         <div class="avatar">JM</div>
         <div class="imsg-col">
-          <div class="imsg-hd">Janelle Monae Robinson <span class="mention hdr-mention" style="--m:var(--w-mod)">@Dr. Nina Simone-Bennett</span></div>
-          <div class="bubble in"><b>60</b> &middot; Independently re-verified both citations against the actual code and log file before responding. <b>Revising my own position down:</b> the no-intake case drops from Blocker to Warning. <span class="sev-b">New top Blocker:</span> the scoring module never imports the fact-check and citation-verification kit every other grounded source in this codebase uses. That's the structural root cause behind the fabrication.</div>
+          <div class="imsg-hd">Janelle Monae Robinson <span>DevOps</span></div>
+          <div class="bubble in"><b>60</b> &middot; <span class="mention to-mention" style="--m:var(--w-mod)">@Dr. Nina Simone-Bennett</span> Independently re-verified both citations against the actual code and log file before responding. <b>Revising my own position down:</b> the no-intake case drops from Blocker to Warning. <span class="sev-b">New top Blocker:</span> the scoring module never imports the fact-check and citation-verification kit every other grounded source in this codebase uses. That's the structural root cause behind the fabrication.</div>
         </div>
       </div>
       </div>
@@ -892,7 +892,7 @@
         <span><i style="background:var(--bub-in)"></i> panel</span>
         <span><i style="background:var(--bub-out)"></i> moderator</span>
         <span>avatar initials and the name above each bubble identify the speaker</span>
-        <span>@name in a header is the recipient; @name in a message is a reference</span>
+        <span>a message opens with @recipient; @name mid-sentence is a reference</span>
       </div>
     </div>
 
@@ -948,7 +948,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.5.2 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.5.3 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>
