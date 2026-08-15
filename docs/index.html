@@ -194,7 +194,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.4.1 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.4.2 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -525,7 +525,7 @@
           <div class="bubble out"><b>16</b> &middot; Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. Beyonce found the call that decides your score has no temperature set. Janelle found the test meant to catch that regression is off by default in CI. Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div>
         </div>
       </div>
-      <div class="imsg-note">The moderator answers nothing substantive here, which is the phase rule. Her only real work is connecting a non-technical complaint to three independent technical findings, which no persona could have done, because none of them saw the others' responses.</div>
+      <div class="imsg-note"><b>What Round 1 buys: independence.</b> No persona sees another's response, so agreement is evidence and disagreement is coverage. Three things this round proves it. <b>Seven of the eight independently caught that the diff did not match the code on disk</b>, a process failure nobody designed a check for. Several converged on the same Category A floor-rule gap from four unrelated lenses: architecture, security, naming, and data engineering. And Doechii's unfiltered-PHI finding was reachable by exactly one lens, so it would have been missed entirely by a single reviewer of any other specialty. The moderator answers nothing substantive here, by rule. Her only real work is noticing that ChaoticCarl's two complaints are the same defect three technical reviewers already found, which she can see and they cannot.</div>
 
       <div class="imsg-day">Round 2 &middot; Clarifying Questions &middot; 16 turns &middot; every answer is verified, refused, or refuted</div>
 
@@ -866,7 +866,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.4.1 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.4.2 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>

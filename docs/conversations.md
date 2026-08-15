@@ -210,9 +210,21 @@ meetings, does not read TypeScript, and needs the report to survive Legal.
 > Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not
 > trust it yet.
 
-**What to notice about Round 1.** The moderator answers nothing substantive, which is the phase rule. Her
-only real work is connecting a non-technical complaint to three independent technical findings, which no
-persona could have done, because none of them saw the others' responses.
+**What Round 1 buys: independence.** No persona sees another's response, so agreement is evidence and
+disagreement is coverage. Three things in this round prove it.
+
+- **Seven of the eight independently caught that the diff did not match the code on disk.** No check was
+  designed to detect that; redundancy found it. Each of them reached it differently: Beyonce built a
+  six-row comparison table, Janelle grepped the working tree, Erykah built a five-row table of her own,
+  and Jill simply reported that the notes and the diff disagreed and asked which was wrong.
+- **Several converged on the same Category A floor-rule gap from four unrelated lenses**: architecture,
+  security, naming, and data engineering. By Round 2 the moderator can tell Beyonce that SZA, Erykah, and
+  Whitney found it independently, which is worth far more than any one of them asserting it.
+- **Doechii's unfiltered-PHI finding was reachable by exactly one lens.** No other persona's domain would
+  have surfaced it, and a single reviewer of any other specialty would have missed it entirely.
+
+The moderator answers nothing substantive, by rule. Her only real work is noticing that ChaoticCarl's two
+complaints are the same defect three technical reviewers already found, which she can see and they cannot.
 
 ---
 
