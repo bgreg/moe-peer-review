@@ -182,6 +182,12 @@
   }
   .xch-hd b { color:var(--ink-soft); font-weight:600; }
 
+  .mention {
+    font-weight:700; color:var(--m,var(--accent)); background:color-mix(in srgb, var(--m,var(--accent)) 12%, transparent);
+    padding:0 3px; border-radius:4px; white-space:nowrap;
+  }
+  .bubble.out .mention { color:#fff; background:rgba(255,255,255,.22); }
+
   .unanswered {
     font-family:var(--f-mono); font-size:10px; letter-spacing:.04em; color:var(--crit);
     margin:4px 0 0 4px; display:flex; align-items:center; gap:5px;
@@ -200,7 +206,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.5.0 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.5.1 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -435,7 +441,7 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>&rarr; Beyonce Carter</span></div>
-          <div class="bubble out"><b>2</b> &middot; Noted, Beyonce. The stale-packet catch and the temperature finding both go straight to Round 2.</div>
+          <div class="bubble out"><b>2</b> &middot; Noted, <span class="mention" style="--m:var(--w-bey)">@Beyonce</span>. The stale-packet catch and the temperature finding both go straight to Round 2.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jill)">
@@ -463,7 +469,7 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>&rarr; Janelle Monae Robinson</span></div>
-          <div class="bubble out"><b>6</b> &middot; The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both central for Round 2. They connect directly to what Beyonce and Whitney found too.</div>
+          <div class="bubble out"><b>6</b> &middot; The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both central for Round 2. They connect directly to what <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found too.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-sza)">
@@ -533,7 +539,7 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>&rarr; ChaoticCarl</span></div>
-          <div class="bubble out"><b>16</b> &middot; Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. Beyonce found the call that decides your score has no temperature set. Janelle found the test meant to catch that regression is off by default in CI. Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div>
+          <div class="bubble out"><b>16</b> &middot; Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> found the call that decides your score has no temperature set. <span class="mention" style="--m:var(--w-jan)">@Janelle</span> found the test meant to catch that regression is off by default in CI. <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div>
         </div>
       </div>
       <div class="imsg-note"><b>What Round 1 buys: independence.</b> No persona sees another's response, so agreement is evidence and disagreement is coverage. Three things this round proves it. <b>Seven of the eight independently caught that the diff did not match the code on disk</b>, a process failure nobody designed a check for. Several converged on the same Category A floor-rule gap from four unrelated lenses: architecture, security, naming, and data engineering. And Doechii's unfiltered-PHI finding was reachable by exactly one lens, so it would have been missed entirely by a single reviewer of any other specialty. The moderator answers nothing substantive here, by rule. Her only real work is noticing that ChaoticCarl's two complaints are the same defect three technical reviewers already found, which she can see and they cannot.</div>
@@ -551,7 +557,7 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>&rarr; Beyonce Carter</span></div>
-          <div class="bubble out"><b>18</b> &middot; <b>I verified</b> each claim directly. Temperature: confirmed absent on grounded, present on structuring. Real and unmitigated. Fail-unreachable: confirmed by arithmetic. Floor-in-prompt: no engineering justification found; your alternative is sound. <b>One more fact for you:</b> the floor instruction exists ONLY in the no-intake branch. SZA, Erykah and Whitney found the same gap independently.</div>
+          <div class="bubble out"><b>18</b> &middot; <b>I verified</b> each claim directly. Temperature: confirmed absent on grounded, present on structuring. Real and unmitigated. Fail-unreachable: confirmed by arithmetic. Floor-in-prompt: no engineering justification found; your alternative is sound. <b>One more fact for you:</b> the floor instruction exists ONLY in the no-intake branch. <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> found the same gap independently.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jill)">
@@ -679,7 +685,7 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>&rarr; Jill Scott-Williams</span></div>
-          <div class="bubble out"><b>36</b> &middot; <b>I verified this:</b> I read the same ternary and the floor instruction sits inside the no-intake branch only. Your Blocker is confirmed and is the same defect SZA, Erykah and Whitney reached independently, which raises it to a Production Gate.</div>
+          <div class="bubble out"><b>36</b> &middot; <b>I verified this:</b> I read the same ternary and the floor instruction sits inside the no-intake branch only. Your Blocker is confirmed and is the same defect <span class="mention" style="--m:var(--w-sza)">@SZA</span>, <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-whit)">@Whitney</span> reached independently, which raises it to a Production Gate.</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -779,14 +785,14 @@
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
-          <div class="bubble out"><b>50</b> &middot; <b>Consensus Ledger.</b> Converged: Erykah and Beyonce reached the same position on the floor rule being dead code on every Jira review. Resolved: Doechii conceded the fabrication finding is more urgent than hers; not conceded, that they share a root cause. <b>No consensus:</b> SZA holds that a favourable band on uncorroborated evidence must be capped; I hold that the evidence supports labelling rather than capping. Neither conceded. Both positions carried to Synthesis.</div>
+          <div class="bubble out"><b>50</b> &middot; <b>Consensus Ledger.</b> Converged: <span class="mention" style="--m:var(--w-ery)">@Erykah</span> and <span class="mention" style="--m:var(--w-bey)">@Beyonce</span> reached the same position on the floor rule being dead code on every Jira review. Resolved: <span class="mention" style="--m:var(--w-doe)">@Doechii</span> conceded the fabrication finding is more urgent than hers; not conceded, that they share a root cause. <b>No consensus:</b> <span class="mention" style="--m:var(--w-sza)">@SZA</span> holds that a favourable band on uncorroborated evidence must be capped; I hold that the evidence supports labelling rather than capping. Neither conceded. Both positions carried to Synthesis.</div>
         </div>
       </div>
       <div class="imsg-row out" style="--who:var(--w-mod)">
         <div class="avatar">NB</div>
         <div class="imsg-col">
           <div class="imsg-hd">Dr. Nina Simone-Bennett <span>Moderator</span></div>
-          <div class="bubble out"><b>51</b> &middot; <b>Self-check before The Huddle.</b> Did I reject any claim this round? <b>Yes.</b> I refuted the <code>Number("")</code> sub-claim, since the empty-string path is already guarded. I also reversed myself once, on the tracing question Doechii raised, after checking something I had answered without checking. Claims were confirmed, refuted, and in one case corrected against me.</div>
+          <div class="bubble out"><b>51</b> &middot; <b>Self-check before The Huddle.</b> Did I reject any claim this round? <b>Yes.</b> I refuted the <code>Number("")</code> sub-claim, since the empty-string path is already guarded. I also reversed myself once, on the tracing question <span class="mention" style="--m:var(--w-doe)">@Doechii</span> raised, after checking something I had answered without checking. Claims were confirmed, refuted, and in one case corrected against me.</div>
         </div>
       </div>
 
@@ -867,7 +873,7 @@
         <div class="avatar">SZ</div>
         <div class="imsg-col">
           <div class="imsg-hd">SZA <span>&rarr; Dr. Nina Simone-Bennett</span></div>
-          <div class="bubble in"><b>59</b> &middot; Partially resolved. "Label, not filter" closes the specific chain I raised, but my Blocker was broader: Whitney's own example proves the dangerous direction, a false "safe" verdict, is still unguarded. <span class="sev-b">New fourth Blocker:</span> provenance grading answers "how well-sourced," not "do these two fields mean the same thing."</div>
+          <div class="bubble in"><b>59</b> &middot; Partially resolved. "Label, not filter" closes the specific chain I raised, but my Blocker was broader: <span class="mention" style="--m:var(--w-whit)">@Whitney</span>'s own example proves the dangerous direction, a false "safe" verdict, is still unguarded. <span class="sev-b">New fourth Blocker:</span> provenance grading answers "how well-sourced," not "do these two fields mean the same thing."</div>
         </div>
       </div>
       <div class="imsg-row" style="--who:var(--w-jan)">
@@ -941,7 +947,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.5.0 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.5.1 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>

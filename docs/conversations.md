@@ -88,7 +88,7 @@ an API outage.
 
 ### 2 · Dr. Nina Simone-Bennett -> Beyonce Carter
 
-> Noted, Beyonce. The stale-packet catch and the temperature finding both go straight to Round 2.
+> Noted, @Beyonce. The stale-packet catch and the temperature finding both go straight to Round 2.
 
 ### 3 · Jill Scott-Williams
 
@@ -122,7 +122,7 @@ right now it is "someone notices a bad report."
 ### 6 · Dr. Nina Simone-Bennett -> Janelle Monae Robinson
 
 > The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both going to be central
-> in Round 2. They connect directly to what Beyonce and Whitney found too.
+> in Round 2. They connect directly to what @Beyonce and @Whitney found too.
 
 ### 7 · SZA
 
@@ -209,9 +209,9 @@ meetings, does not read TypeScript, and needs the report to survive Legal.
 ### 16 · Dr. Nina Simone-Bennett -> ChaoticCarl
 
 > Your first and last points aren't separate complaints, they're the same worry three technical reviewers
-> found independently from three different angles. Beyonce found the model call that decides your score
-> has no temperature set. Janelle found the test meant to catch that regression is off by default in CI.
-> Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not
+> found independently from three different angles. @Beyonce found the model call that decides your score
+> has no temperature set. @Janelle found the test meant to catch that regression is off by default in CI.
+> @Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not
 > trust it yet.
 
 **What Round 1 buys: independence.** No persona sees another's response, so agreement is evidence and
@@ -250,8 +250,8 @@ unit-tested?
 > Verified each claim directly. Temperature: confirmed absent on grounded, present on structuring, real
 > and unmitigated, no five-run sample (costs API spend). Fail-unreachable: confirmed by arithmetic.
 > Floor-in-prompt: no engineering justification found; your proposed alternative is sound. **One more fact
-> for you:** the floor instruction exists ONLY in the no-intake branch of the prompt ternary. SZA, Erykah,
-> and Whitney independently found the same gap.
+> for you:** the floor instruction exists ONLY in the no-intake branch of the prompt ternary. @SZA, @Erykah,
+> and @Whitney independently found the same gap.
 
 ### 19 · Jill Scott-Williams
 
@@ -386,7 +386,7 @@ unanswered claim is an unverified claim and an unverified claim must not reach t
 ### 36 · Dr. Nina Simone-Bennett -> Jill Scott-Williams
 
 > **I verified this:** I read the same ternary and the floor instruction sits inside the no-intake branch
-> only. Your Blocker is confirmed, and it is the same defect SZA, Erykah and Whitney reached
+> only. Your Blocker is confirmed, and it is the same defect @SZA, @Erykah and @Whitney reached
 > independently, which raises it to a Production Gate.
 
 ### 37 · Janelle Monae Robinson -> Dr. Nina Simone-Bennett
@@ -505,7 +505,7 @@ Printed every round, whether or not there were disagreements.
 ### 51 · Self-check before The Huddle
 
 > Did I reject any claim from any agent this round? **Yes.** I refuted the `Number("")` sub-claim, since
-> the empty-string path is already guarded. I also reversed myself once, on the tracing question Doechii
+> the empty-string path is already guarded. I also reversed myself once, on the tracing question @Doechii
 > raised, after checking something I had answered without checking. Claims were confirmed, refuted, and in
 > one case corrected against me.
 
@@ -595,7 +595,7 @@ trace ended at an unmeasured variable nobody had noticed.
 Responding to the Doechii and Whitney provenance resolution rather than to a peer:
 
 > Partially resolved. The "label, not filter" fix closes the specific chain I raised, but my Blocker as
-> written was broader. Whitney's own example proves the dangerous direction, a false "safe" verdict, is
+> written was broader. @Whitney's own example proves the dangerous direction, a false "safe" verdict, is
 > still unguarded.
 
 Narrows her demand to two concrete options, then adds a **new, distinct fourth Blocker**: provenance
