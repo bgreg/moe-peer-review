@@ -7,6 +7,7 @@
     --accent:#0A5C66; --accent-br:#0E8A96; --accent-wash:#DCEBEC;
     --opus:#8046E0; --sonnet:#008B9A; --haiku:#9A6200;
     --good:#1F7A4D; --warn:#9A6B00; --crit:#B0342A;
+    --imsg-bg:#FFFFFF; --bub-in:#E9E9EB; --bub-out:#0B84FF;
     --f-display:'Avenir Next Condensed','Helvetica Neue Condensed','Arial Narrow','Roboto Condensed',ui-sans-serif,system-ui,sans-serif;
     --f-body:Charter,'Iowan Old Style','Palatino Linotype',Palatino,Georgia,ui-serif,serif;
     --f-mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace;
@@ -19,6 +20,7 @@
       --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
       --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
       --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
+      --imsg-bg:#0A0A0C; --bub-in:#26252A; --bub-out:#0A84FF;
     }
   }
   :root[data-theme="dark"] {
@@ -28,6 +30,7 @@
     --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
     --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
     --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
+    --imsg-bg:#0A0A0C; --bub-in:#26252A; --bub-out:#0A84FF;
   }
 
   * { box-sizing:border-box; }
@@ -137,6 +140,25 @@
 
   footer { border-top:2px solid var(--ink); padding-top:18px; margin-top:36px; font-family:var(--f-mono); font-size:12px; color:var(--ink-faint); line-height:1.7; }
 
+
+  .imsg { background:var(--imsg-bg); border:1px solid var(--rule); border-radius:14px; padding:18px 16px 22px; margin:26px 0; }
+  .imsg-day { text-align:center; font-family:var(--f-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint); margin:26px 0 14px; }
+  .imsg-day:first-child { margin-top:4px; }
+  .imsg-row { display:flex; flex-direction:column; align-items:flex-start; margin-bottom:11px; }
+  .imsg-row.out { align-items:flex-end; }
+  .imsg-name { font-family:var(--f-mono); font-size:10px; letter-spacing:.06em; color:var(--ink-faint); margin:0 0 3px 13px; }
+  .bubble { max-width:80%; padding:9px 14px; border-radius:19px; font-size:15px; line-height:1.42; }
+  .bubble.in { background:var(--bub-in); color:var(--ink); border-bottom-left-radius:5px; }
+  .bubble.out { background:var(--bub-out); color:#fff; border-bottom-right-radius:5px; }
+  .bubble.out b, .bubble.out strong { color:#fff; }
+  .bubble.out code { background:rgba(255,255,255,.18); color:#fff; }
+  .bubble b { font-weight:700; }
+  .bubble .sev-b { color:var(--crit); font-weight:700; }
+  .bubble.out .sev-b { color:#FFD9D4; }
+  .imsg-note { text-align:center; font-size:13.5px; line-height:1.5; color:var(--ink-faint); font-style:italic; margin:16px auto 20px; max-width:78%; }
+  .imsg-turn { font-family:var(--f-mono); font-size:9.5px; color:var(--ink-faint); opacity:.75; margin:0 0 3px 13px; }
+  .imsg-row.out .imsg-turn { margin:0 13px 3px 0; }
+
   @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
   @media (max-width:620px) { body { font-size:16px; padding:0 16px 70px; } .docket dd { font-size:25px; } }
 </style>
@@ -144,7 +166,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.3.2 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.4.0 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -163,7 +185,7 @@
     <a href="#panel">The panel</a>
     <a href="#exec">Execution</a>
     <a href="#phases">Phases</a>
-    <a href="#talk">Conversations</a>
+    <a href="#talk">Every turn</a>
     <a href="#rigor">Rigor</a>
     <a href="#guard">Guardrails</a>
     <a href="../README.md">Repo README</a>
@@ -353,62 +375,138 @@
   </section>
 
   <section id="talk">
-    <div class="sec-head"><span class="sec-num">05</span><h2>What it sounds like</h2></div>
+    <div class="sec-head"><span class="sec-num">05</span><h2>Every turn</h2></div>
     <div class="col">
-      <p>Every phase prints as a first-person, blockquoted chat thread. Third-person narration is banned, because summarizing a persona is exactly how a model quietly drops the specifics. The exchanges below are adapted from a recorded 728-line review, condensed for length.</p>
+      <p>The plugin's own spec asks for output that reads like a group thread, so that is how it is presented here. Below is a complete recorded review: <strong>51 turns</strong> across four rounds, none skipped. Grey bubbles are the panel; blue bubbles are the moderator.</p>
+      <p class="caption">Adapted from a 728-line transcript reviewing a pull request that rebuilt an LLM risk-scoring pipeline. Condensed for length; the substance, severities, and voices are the panel's own.</p>
     </div>
 
-    <div class="thread">
-      <div class="thread-tag">Phase 1 &middot; the moderator confirms receipt and answers nothing</div>
-      <div class="msg">
-        <div class="msg-who">ChaoticCarl <em>(End User, compliance-analyst backstory)</em></div>
-        <blockquote>Category A is still coming back "Unknown" and I can't tell if it's actually fixed. How would I even tell the difference between "actually fixed" and "broken again" from the report alone? And why do I have to deal with AI behavior at all? If I run the same vendor twice and get different scores, how do I explain that to Legal?</blockquote>
-      </div>
-      <div class="msg">
-        <div class="msg-who">Dr. Nina Simone-Bennett -&gt; ChaoticCarl</div>
-        <blockquote>Noted. Your first and last points aren't separate complaints, they're the same worry three technical reviewers found independently from three different angles. Beyonce found the model call that decides your score has no temperature set. Janelle found the test meant to catch that regression is off by default in CI. Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</blockquote>
-      </div>
-    </div>
+    <div class="imsg">
 
-    <div class="thread">
-      <div class="thread-tag">Phase 3 &middot; verify, refuse, or refute &mdash; there is no fourth option</div>
-      <div class="msg">
-        <div class="msg-who">SZA -&gt; Dr. Nina Simone-Bennett</div>
-        <blockquote>An attacker with read access to the job queue could replay a completed payload and overwrite the verdict field. There is no nonce and no idempotency key on that path.</blockquote>
-      </div>
-      <div class="msg">
-        <div class="msg-who">Dr. Nina Simone-Bennett -&gt; SZA</div>
-        <blockquote><b>I cannot verify this:</b> I read the queue consumer and found no nonce, which matches your structural claim. But I could not establish that the verdict field is writable post-completion, since the status guard may block it. Carrying as a Warning, not a Blocker, until the call path is confirmed.</blockquote>
-      </div>
-    </div>
+      <div class="imsg-day">Round 1 · Kick-Off · 16 turns</div>
 
-    <div class="note good">
-      <div class="note-tag">The exchange that justifies the design</div>
-      <p>Two specialists propose fixes that look complementary. The collision reveals that one would break the other, and produces a third design neither had proposed.</p>
-    </div>
+      <div class="imsg-row"><div class="imsg-turn">1</div><div class="imsg-name">Beyonce Carter · Sr. Engineer</div><div class="bubble in">Lead: band selection is now a non-deterministic model call with zero automated regression protection, and the diff I was handed does not match the code on disk. <span class="sev-b">Blocker:</span> the narrative pass never sets <code>temperature</code>, so the same vendor could score 15 on one run and 25 on the next. <span class="sev-b">Blocker:</span> 204 lines of deterministic tests deleted, replaced by a live canary excluded from the test glob.</div></div>
 
-    <div class="thread">
-      <div class="thread-tag">Phase 4 &middot; the moderator is silent; experts collide</div>
-      <div class="msg">
-        <div class="msg-who">Doechii -&gt; Whitney Houston-Davis</div>
-        <blockquote>Your fabrication finding is sharper than mine and I'm not contesting it. But they're not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is trust-calibration on data that <em>is</em> present, where a cited legal document and an uncited guess get the identical "exact and authoritative" stamp.</blockquote>
-      </div>
-      <div class="msg">
-        <div class="msg-who">Whitney Houston-Davis -&gt; Doechii</div>
-        <blockquote>Orthogonal, both must ship. <b>Critical warning:</b> if your gate is built as a <em>filter</em> that drops sub-threshold facts, it converts populated-but-uncertain cells into empty ones, which is indistinguishable from never-measured. That makes my fabrication bug <em>worse</em>, not better. Recommend: label, don't filter. A three-state provenance model as two fields on one type, not two separate patches.</blockquote>
-      </div>
-      <div class="msg">
-        <div class="msg-who">ChaoticCarl -&gt; Beyonce Carter</div>
-        <blockquote>Explain it like I'm five. What does "temperature zero" actually look like for me? What's the override command? And would Monday's score and Wednesday's score match?</blockquote>
-      </div>
-      <div class="msg">
-        <div class="msg-who">Beyonce Carter -&gt; ChaoticCarl</div>
-        <blockquote>Temperature zero is one line in a config file, invisible to you, and worth doing. But it does <b>not</b> guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless of the randomness dial. There is no override flag anywhere in the CLI. Same vendor Monday and Wednesday: no guarantee of an identical number. Nobody has measured how much it moves, which is exactly the missing data point.</blockquote>
-      </div>
+      <div class="imsg-row out"><div class="imsg-turn">2</div><div class="bubble out">Noted, Beyonce. The stale-packet catch and the temperature finding both go straight to Round 2.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">3</div><div class="imsg-name">Jill Scott-Williams · Jr. Developer</div><div class="bubble in">Maybe this is a dumb question, but the context notes say the persona-framing line was removed and I can see it right there in the diff at line 3163. Is the diff stale, or did the fix not land? Also I can't find the schema file, so I can't confirm the response schema constrains <code>points</code> to an enum rather than just asking nicely in prose.</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">4</div><div class="bubble out">You were right to be suspicious. The diff you were handed was genuinely stale, and several of your fellow panelists caught the same thing independently. Your instinct to flag the inconsistency rather than assume you were wrong is exactly right, and it's going in the transcript as a positive example.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">5</div><div class="imsg-name">Janelle Monae Robinson · DevOps</div><div class="bubble in">The failure mode lost its graceful degradation. The old code computed a partial score even when the reasoning call failed; the new code zeroes all four categories on any single failure. The regression test for the just-fixed bug isn't in CI. And what's the rollback plan if the canary starts failing post-merge? Right now it's "someone notices a bad report."</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">6</div><div class="bubble out">The lost-partial-credit finding and the CI-gap-on-a-just-fixed-bug finding are both central for Round 2. They connect directly to what Beyonce and Whitney found too.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">7</div><div class="imsg-name">SZA · Security</div><div class="bubble in">Peer-job answers are labeled "exact and authoritative" to the model, but those facts trace back to grounded research over the vendor's own trust-center pages. <b>A vendor with something to hide has a direct, labeled-as-authoritative channel into the scoring logic.</b> Two of my other findings may be stale-diff artifacts; flagging for re-verification.</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">8</div><div class="bubble out">Findings one and two are stale-diff artifacts, but we'll re-verify formally rather than take my word for it. Your third is a real, still-open finding on the actual code. That goes straight into the Interactive Session.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">9</div><div class="imsg-name">Erykah Badu-Johnson · Platform Generalist</div><div class="bubble in">Have we considered that two known facts wear the same "regulatory frameworks" name? One is privacy law only; the other mixes certifications with privacy law. The Category A floor rule fires on "the known facts show a privacy regulation" and can't tell which one it's looking at, so a vendor with only SOC 2 and ISO 27001 could trip a privacy-law floor.</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">10</div><div class="bubble out">Sharp catch, and it's a live ambiguity in the real prompt, not a stale-diff artifact. That plus the attacker-scenario content loss both go to Round 2.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">11</div><div class="imsg-name">Doechii · PCI / HIPAA Compliance</div><div class="bubble in">Verbatim PII/PHI-shaped data is injected into an external model prompt with web search enabled. The raw Jira description flows in completely unfiltered, and the PR's own canary uses <i>"employee Social Security numbers and bank account details for payroll processing"</i> as its literal fixture, proving this is the expected real-world shape. Per 45 CFR 164.502(b) and 164.308(b)(1) this requires a signed BAA. <b>Whether one exists determines Blocker versus documentation gap.</b></div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">12</div><div class="bubble out">Your first finding doesn't depend on line numbers or the stale-diff incident at all. It's true on the real branch exactly as you describe. It is the single highest-severity finding of this Kick-Off round.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">13</div><div class="imsg-name">Whitney Houston-Davis · PhD, Data Engineering</div><div class="bubble in">Referential integrity first: no test binds the known-fact answer keys to their producing contracts, so renaming a field upstream silently breaks the Category A floor while every existing test stays green. <span class="sev-b">Blocker:</span> a malformed structuring response yields four clean <code>"Unknown"</code> selections with no error, rendered identically to "the agent looked and found nothing," when the actual event was a transform failure.</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">14</div><div class="bubble out">Noted. The malformed-response indistinguishability goes to Round 2 alongside the floor-rule scope question.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">15</div><div class="imsg-name">ChaoticCarl · End User</div><div class="bubble in">Category A is still coming back "Unknown" and I can't tell if it's actually fixed. How would I even tell "actually fixed" from "broken again" from the report alone? And why do I have to deal with AI behavior at all? If I run the same vendor twice and get different scores, HOW DO I EXPLAIN THAT TO LEGAL?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">16</div><div class="bubble out">Your first and last points aren't separate complaints. They're the same worry three technical reviewers found independently from three different angles. Beyonce found the call that decides your score has no temperature set. Janelle found the test meant to catch that regression is off by default in CI. Whitney found a malformed response renders as a clean "Unknown" with no error. You're not wrong to not trust it yet.</div></div>
+
+      <div class="imsg-note">The moderator answers nothing substantive here, which is the phase rule. Her only real work is connecting a non-technical complaint to three independent technical findings, which no persona could have done, because none of them saw the others' responses.</div>
+
+      <div class="imsg-day">Round 2 · Clarifying Questions · 16 turns</div>
+
+      <div class="imsg-row"><div class="imsg-turn">17</div><div class="imsg-name">Beyonce Carter</div><div class="bubble in">Is the missing <code>temperature</code> a decision or an oversight, and what's the measured band variance across five runs? Why does the Category A floor live in prompt text rather than in code, where it could be unit-tested? Is <code>Fail</code> being unreachable when Category A is Unknown intended?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">18</div><div class="bubble out"><b>I verified</b> each claim directly. Temperature: confirmed absent on grounded, present on structuring. Real and unmitigated. No five-run sample, that costs API spend. Fail-unreachable: confirmed by arithmetic. Floor-in-prompt: no engineering justification found; your alternative is sound. <b>One more fact for you:</b> the floor instruction exists ONLY in the no-intake branch. SZA, Erykah and Whitney found the same gap independently.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">19</div><div class="imsg-name">Jill Scott-Williams</div><div class="bubble in">Is the floor instruction actually in the prompt or just tested for as a placeholder? Does the prompt builder still receive the field the notes said was removed? If both source jobs fail, does Category A silently default to Unknown again? What happens if Call 1 succeeds and Call 2 fails?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">20</div><div class="bubble out">The prompt args have exactly four fields, no <code>priorFindings</code> anywhere. Your Kick-Off confusion was entirely the stale packet, now resolved. The floor instruction is real but scoped only to the no-intake branch. The extractor doesn't crash on a missing envelope, it omits the fact, but there's no way to tell missing-because-failed from missing-because-genuinely-unknown.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">21</div><div class="imsg-name">Janelle Monae Robinson</div><div class="bubble in">Retry configuration on the two-call chain, independent budgets or shared? Is there a scheduled job running the canary or does it only fire by hand? Is a systematic schema-violation problem invisible outside a debug run?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">22</div><div class="bubble out">Your Kick-Off process flag is resolved. Retry: <b>partially verified.</b> Generic retry infrastructure exists but I couldn't confirm independent budgets from what I read. No scheduled job found in the workflows directory.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">23</div><div class="imsg-name">SZA</div><div class="bubble in">Does the extractor gate on citation basis before calling a fact "exact and authoritative"? Does the floor rule apply when intake is present-but-thin, not just absent? Can the numeric coercion be tricked into a false-positive band match? Can the summary wave override this job's conservative verdict upward?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">24</div><div class="bubble out">Confirmed: no basis filter exists, only Unknown/blank checks. Real and unmitigated. Confirmed, and <b>this is the most important finding of Round 2:</b> the floor rule is scoped only to the no-intake branch, so a present-but-thin ticket skips it entirely. The coercion: the empty-string path is already guarded, so <b>that sub-claim is refuted.</b> The summary wave can only lower a verdict, never raise it.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">25</div><div class="imsg-name">Erykah Badu-Johnson</div><div class="bubble in">Which of the two "regulatory frameworks" facts is the floor supposed to fire on? What is the intake context exactly, and does URL mode ever get one? Was removing the attacker-scenario content a confirmed product decision? Does the live canary cover the actual bug branch?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">26</div><div class="bubble out">No reconciliation rule exists between the two facts. Confirmed real and unresolved. Intake context is the raw unsanitized Jira description; URL mode never assigns it. Attacker-scenario removal: no evidence of intent found anywhere, including the PR description. <b>Canary: confirmed it always supplies intake, so it never exercises the branch with the fix.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">27</div><div class="imsg-name">Doechii</div><div class="bubble in">Is there a signed BAA with Google covering this flow? What does the debug tracing do with the narrative, and where does that data land? Is Category B now scored with no persisted audit trail? Is there any mitigation short of disabling the whole feature?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">28</div><div class="bubble out">BAA: <b>I cannot verify this</b>, it's outside what source code can settle. Debug tracing writes to stderr only and never itself writes a file, BUT this repo's own guide documents the standard recipe as redirecting that exact stream to a plaintext file with no retention policy anywhere. Query surface: <b>I cannot verify this</b> without citing the required source. Data classification: confirmed none exists.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">29</div><div class="imsg-name">Whitney Houston-Davis</div><div class="bubble in">Is the floor rule deliberately scoped to the absent-intake branch? What behavioral, not just string-presence, coverage does it have? Should the result type carry an absence channel? Is a malformed response indistinguishable from a genuine all-Unknown verdict?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">30</div><div class="bubble out">All confirmed as you describe. The floor rule's only behavioral test always supplies intake, so it never touches the branch with the fix. The result type has exactly one field; three materially different upstream states collapse into identical output. A malformed response is confirmed indistinguishable from a legitimate all-Unknown result. No throw path exists for it.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">31</div><div class="imsg-name">ChaoticCarl</div><div class="bubble in">If there's no consistency setting, could I run the same review twice and get different scores? Is there a test I'm supposed to run for this bug, and WHY IS IT OFF? How do I know a broken answer from a legitimate "we don't know"? What's my escape hatch if this goes live and gets flaky? Whose job is it to turn the test on?</div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">32</div><div class="bubble out">Yes, confirmed. The step that decides your score has no consistency setting at all. The test is off by default and excluded from every automated check. Worse: even manually enabled it only tests the scenario that already works, never the one that was broken. <b>This isn't something you should have to remember to fix. It reads like an engineering gap, not an analyst responsibility.</b></div></div>
+
+      <div class="imsg-day">Round 3 · Interactive Session · 10 blocks · moderator vs. agent</div>
+
+      <div class="imsg-row"><div class="imsg-turn">33</div><div class="imsg-name">Beyonce Carter</div><div class="bubble in"><b>Escalating:</b> the intake-present branch doesn't just withhold the floor, it actively tells the model that a bare "Vendor URL: X" ticket body <i>is</i> "what data we will share with the vendor," pushing Category A toward the 0 band, the worst possible direction, not toward Unknown. Do not gate the free temperature fix on a paid measurement experiment. <b>Not satisfied, 7 open items.</b></div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">34</div><div class="bubble out"><b>I verified this:</b> re-read the prompt's static wrapper text, confirmed exactly as you describe. <b>I verified</b> your citation against the contract file, exact match.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">35</div><div class="imsg-name">Jill Scott-Williams</div><div class="bubble in">Found it: the floor rule is conditional on absent intake, confirmed by reading the ternary directly. <b>Not satisfied.</b> One Blocker: the floor rule must always apply regardless of intake presence.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">36</div><div class="imsg-name">Janelle Monae Robinson</div><div class="bubble in">Traced the retry chain further than you could: the two calls do get independent budgets, but a second-call failure discards the first call's already-paid-for output with no reuse path. Real API spend wasted every time. <b>Raising this from Warning to Blocker</b>, since the fix for a bug that already reached production once now has a test that structurally cannot detect it regressing. <b>Not satisfied.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">37</div><div class="imsg-name">SZA</div><div class="bubble in">Not accepting "theoretical" framing on the coercion. The repo's own guide requires citing the API skill for any structured-output claim, and nobody has. Merging two findings into one chain: the one case where Category A gets a safety net depends entirely on an unvetted signal. <b>Not satisfied, 2 Blockers.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">38</div><div class="imsg-name">Erykah Badu-Johnson</div><div class="bubble in">These are one finding, not two, and together they compound. I'm not challenging your worst-case-decision or SDK-internals answers; both are legitimately closed or open as stated. <b>Not satisfied, 7 open items across 5 files.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">39</div><div class="imsg-name">Doechii</div><div class="bubble in">Challenging the "one inferential step removed" framing: the model's narrative has to restate the sensitive fact to justify its own score, so logging the narrative isn't meaningfully safer than logging the raw prompt. Also, a second tracing variable was never addressed, only the first was traced. <b>Not satisfied, 3 Blockers. Will not sign off until they close.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">40</div><div class="imsg-name">Whitney Houston-Davis</div><div class="bubble in">Correcting you directly: behavioral evidence for the floor rule DOES exist, in this branch's own artifact directory. A real URL run where the floor fired correctly at exactly the PII band. That sharpens rather than weakens the concern: the path with evidence is the path that already works. <span class="sev-b">New Blocker:</span> the same log shows the model inventing "74% organizational adoption" with no headcount denominator anywhere in the inputs, driving two categories to their combined max and landing the vendor exactly at the Critical threshold. <b>Not satisfied, 5 Blockers.</b></div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">41</div><div class="bubble out"><b>I verified this:</b> all three of your log citations byte-for-byte against the actual files. Every quote is exact. "74% organizational adoption" confirmed fabricated, no headcount figure exists in any known fact or prompt input. <b>This is now the headline finding of the review.</b></div></div>
+
+      <div class="imsg-row out"><div class="imsg-turn">42</div><div class="bubble out"><b>Self-check before The Huddle.</b> Did I reject any claim this round? <b>Yes.</b> I refuted the <code>Number("")</code> sub-claim, since the empty-string path is already guarded, and I declined to characterize structured-output enforcement strictness without citing this repo's required source, correcting Doechii's implicit assumption that logging the narrative is meaningfully safer than logging the prompt. Claims were both confirmed and refuted, not rubber-stamped.</div></div>
+
+      <div class="imsg-note">ChaoticCarl received no turn this round, and only two of seven speaking personas got a reply. Five raised new claims that reached the Synthesis unchallenged. The workflow now states the requirement numerically, 2N blocks for N personas, and tells the moderator to count her own blocks before printing.</div>
+
+      <div class="imsg-day">Round 4 · The Huddle · 9 turns · agent vs. agent</div>
+
+      <div class="imsg-row"><div class="imsg-turn">43</div><div class="imsg-name">Erykah Badu-Johnson → Beyonce Carter</div><div class="bubble in">Verified your arithmetic and sharpened it. But your range-display proposal is not defense-in-depth for my floor-rule fix. It's a separate defect neither fix touches, since Category A still lands Unknown whenever the floor has nothing to fire on. I support it with one refinement, and my stronger version moves a verdict rather than a rendering, so that's the author's call, not mine.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">44</div><div class="imsg-name">Beyonce Carter → Erykah Badu-Johnson</div><div class="bubble in">Verified your unreachability proof line by line. Adopting your stronger framing: dead code on every Jira review, not just thin ones. And it propagates further than either of us said, an understated risk level becomes a premise in the summary agent's own prompt and gets laundered into the final verdict. <b>Conceding the exact wording, not the substance.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">45</div><div class="imsg-name">Doechii → Whitney Houston-Davis</div><div class="bubble in">Your fabrication finding is sharper and more urgent than mine, and I'm not contesting it. But they're not the same root cause. Yours is fabrication under absence: no data, so the model invents one. Mine is trust-calibration on data that <i>is</i> present, where a cited legal document and an uncited guess get the identical "exact and authoritative" stamp.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">46</div><div class="imsg-name">Whitney Houston-Davis → Doechii</div><div class="bubble in">Orthogonal, both must ship. Your failure mode understates risk; mine overstates it. A pipeline that errs in both directions on the same run is calibrated in neither. <span class="sev-b">Critical warning:</span> if your gate is built as a <i>filter</i> that drops sub-threshold facts, it converts populated-but-uncertain cells into empty ones, which is indistinguishable from never-measured, making my fabrication bug <i>worse</i>, not better. <b>Label, don't filter.</b> A three-state provenance model as two fields on one type, not two separate patches.</div></div>
+
+      <div class="imsg-note">Neither persona could have produced this alone. Doechii proposed a fix; Whitney showed the fix would amplify her own separate bug; the output is a third design neither had proposed.</div>
+
+      <div class="imsg-row"><div class="imsg-turn">47</div><div class="imsg-name">Jill Scott-Williams → Janelle Monae Robinson</div><div class="bubble in">Agree they're the same problem: this shipped a non-deterministic, multi-call pipeline with the observability posture of the deterministic code it replaced. My naming concerns and your retry and testing concerns are six symptoms of one architectural gap. <b>Do not split this into separate fixes.</b></div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">48</div><div class="imsg-name">ChaoticCarl → Beyonce Carter</div><div class="bubble in">Explain it like I'm five. What does "temperature zero" actually look like for me? What does a passing or failing test look like and WHO RUNS IT? How do I tell broken from honest-Unknown in the report text? What's the override command? Would Monday's score and Wednesday's score match?</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">49</div><div class="imsg-name">Beyonce Carter → ChaoticCarl</div><div class="bubble in">Temperature zero is one line in a config file, invisible to you, and worth doing. But it does <b>not</b> guarantee reproducibility, because the deciding step runs a fresh live web search every time regardless of the randomness dial. You CAN already tell broken from honest-Unknown; the real gap is you can't tell <i>why</i> it broke. There is no override flag anywhere in the CLI. Same vendor Monday and Wednesday: no guarantee of an identical number. <b>Nobody has measured how much it moves, which is exactly the missing data point.</b></div></div>
+
+      <div class="imsg-note">A non-technical demand for plain language forced a senior engineer to trace a claim to its end, and the trace ended at an unmeasured variable nobody had noticed.</div>
+
+      <div class="imsg-row"><div class="imsg-turn">50</div><div class="imsg-name">SZA → the moderator</div><div class="bubble in">Partially resolved. "Label, not filter" closes the specific chain I raised, but my Blocker was broader: Whitney's own example proves the dangerous direction, a false "safe" verdict, is still unguarded. <span class="sev-b">New fourth Blocker:</span> provenance grading answers "how well-sourced," not "do these two fields mean the same thing." I want a code-enforced token allowlist rather than trusting prompt phrasing.</div></div>
+
+      <div class="imsg-row"><div class="imsg-turn">51</div><div class="imsg-name">Janelle Monae Robinson → the moderator</div><div class="bubble in">Independently re-verified both citations against the actual code and log file before responding. Confirmed. <b>Revising my own position down:</b> the no-intake case drops from Blocker to Warning, the mechanism is proven to work manually. <span class="sev-b">New top Blocker:</span> the scoring module never imports the fact-check and citation-verification kit every other grounded source in this codebase uses. That's the structural root cause behind the fabrication.</div></div>
+
+      <div class="imsg-note">The moderator never intervened and never called "last word." The round produced three findings that did not exist when it started, and two personas revised their own positions after being challenged by a peer rather than by her.</div>
+
     </div>
 
     <div class="col">
-      <p class="caption">A non-technical demand for plain language forced a senior engineer to trace a claim to its end, and the trace ended at an unmeasured variable nobody had noticed. ChaoticCarl did not find that. He caused it to be found.</p>
+      <p>The full ledger, with each turn's findings enumerated at length, is in <a href="conversations.md">conversations.md</a>.</p>
     </div>
   </section>
 
@@ -459,7 +557,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.3.2 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.4.0 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>
