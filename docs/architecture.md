@@ -30,8 +30,8 @@ its return value reaches you. Because the moderator runs in the main conversatio
 prints live and you watch the review happen instead of receiving a summary of one that already ended.
 
 She is also the only participant who can write anything. Her declared tools are
-`[Read, Grep, Glob, Write, Edit, Task]`, and the `Write` capability exists solely to produce the state
-file and the transcript.
+`[Read, Grep, Glob, Bash, Write, Edit, Task]`, and the `Write` capability exists solely to produce the
+state file and the transcript.
 
 ## Execution model: one spawn, four resumes
 
@@ -69,14 +69,17 @@ what she personally said in Phase 1.
 The agent IDs live in `moe-state.json` and are mirrored into task metadata, so either can reconstruct the
 run after a compaction.
 
-## No Bash
+## Tool Scope
 
-Neither the moderator nor any persona may use the `Bash` tool during a review. The stated reason is to
-avoid triggering unrelated `PreToolUse:Bash` hooks mid-review.
+Every participant holds `Bash`, scoped by instruction. The personas' Bash is limited to read-only
+inspection (`git log`, `git diff`, `git show`, `grep`, `rg`, `find`, `cat`, `wc`, `ls`); the
+moderator's extends to writing and running throwaway falsification probes in a scratch directory.
+Bash is never used to modify the material under review; the Review-Only Guardrail binds it exactly as
+it binds Edit and Write.
 
-This has a design consequence worth knowing: the moderator **cannot** generate a git diff or verify
-repository sync herself. Whoever prepares the content packet is responsible for its provenance header,
-and the moderator's only power is to refuse to start without one.
+The design consequence of the old "No Bash" rule is gone: the moderator now generates the git diff
+and verifies repository sync herself, and refuses to start Kick-Off until the provenance header
+matches what her own commands print.
 
 ## State and compaction recovery
 
@@ -119,13 +122,13 @@ Read-only enforcement is layered five deep, and the layer doing the real work is
 | Layer | Mechanism | Strength |
 |---|---|---|
 | Skill preamble | "NEVER apply any recommendation" | Instruction |
-| **Agent frontmatter** | **`tools: [Read, Grep, Glob]`** | **Hard capability restriction** |
+| **Agent frontmatter** | **`tools: [Read, Glob, Grep, Bash]`, no Write or Edit** | **Hard restriction on editing tools** |
 | Persona body text | "No file modifications." in all eight cards | Reinforcement |
 | Synthesis `STOP` | Halts before acting on findings | Instruction, validator-checked |
 | `SubagentStop` hook | Greps agent output for edit-like language | Advisory warning |
 
-Layer two is why the others can be advisory without much risk: the personas do not have a tool that
-writes.
+Layer two is narrower than it once was: the personas have no Write or Edit tool, but they hold
+read-only Bash, so the instruction layers are what keep Bash from writing.
 
 ## Self-validation
 

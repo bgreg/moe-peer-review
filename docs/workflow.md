@@ -87,7 +87,7 @@ This is the phase where a review either becomes grounded or drifts.
 
 ## Phase 3: Interactive Session
 
-`interactive-session` · moderator versus agent · cap 100 exchanges per agent
+`interactive-session` · moderator versus agent · cap 3 exchanges per agent
 
 The maximum-adversarial fact-check. The moderator's job here is explicitly **not** to collect opinions but
 to try to falsify each one.
@@ -137,7 +137,7 @@ Plus an exchange-count line listing all eight personas, so cap compliance is vis
 
 ## Phase 4: The Huddle
 
-`the-huddle` · agent versus agent · cap 100 questions and 100 responses per agent
+`the-huddle` · agent versus agent · cap 4 messages sent per agent; mandatory replies do not count
 
 The moderator steps back and lets the experts engage directly, like grand rounds. Where Phase 3 tested
 each claim against evidence, the Huddle tests it against the other experts' judgment.

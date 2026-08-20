@@ -571,13 +571,7 @@ That declaration is printed in the transcript in the agent's own voice, blockquo
 message. If no agent ever declares it, the Huddle did not reach a natural end and you must say so in
 the participation checklist.
 
-**Huddle participation checklist**: After The Huddle, print a summary noting which agents participated and which did not, with reason:
-```
-Huddle Participation:
-- Beyonce Carter: participated (1 exchange with Erykah Badu-Johnson)
-- SZA: did not participate (open blocker unresolved) [GAP]
-```
-Mark any non-participating agent with open items as `[GAP]`. If gaps exist, the moderator must explain why those exchanges were not seeded.
+**Huddle participation checklist**: After The Huddle, print a summary noting which agents participated and which did not, with reason. Mark any non-participating agent with open items as `[GAP]`. If gaps exist, the moderator must explain why those exchanges were not seeded.
 
 **Build this checklist by counting the blocks you just printed, not from memory or intent.** For
 each of the eight personas, find the actual `**Name** ->` blocks in the Huddle section and count

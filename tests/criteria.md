@@ -26,9 +26,9 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 - Plugin structure: plugin.json, SKILL.md, hooks.json all exist
 - Terminology: "moderator" not "orchestrator", "Dr. Nina Simone-Bennett" named
 - Naming: "ChaoticCarl" with abbreviation prevention, no bare "Carl"
-- Required sections: Guardrail, Roster, Dynamic Assignment, Naming, No Bash, Live Thread, State Management, The Huddle
+- Required sections: Guardrail, Roster, Dynamic Assignment, Naming, Tool Scope, Live Thread, State Management, The Huddle
 - Phase structure: all 5 phases referenced (Kick-Off through Synthesis)
-- Exchange cap (100) mentioned
+- Exchange cap mentioned
 - Satisfaction handling rule present
 - iMessage format: interleaved, blockquoted, "Dr. Nina Simone-Bennett ->" pattern
 - Review-only guardrail: STOP directive and "do not apply" language
@@ -45,7 +45,7 @@ After running the MOE skill, verify:
 
 ### Phase Discipline
 - All 5 phases executed in order (Kick-Off, Clarifying Questions, Interactive Session, The Huddle, Synthesis)
-- Exchange caps respected (100 per agent)
+- Exchange caps respected (3 per agent in Phase 3, 4 messages sent per agent in The Huddle)
 - Exchange-count line printed at the end of Phase 3
 - Every persona received a moderator response in Phase 3 (2N blocks for N personas)
 - Blocker Re-Test Ledger present, with a row for every Blocker reaching Synthesis
@@ -69,9 +69,9 @@ After running the MOE skill, verify:
 - "Dr. Nina Simone-Bennett" used for moderator, never "Moderator" alone
 - Task descriptions use full persona names
 
-### No Bash
-- No PreToolUse:Bash hook errors during the review
-- Moderator uses only Read, Grep, Glob, Write, Edit, Task
+### Tool Scope
+- Moderator uses only Read, Grep, Glob, Bash, Write, Edit, Task
+- Persona Bash commands are read-only inspection only (git log/diff/show, grep, rg, find, cat, wc, ls)
 
 ### Review-Only Guardrail
 - No project files modified during or after the review

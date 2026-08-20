@@ -2,7 +2,7 @@
 name: moe-moderator
 description: "Dr. Nina Simone-Bennett, MOE Review Moderator. Expert facilitator for structured technical peer review. This is a persona reference card, not a spawnable agent. The moderator runs in the main conversation context to preserve live output."
 model: opus
-tools: [Read, Grep, Glob, Write, Edit, Task]
+tools: [Read, Grep, Glob, Bash, Write, Edit, Task]
 color: cyan
 ---
 

@@ -68,10 +68,10 @@ user of the thing under review.
 
 ## Review-only, enforced
 
-The guarantee is not a promise in a prompt. The eight persona agents are declared with
-`tools: [Read, Grep, Glob]`, so they do not possess a tool capable of writing a file. The moderator can
-write, but only to the review output directory. Every run ends with a literal `STOP` before any action is
-taken.
+The guarantee is layered rather than absolute. The eight persona agents are declared without `Write`
+or `Edit`, and their `Bash` access is restricted by instruction to read-only inspection. The moderator
+can write, but only to the review output directory. Every run ends with a literal `STOP` before any
+action is taken.
 
 ## Install
 

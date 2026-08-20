@@ -207,7 +207,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <p class="eyebrow">Claude Code plugin &middot; v2.5.3 &middot; documentation</p>
+    <p class="eyebrow">Claude Code plugin &middot; v2.6.1 &middot; documentation</p>
     <h1>MOE Peer<br>Review</h1>
     <p class="standfirst">Eight named reviewer personas and one moderator run a five-phase adversarial deliberation over your work, then hand back a synthesis and refuse to touch a single file.</p>
   </header>
@@ -215,7 +215,7 @@
   <dl class="docket">
     <div><dt>Personas</dt><dd>9 <small>8 + mod</small></dd></div>
     <div><dt>Phases</dt><dd>5</dd></div>
-    <div><dt>Exchange cap</dt><dd>100 <small>/agent</small></dd></div>
+    <div><dt>Exchange cap</dt><dd>3 <small>/agent</small></dd></div>
     <div><dt>Model tiers</dt><dd>3</dd></div>
     <div><dt>Validators</dt><dd>2</dd></div>
     <div><dt>Writes to repo</dt><dd>0</dd></div>
@@ -241,7 +241,7 @@
     </div>
     <div class="note">
       <div class="note-tag">Review-only, and it is enforced</div>
-      <p>The guarantee is not a promise in a prompt. The eight persona agents are declared with <code>tools: [Read, Grep, Glob]</code>, so they do not possess a tool capable of writing a file. Every run ends with a literal <code>STOP</code> before anything is acted on.</p>
+      <p>The guarantee is layered rather than absolute. The eight persona agents are declared without <code>Write</code> or <code>Edit</code>, and their <code>Bash</code> access is restricted by instruction to read-only inspection. Every run ends with a literal <code>STOP</code> before anything is acted on.</p>
     </div>
   </section>
 
@@ -355,26 +355,26 @@
         <text class="svg-label" x="400" y="59">moe-state.json</text><text class="svg-note" x="400" y="77">every change</text>
         <rect class="svg-box" x="552" y="38" width="150" height="52" rx="2"/>
         <text class="svg-label" x="566" y="59">Task list</text><text class="svg-note" x="566" y="77">mirrors state</text>
-        <text class="svg-note" x="16" y="110">Moderator tools: Read, Grep, Glob, Write, Edit, Task. No Bash.</text>
+        <text class="svg-note" x="16" y="110">Moderator tools: Read, Grep, Glob, Bash, Write, Edit, Task.</text>
 
         <line class="svg-line-a" x1="108" y1="126" x2="108" y2="168" marker-end="url(#m1)"/>
         <text class="svg-note" x="120" y="150">Task() × 8, parallel, once</text>
         <text class="svg-title" x="0" y="192">ISOLATED SUBAGENT CONTEXTS, you see only what the moderator prints</text>
 
         <rect class="svg-box" x="0" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
-        <text class="svg-label" x="10" y="224" fill="var(--opus)">beyonce</text><text class="svg-note" x="10" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="10" y="224" fill="var(--opus)">beyonce</text><text class="svg-note" x="10" y="242">read-only + Bash</text>
         <rect class="svg-box" x="112" y="204" width="104" height="52" rx="2" stroke="var(--haiku)"/>
-        <text class="svg-label" x="122" y="224" fill="var(--haiku)">jill-scott</text><text class="svg-note" x="122" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="122" y="224" fill="var(--haiku)">jill-scott</text><text class="svg-note" x="122" y="242">read-only + Bash</text>
         <rect class="svg-box" x="224" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
-        <text class="svg-label" x="234" y="224" fill="var(--sonnet)">janelle-…</text><text class="svg-note" x="234" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="234" y="224" fill="var(--sonnet)">janelle-…</text><text class="svg-note" x="234" y="242">read-only + Bash</text>
         <rect class="svg-box" x="336" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
-        <text class="svg-label" x="346" y="224" fill="var(--sonnet)">sza</text><text class="svg-note" x="346" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="346" y="224" fill="var(--sonnet)">sza</text><text class="svg-note" x="346" y="242">read-only + Bash</text>
         <rect class="svg-box" x="448" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
-        <text class="svg-label" x="458" y="224" fill="var(--opus)">erykah-…</text><text class="svg-note" x="458" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="458" y="224" fill="var(--opus)">erykah-…</text><text class="svg-note" x="458" y="242">read-only + Bash</text>
         <rect class="svg-box" x="560" y="204" width="104" height="52" rx="2" stroke="var(--sonnet)"/>
-        <text class="svg-label" x="570" y="224" fill="var(--sonnet)">doechii</text><text class="svg-note" x="570" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="570" y="224" fill="var(--sonnet)">doechii</text><text class="svg-note" x="570" y="242">read-only + Bash</text>
         <rect class="svg-box" x="672" y="204" width="104" height="52" rx="2" stroke="var(--opus)"/>
-        <text class="svg-label" x="682" y="224" fill="var(--opus)">whitney-…</text><text class="svg-note" x="682" y="242">Read Grep Glob</text>
+        <text class="svg-label" x="682" y="224" fill="var(--opus)">whitney-…</text><text class="svg-note" x="682" y="242">read-only + Bash</text>
         <rect class="svg-box" x="784" y="204" width="96" height="52" rx="2" stroke="var(--haiku)" stroke-dasharray="5 3"/>
         <text class="svg-label" x="794" y="224" fill="var(--haiku)">chaotic-…</text><text class="svg-note" x="794" y="242">plain lang.</text>
 
@@ -399,12 +399,12 @@
       </li>
       <li class="phase" data-n="3">
         <div class="phase-name">Interactive Session</div>
-        <div class="phase-key">interactive-session &middot; moderator vs. agent &middot; cap 100/agent</div>
+        <div class="phase-key">interactive-session &middot; moderator vs. agent &middot; cap 3/agent</div>
         <p>The adversarial fact-check. Default posture is disbelief; the burden of proof sits with the agent. The phase must produce exactly 2N blocks for N personas, and closes with a Blocker Re-Test Ledger, a Consensus Ledger, and the moderator's public self-check.</p>
       </li>
       <li class="phase" data-n="4">
         <div class="phase-name">The Huddle</div>
-        <div class="phase-key">the-huddle &middot; agent vs. agent &middot; cap 100 + 100/agent</div>
+        <div class="phase-key">the-huddle &middot; agent vs. agent &middot; cap 4 sent/agent</div>
         <p>The moderator steps back and relays messages between experts. Anyone leaving Phase 3 with open items must participate. Closes with a participation checklist marking gaps.</p>
       </li>
       <li class="phase" data-n="5">
@@ -933,7 +933,7 @@
         <thead><tr><th>Layer</th><th>Mechanism</th><th>Strength</th></tr></thead>
         <tbody>
           <tr><td>Skill preamble</td><td>"NEVER apply any recommendation"</td><td>Instruction</td></tr>
-          <tr><td><strong>Agent frontmatter</strong></td><td><code>tools: [Read, Grep, Glob]</code></td><td><strong>Hard capability restriction</strong></td></tr>
+          <tr><td><strong>Agent frontmatter</strong></td><td><code>tools: [Read, Glob, Grep, Bash]</code>, no Write or Edit</td><td><strong>Hard restriction on editing tools</strong></td></tr>
           <tr><td>Persona body text</td><td>"No file modifications." in all eight cards</td><td>Reinforcement</td></tr>
           <tr><td>Synthesis STOP</td><td>Halts before acting on findings</td><td>Instruction, validator-checked</td></tr>
           <tr><td>SubagentStop hook</td><td>Greps agent output for edit-like language</td><td>Advisory warning</td></tr>
@@ -948,7 +948,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.5.3 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v2.6.1 · nine personas · five phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>
