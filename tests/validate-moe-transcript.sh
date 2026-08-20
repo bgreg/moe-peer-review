@@ -149,6 +149,39 @@ else
   pass "No 'orchestrator' references"
 fi
 
+printf "\nHuddle Integrity\n"
+missing_speakers=""
+while IFS= read -r who; do
+  [ -z "$who" ] && continue
+  if ! grep -q "\*\*$who\*\* ->" "$TRANSCRIPT" 2>/dev/null &&
+    ! grep -q "\-> \*\*$who\*\*" "$TRANSCRIPT" 2>/dev/null; then
+    missing_speakers="$missing_speakers $who;"
+  fi
+done <<EOF
+$(grep -oE '^- [A-Za-z][A-Za-z .-]*: *(participated|[0-9]+ sent)' "$TRANSCRIPT" 2>/dev/null | sed -E 's/^- (.*): *(participated|[0-9]+ sent)/\1/')
+EOF
+if [ -z "$missing_speakers" ]; then
+  pass "Every agent claimed as participating appears in a printed Huddle exchange"
+else
+  fail "Participation claimed with no printed exchange:$missing_speakers"
+fi
+
+stance_satisfied=$(grep -c '^> *I am satisfied' "$TRANSCRIPT" 2>/dev/null) || true
+stance_open=$(grep -c '^> *Open items:' "$TRANSCRIPT" 2>/dev/null) || true
+stance_total=$((${stance_satisfied:-0} + ${stance_open:-0}))
+if [ "$stance_total" -ge 8 ]; then
+  pass "Per-agent Phase 3 stances recorded ($stance_satisfied satisfied, $stance_open open-item lists)"
+else
+  fail "Only $stance_total of 8 explicit Phase 3 stances found; an aggregate count does not satisfy the per-agent rule"
+fi
+
+openers=$(grep -oE 'I verified this:|I cannot verify this:|This is incorrect:|I tested this:' "$TRANSCRIPT" 2>/dev/null | wc -l | tr -d ' ')
+if [ "${openers:-0}" -ge 8 ]; then
+  pass "Literal verification openers present ($openers)"
+else
+  fail "Only ${openers:-0} literal verification openers found; the moderator is summarizing rather than verifying (SKILL.md Phase 3)"
+fi
+
 printf "\nSynthesis Structure\n"
 synthesis_parts=(
   "Verdict Scoreboard"
@@ -171,10 +204,10 @@ for part in "${synthesis_parts[@]}"; do
 done
 
 printf "\nReview-Only Guardrail\n"
-if contains "STOP"; then
-  pass "STOP directive present in synthesis"
+if grep -q '^\*\*STOP\.\*\*' "$TRANSCRIPT" 2>/dev/null; then
+  pass "STOP guardrail block present in transcript"
 else
-  fail "Missing STOP directive in synthesis (required guardrail)"
+  fail "Missing '**STOP.**' guardrail block in the transcript file (SKILL.md Phase 5)"
 fi
 
 printf "\nWorkflow Artifacts\n"

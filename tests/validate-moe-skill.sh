@@ -97,7 +97,7 @@ sections=(
   "Agent Roster"
   "Dynamic Assignment"
   "Naming Rules"
-  "No Bash"
+  "Tool Scope"
   "Live Thread Output"
   "State Management"
   "The Huddle"
@@ -126,7 +126,7 @@ for phase in "${phases[@]}"; do
   fi
 done
 
-if contains "100" "$SKILL"; then
+if contains "Exchange cap" "$SKILL"; then
   pass "Exchange cap mentioned"
 else
   fail "Missing exchange cap"
