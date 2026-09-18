@@ -52,7 +52,7 @@ A single-page visual version of all four is at [`docs/index.html`](docs/index.ht
 
 | Persona | Role | Model |
 |---------|------|-------|
-| Dr. Nina Simone-Bennett | Moderator / facilitator | (runs in main context) |
+| Dr. Nina Simone-Bennett | Moderator / facilitator | fable (declared; she runs in main context) |
 | Beyonce Carter | Sr. Engineer | opus |
 | Jill Scott-Williams | Jr. Developer | haiku |
 | Janelle Monae Robinson | DevOps Engineer | sonnet |

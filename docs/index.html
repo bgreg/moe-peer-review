@@ -5,7 +5,7 @@
     --ink:#12181A; --ink-soft:#46524F; --ink-faint:#6E7A77;
     --rule:#C6D0CD; --rule-soft:#DBE3E0;
     --accent:#0A5C66; --accent-br:#0E8A96; --accent-wash:#DCEBEC;
-    --opus:#8046E0; --sonnet:#008B9A; --haiku:#9A6200;
+    --opus:#8046E0; --sonnet:#008B9A; --haiku:#9A6200; --fable:#B01A5B;
     --good:#1F7A4D; --warn:#9A6B00; --crit:#B0342A;
     --imsg-bg:#FFFFFF; --bub-in:#E9E9EB; --bub-out:#0B84FF;
     --w-bey:#7A4FD1; --w-jill:#1E7A4E; --w-jan:#1F63C8; --w-sza:#B02234;
@@ -20,7 +20,7 @@
       --ink:#E2E9E7; --ink-soft:#A6B3B0; --ink-faint:#7B8885;
       --rule:#2B3639; --rule-soft:#202A2D;
       --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
-      --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
+      --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28; --fable:#D9679A;
       --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
       --imsg-bg:#0A0A0C; --bub-in:#26252A; --bub-out:#0A84FF;
       --w-bey:#A98BF0; --w-jill:#57CC94; --w-jan:#6FA6F5; --w-sza:#EF7A70;
@@ -32,7 +32,7 @@
     --ink:#E2E9E7; --ink-soft:#A6B3B0; --ink-faint:#7B8885;
     --rule:#2B3639; --rule-soft:#202A2D;
     --accent:#45CFDB; --accent-br:#6FE0EA; --accent-wash:#10292D;
-    --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28;
+    --opus:#9370E8; --sonnet:#1F9AA8; --haiku:#B07C28; --fable:#D9679A;
     --good:#4FCB8B; --warn:#DCB44A; --crit:#F0766B;
     --imsg-bg:#0A0A0C; --bub-in:#26252A; --bub-out:#0A84FF;
       --w-bey:#A98BF0; --w-jill:#57CC94; --w-jan:#6FA6F5; --w-sza:#EF7A70;
@@ -248,7 +248,7 @@
   <section id="panel">
     <div class="sec-head"><span class="sec-num">02</span><h2>The panel</h2></div>
     <div class="col">
-      <p>Each persona file is a full character: education, career history, emotional affect, pet peeves, and an explicit list of who they clash with in debate. That last section is a wiring diagram of which arguments will happen, and it is what manufactures the disagreement the process depends on.</p>
+      <p>Each persona file is a full character: education, career history, emotional affect, pet peeves, and a review lens. The lenses are deliberately incompatible, and the moderator seeds the Huddle along the friction lines named in the skill, which is what manufactures the disagreement the process depends on.</p>
       <p>Three constraints keep the characters from becoming noise. <strong>Stay in your lane</strong> forbids reviewing outside your domain, capped at one sentence for cross-lane concerns. <strong>Graduated severity</strong> forces every finding into one of three buckets. <strong>Tool constraints</strong> hold every reviewer to reading and searching, and require falling back to <code>grep -rn</code> through Bash rather than calling a finding unverifiable when a second search route existed.</p>
     </div>
 
@@ -309,8 +309,8 @@
         <p class="np-lens">Discoverability, workflow friction, useless error messages, every moment a real user gets stuck. Receives a plain-language brief, never raw code.</p>
         <p class="np-tell">Never reads instructions. His complaints are treated as bugs in the software, not in him.</p>
       </div>
-      <div class="np" style="--tier:var(--opus)">
-        <div class="np-top"><div class="np-name">Dr. Nina Simone-Bennett</div><div class="np-model">opus</div></div>
+      <div class="np" style="--tier:var(--fable)">
+        <div class="np-top"><div class="np-name">Dr. Nina Simone-Bennett</div><div class="np-model">fable</div></div>
         <div class="np-role">Moderator &middot; not a subagent</div>
         <p class="np-lens">PhD in Group Decision Science, running an adapted Delphi method. The only participant who may write, and only to the review output directory.</p>
         <p class="np-tell">"What's your evidence for that?" Draws out quiet participants, protects ChaoticCarl from dismissal.</p>
@@ -318,7 +318,8 @@
     </div>
 
     <div class="legend">
-      <span><i class="chip" style="background:var(--opus)"></i> opus &middot; 4 seats</span>
+      <span><i class="chip" style="background:var(--opus)"></i> opus &middot; 3 seats</span>
+      <span><i class="chip" style="background:var(--fable)"></i> fable &middot; 1 seat</span>
       <span><i class="chip" style="background:var(--sonnet)"></i> sonnet &middot; 3 seats</span>
       <span><i class="chip" style="background:var(--haiku)"></i> haiku &middot; 2 seats</span>
     </div>

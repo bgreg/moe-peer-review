@@ -280,15 +280,6 @@ for agent in "${agent_files[@]}"; do
     fail "Agent $agent.md missing color frontmatter"
   fi
 
-  if contains "Huddle" "$agent_file"; then
-    pass "Agent $agent.md has Huddle behavior"
-  else
-    if [ "$agent" = "moe-moderator" ]; then
-      pass "Agent moe-moderator.md has Huddle role"
-    else
-      fail "Agent $agent.md missing Huddle behavior"
-    fi
-  fi
 done
 
 printf "\nHook Files\n"

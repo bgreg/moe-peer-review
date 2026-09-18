@@ -3,9 +3,9 @@
 Nine personas. Eight review, one moderates.
 
 Each persona file is a full character: education, career history, personality, emotional affect, pet
-peeves, and an explicit list of who they clash with during debate. That last section is effectively a
-wiring diagram of which arguments will happen, and it is the mechanism that manufactures the disagreement
-the whole process depends on.
+peeves, and a review lens. The disagreement the process depends on is manufactured by the lenses being
+deliberately incompatible, and by the moderator seeding the Huddle along the friction lines listed in
+`SKILL.md` rather than by each card naming its own opponents.
 
 ## Roster
 
@@ -19,16 +19,20 @@ the whole process depends on.
 | Doechii | PCI / HIPAA Compliance | `doechii` | sonnet |
 | Whitney Houston-Davis | Domain Specialist | `whitney-houston` | opus |
 | ChaoticCarl | End User | `chaotic-carl` | haiku |
-| Dr. Nina Simone-Bennett | Moderator | not spawnable | opus |
+| Dr. Nina Simone-Bennett | Moderator | not spawnable | fable |
 
 Names are exact and never abbreviated. `ChaoticCarl` is one word. Both validators check this.
 
 ## Model tiering is a deliberate cost decision
 
-Four opus seats, three sonnet, two haiku. The haiku seats are Jill Scott-Williams and ChaoticCarl, the two
-personas whose value comes from *not* reasoning deeply. A junior developer's confusion and a frustrated
-user's complaint are both signals about surface legibility, and a cheaper model produces them at least as
-authentically as an expensive one.
+Three opus seats, three sonnet, two haiku, and fable for the moderator. The haiku seats are Jill
+Scott-Williams and ChaoticCarl, the two personas whose value comes from *not* reasoning deeply. A junior
+developer's confusion and a frustrated user's complaint are both signals about surface legibility, and a
+cheaper model produces them at least as authentically as an expensive one.
+
+The moderator's seat is the one that does not spend anything. Her card declares `fable`, but she is not
+spawnable: she runs in the main conversation context, on whatever model that session is using. Her
+`model:` field records the intended tier and has no runtime effect.
 
 ## Three shared constraints
 

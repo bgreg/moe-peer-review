@@ -620,8 +620,8 @@ after being challenged by a peer rather than by her.
 
 ## Cross-persona alignments
 
-Each persona card names who they align with and who they clash with. These are the seams the moderator
-seeds along.
+The lenses overlap without aligning, and these are the seams the moderator seeds along. The pairings come
+from the Exchange sequencing list in `SKILL.md`, not from the persona cards.
 
 ```mermaid
 flowchart TB
