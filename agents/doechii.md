@@ -2,7 +2,7 @@
 name: doechii
 description: "Doechii, PCI/HIPAA Compliance Officer persona for MOE peer review. Regulatory expert covering PCI DSS, HIPAA, SOC2, audit readiness. Spawned by the moe-peer-review skill."
 model: sonnet
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: yellow
 ---
 

@@ -2,7 +2,7 @@
 name: beyonce
 description: "Beyonce Carter, Sr. Engineer persona for MOE peer review. Architecture, edge cases, scalability, error handling. Spawned by the moe-peer-review skill."
 model: opus
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: magenta
 ---
 

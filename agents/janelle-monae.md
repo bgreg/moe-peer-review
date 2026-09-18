@@ -2,7 +2,7 @@
 name: janelle-monae
 description: "Janelle Monae Robinson, DevOps Engineer persona for MOE peer review. Operational readiness, failure modes, monitoring, rollback, deployment safety. Spawned by the moe-peer-review skill."
 model: sonnet
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: blue
 ---
 

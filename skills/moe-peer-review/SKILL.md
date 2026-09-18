@@ -63,6 +63,11 @@ Bash. Bash is restricted to read-only inspection: `git log`, `git diff`, `git sh
 `find`, `cat`, `wc`, `ls`. A persona must never run a command that writes to the repository,
 installs anything, or mutates git state.
 
+**Personas also have `SendMessage`, used only in Phase 4.** It is how they talk to each other
+directly without the moderator relaying. They have no `ListAgents`, so they cannot discover each
+other; the moderator supplies the peer roster at seed time. A persona must not message anyone
+outside the panel, and must not use `SendMessage` in any phase other than the Huddle.
+
 **The moderator may execute code, and is expected to.** Verification by experiment outranks
 verification by reading, and outranks argument entirely. The moderator has Bash for four purposes:
 
@@ -512,9 +517,19 @@ any that are wrong:
 
 This is the **agent-versus-agent** round, the counterpart to Phase 3's moderator-versus-agent fact-check. The moderator steps back and lets experts challenge each other directly. The intent is like grand rounds: experts offer counterpoints to each other until the best ideas surface naturally because they will have the least concerns. Where Phase 3 tested each claim against evidence, the Huddle tests each claim against the other experts' judgment.
 
-**Caps**: 4 messages sent per agent, and every message received gets a reply unless the sender
-declared done or the moderator called "last word" on that thread. The reply is not optional and does
-not count against the sender's cap; see "Completing the relay" below.
+**The moderator is not in the message path.** Personas send to each other directly with `SendMessage`.
+The moderator seeds the threads, hands out the peer roster, and then stops until the threads go
+quiet. Do not relay. Relaying puts the moderator's reading of a message between two experts who are
+supposed to be reading each other, and it makes the moderator the bottleneck that starves
+participation.
+
+**Verification does not happen here.** Phase 3 is where claims are falsified against evidence. If
+the moderator finds themselves checking a number mid-Huddle, that is Phase 3 work arriving late and
+it means Phase 3 was cut short. Note it for the next run and let the Huddle proceed.
+
+**Caps**: 4 messages sent per agent. Every message received gets a reply unless the sender declared
+done or the moderator called "last word" on that thread. The reply is not optional and does not
+count against the receiver's cap.
 
 **Rules for The Huddle:**
 - Agents must recognize each other's expertise but never be afraid to push back on claims from experts.
@@ -522,18 +537,26 @@ not count against the sender's cap; see "Completing the relay" below.
   explain their concern simply, ChaoticCarl says so loudly. **Seed him against at least three
   different experts**, chosen from whoever raised the Blockers that touch his workflow. One
   exchange is not participation for him; he is the only panelist who can show whether a Blocker
-  survives contact with the person who runs the tool. Two consecutive runs have seeded him against
-  one or two experts, so seed his threads FIRST, before the expert-versus-expert threads consume the
-  budget.
-- The moderator intervenes only when conversation becomes circular, when someone is being steamrolled, or when ChaoticCarl is being ignored.
+  survives contact with the person who runs the tool.
+- The moderator re-enters only when conversation becomes circular, when someone is being
+  steamrolled, or when ChaoticCarl is being ignored. Re-entering means sending a message, which is
+  logged like any other and named as a moderator intervention in the transcript.
 - The moderator calls "last word" when exchanges plateau.
 
-**Mandatory participation**: Any agent who exits the Interactive Session with open items, conditions, blockers, or exceptions MUST participate in at least one Huddle exchange. Satisfied agents with zero open items may optionally participate. The moderator must not skip any agent with unresolved concerns.
+### Budget allocation, in this order
 
-**Moderator Huddle seeding**: Before launching Huddle exchanges, the moderator identifies 3-5 unresolved cross-persona tensions and seeds targeted exchanges. Example seeds:
-- "[Agent A] has an open [blocker/concern]. [Agent B] proposed a fix in that area. Discuss whether the fix addresses the concern."
-- "[Agent A] and [Agent B] took opposing positions on [topic]. Engage directly."
-- "ChaoticCarl's complaint about [X] maps to [Agent A]'s technical finding. Discuss in plain language."
+The participation floor is claimed FIRST, before any discretionary thread is seeded. This ordering
+exists because the competing instructions below have previously consumed the budget and left agents
+with open items unseeded.
+
+1. **Participation floor.** Every agent who exits Phase 3 with open items gets at least one seeded
+   thread. Count them before seeding anything. This is non-negotiable and comes out of the budget
+   before steps 2 and 3.
+2. **ChaoticCarl's three threads**, against the experts whose Blockers touch his workflow.
+3. **Discretionary tension threads**, 3-5 of them, from the list below, with whatever budget remains.
+
+An agent "participates" when it has SENT at least one message. Receiving a message and never
+answering is not participation, and neither is being named in someone else's thread.
 
 **Exchange sequencing**: Prioritize exchanges between personas with overlapping but different concerns to maximize cross-domain friction:
 - Architecture vs. research (Beyonce/Whitney)
@@ -541,15 +564,68 @@ not count against the sender's cap; see "Completing the relay" below.
 - Operational requirements vs. infrastructure proposals (Janelle/Whitney)
 - User impact vs. technical root cause (ChaoticCarl/any technical persona)
 
-**Implementation**: The moderator acts as a message relay between agents. For each exchange:
-1. Resume Agent A with Agent B's message
-2. Collect Agent A's response
-3. Resume Agent B with Agent A's response
-4. Continue until both agents declare done or hit caps
+### Implementation: direct messaging
 
-**Completing the relay is mandatory.** Every message printed in the Huddle must be followed by the
-addressee's reply, by the sender's own "I have nothing more to add", or by an explicit moderator
-line stating why the thread ends there:
+Personas cannot discover each other. `ListAgents` is not available inside a subagent, so a persona
+has no way to learn another persona's address on its own. The moderator must hand it over.
+
+**Step 1. Build the peer roster.** From the agent IDs recorded in `moe-state.json`, build a plain
+mapping of persona name to agent ID for all eight personas plus the moderator.
+
+**Step 2. Seed each thread.** Send each persona one message containing, in this order:
+1. Its thread assignments: who to write to, and the specific unresolved tension to open with.
+2. The full peer roster, so it can reply to anyone who writes to it.
+3. The caps and the reply obligation.
+4. The logging obligation from Step 4.
+
+Use this block verbatim in every seed message:
+
+```
+DIRECT MESSAGING. The moderator is out of the message path for this phase. You talk to the other
+experts yourself.
+
+To send a message, call SendMessage with `to` set to the agent ID from the roster below, a short
+`summary`, and your message in `message`. Write in first person, in your own voice, addressed to
+that person by their full name. Your message is delivered to them verbatim.
+
+PEER ROSTER (name -> agent ID):
+<roster>
+
+RULES:
+- You may send at most 4 messages in this phase.
+- If someone writes to you, you MUST reply to them, unless they declared they were done. A reply
+  does not count against your 4.
+- Address people by their full name from the roster. Never abbreviate. "ChaoticCarl" is one word
+  and is never shortened to "Carl", including when you are speaking to him directly.
+- When you have nothing further, send your counterpart a final message whose last line is exactly:
+  I have nothing more to add.
+
+LOGGING, required: keep a verbatim record of every message you send and every message you receive.
+When the moderator asks for your Huddle log at the end of this phase, return it in this format and
+nothing else:
+
+SENT -> <Full Name>: <verbatim text>
+RECEIVED <- <Full Name>: <verbatim text>
+
+in chronological order. Do not summarize, do not paraphrase, do not tidy up. The transcript is
+reconstructed from these logs.
+```
+
+**Step 3. Wait.** Do not poll in a loop. The agents run on their own and completion notifications
+arrive. The phase is over when every seeded agent has gone idle and no agent is mid-reply.
+
+**Step 4. Collect the logs.** Ask every persona that participated for its Huddle log in the format
+above. The moderator assembles the transcript from these logs, not from memory.
+
+**Step 5. Cross-check the logs before printing.** For every `SENT -> B` line in A's log there must
+be a matching `RECEIVED <- A` line in B's log, with the same text. Mismatches mean a message was
+lost, a log was summarized, or an agent fabricated an exchange. Any of those is a finding about the
+run and must be stated in the participation checklist rather than quietly reconciled.
+
+### Every message gets an answer, in both directions
+
+Every message printed in the Huddle must be followed by the addressee's reply, by the sender's own
+"I have nothing more to add", or by an explicit moderator line stating why the thread ends there:
 
 ```
 **Dr. Nina Simone-Bennett** -> **Whitney Houston-Davis** and **Beyonce Carter**:
@@ -559,10 +635,19 @@ line stating why the thread ends there:
 
 Before printing the participation checklist, count the arrows: every `**A** -> **B**:` block either
 has a `**B** -> **A**:` block after it, ends in the sender's own exit declaration, or is followed by
-a moderator last-word line. An unanswered message with none of those three is a dropped relay, not a
-completed exchange. **A dropped relay addressed to ChaoticCarl is the specific failure this phase is
-built to prevent** (see "The moderator intervenes ... when ChaoticCarl is being ignored"). If you
-find yourself out of budget with his message unanswered, spend the budget there first.
+a moderator last-word line. An unanswered message with none of those three is a dropped message, not
+a completed exchange.
+
+**This applies in both directions and to every persona.** A message addressed TO ChaoticCarl that
+nobody answers is the failure this phase is built to prevent. A message FROM ChaoticCarl that an
+expert never answers is the same failure wearing a different hat, and it is easier to miss because
+the unanswered party is the one panelist least able to press the point. If budget runs out with any
+message unanswered, spend the remaining budget there first.
+
+**Never assign a persona a second thread while its first is still open.** Queueing a thread behind
+one already in flight is how messages get dropped: the agent finishes the first, returns, and the
+second is never picked up. Wait for the first thread to close, or seed the second thread to a
+different persona.
 
 The moderator tracks exchange counts per agent in the state file.
 
@@ -590,9 +675,11 @@ Huddle Participation:
 ```
 
 Any agent with open items and no printed block is a `[GAP]`, and a `[GAP]` requires a written
-reason. "No gaps" is a claim about the text above it. Do not write it without checking. If the state
-file and the transcript disagree about who participated or how many messages they sent, the
-transcript is authoritative; correct the state file, never the transcript.
+reason. "No gaps" is a claim about the text above it. Do not write it without checking. A `[GAP]`
+against an agent that Step 1 of the budget allocation required you to seed is a process failure, not
+a budget outcome, and must be named as one. If the state file and the transcript disagree about who
+participated or how many messages they sent, the transcript is authoritative; correct the state
+file, never the transcript.
 
 Print `## Phase 4: The Huddle` then print all exchanges in chronological order using the agent-to-agent format, followed by the participation checklist.
 
@@ -604,7 +691,6 @@ any that are wrong:
 2. No earlier phase is still `pending` or `in_progress`.
 3. Every agent's `status` and `exchanges` reflect the phase just finished.
 4. After The Huddle, `huddle_exchanges` is non-empty.
-
 
 ## Phase 5: Synthesis
 
