@@ -3,9 +3,9 @@
 Nine personas. Eight review, one moderates.
 
 Each persona file is a full character: education, career history, personality, emotional affect, pet
-peeves, and a review lens. The disagreement the process depends on is manufactured by the lenses being
-deliberately incompatible, and by the moderator seeding the Huddle along the friction lines listed in
-`SKILL.md` rather than by each card naming its own opponents.
+peeves, and an explicit list of who they clash with during debate. That last section is effectively a
+wiring diagram of which arguments will happen, and it is the mechanism that manufactures the disagreement
+the whole process depends on.
 
 ## Roster
 

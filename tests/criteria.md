@@ -36,7 +36,7 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 - Synthesis structure: all 7 subsections present
 - Self-validation: transcript validator and quality assessment referenced
 - Agent roster: all 8 personas listed in SKILL.md
-- Agent files: all 9 exist, use correct terminology, have read-only constraint, model/color frontmatter
+- Agent files: all 9 exist, use correct terminology, have read-only constraint, model/color frontmatter, Huddle behavior
 - Hook files: SubagentStop and PreCompact scripts exist and configured
 
 ## Behavioral (manual verification during live runs)
