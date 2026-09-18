@@ -9,8 +9,8 @@ Twenty-one files outside `docs/`, and only one of them contains the workflow.
 | Path | Lines | Role |
 |---|---|---|
 | `skills/moe-peer-review/SKILL.md` | 723 | The entire workflow. Loaded into the main conversation; the moderator executes it directly. |
-| `agents/*.md` (9) | 57&ndash;96 | Persona system prompts. Eight are spawnable subagents. |
-| `agents/moe-moderator.md` | 57 | A reference card, not a spawnable agent. The main context reads it and becomes her. |
+| `agents/*.md` (9) | 59&ndash;98 | Persona system prompts. Eight are spawnable subagents. |
+| `agents/moe-moderator.md` | 59 | A reference card, not a spawnable agent. The main context reads it and becomes her. |
 | `hooks/hooks.json` | 26 | Registers the `SubagentStop` and `PreCompact` hooks. |
 | `hooks/scripts/*.sh` (2) | 13, 36 | Read-only-violation warning and a compaction reminder. |
 | `tests/validate-moe-skill.sh` | 324 | Static check on the plugin's own structure. Run by the maintainer. |
