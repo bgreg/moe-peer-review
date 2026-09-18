@@ -4,17 +4,17 @@ How the plugin is built, how a review executes, and what keeps it honest.
 
 ## The parts
 
-Twenty-one files, and only one of them contains the workflow.
+Twenty-one files outside `docs/`, and only one of them contains the workflow.
 
 | Path | Lines | Role |
 |---|---|---|
-| `skills/moe-peer-review/SKILL.md` | 574 | The entire workflow. Loaded into the main conversation; the moderator executes it directly. |
-| `agents/*.md` (9) | 49&ndash;82 | Persona system prompts. Eight are spawnable subagents. |
-| `agents/moe-moderator.md` | 49 | A reference card, not a spawnable agent. The main context reads it and becomes her. |
+| `skills/moe-peer-review/SKILL.md` | 723 | The entire workflow. Loaded into the main conversation; the moderator executes it directly. |
+| `agents/*.md` (9) | 57&ndash;91 | Persona system prompts. Eight are spawnable subagents. |
+| `agents/moe-moderator.md` | 57 | A reference card, not a spawnable agent. The main context reads it and becomes her. |
 | `hooks/hooks.json` | 26 | Registers the `SubagentStop` and `PreCompact` hooks. |
 | `hooks/scripts/*.sh` (2) | 13, 36 | Read-only-violation warning and a compaction reminder. |
 | `tests/validate-moe-skill.sh` | 324 | Static check on the plugin's own structure. Run by the maintainer. |
-| `tests/validate-moe-transcript.sh` | 251 | Diagnostic on a produced transcript. Run by the moderator after every review. |
+| `tests/validate-moe-transcript.sh` | 284 | Diagnostic on a produced transcript. Run by the moderator after every review. |
 | `tests/criteria.md` | 101 | Human-readable acceptance criteria. |
 
 Everything the plugin does is prose instructions read by a model. The two shell scripts check the output
@@ -33,7 +33,7 @@ She is also the only participant who can write anything. Her declared tools are
 `[Read, Grep, Glob, Bash, Write, Edit, Task]`, and the `Write` capability exists solely to produce the
 state file and the transcript.
 
-## Execution model: one spawn, four resumes
+## Execution model: one spawn, three resume phases
 
 ```mermaid
 flowchart TB
@@ -62,9 +62,9 @@ flowchart TB
     subs -.->|"same agent_id resumed<br/>for phases 2, 3, and 4"| MOD
 ```
 
-The eight personas are spawned once, in parallel, during Kick-Off. Every later phase **resumes** those
-same agent IDs rather than spawning new ones. That is what lets Beyonce Carter argue in the Huddle from
-what she personally said in Phase 1.
+The eight personas are spawned once, in parallel, during Kick-Off. Phases 2, 3, and 4 **resume** those
+same agent IDs rather than spawning new ones; Synthesis resumes no one, because the moderator aggregates
+alone. That is what lets Beyonce Carter argue in the Huddle from what she personally said in Phase 1.
 
 The agent IDs live in `moe-state.json` and are mirrored into task metadata, so either can reconstruct the
 run after a compaction.

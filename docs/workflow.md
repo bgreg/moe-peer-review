@@ -175,10 +175,25 @@ seeds them deliberately, prioritizing pairs whose concerns overlap but do not al
 ### Rules
 
 - Agents recognize each other's expertise but never hesitate to push back on claims.
-- **ChaoticCarl demands "explain like I'm five" from every expert.** If an expert cannot explain their
-  concern simply, he says so loudly.
+- **ChaoticCarl demands "explain like I'm five".** If an expert cannot explain their concern simply, he
+  says so loudly. He must be seeded against **at least three different experts**, chosen from whoever
+  raised the Blockers that touch his workflow, and his threads are seeded **first**, before
+  expert-versus-expert threads consume the budget. One exchange is not participation for him: he is the
+  only panelist who can show whether a Blocker survives contact with the person who runs the tool. The
+  rule has a floor and an ordering because two consecutive runs seeded him against only one or two
+  experts.
 - The moderator intervenes only for three reasons: the conversation is circular, someone is being
   steamrolled, or ChaoticCarl is being ignored. She calls "last word" when exchanges plateau.
+
+### Completing the relay is mandatory
+
+Every `**A** -> **B**:` message printed in the Huddle must be followed by one of exactly three things:
+B's reply, the sender's own "I have nothing more to add", or an explicit moderator last-word line saying
+why the thread ends there. Anything else is a dropped relay, not a completed exchange, and the moderator
+counts the arrows before printing the participation checklist to catch it.
+
+A dropped relay addressed to ChaoticCarl is the specific failure this phase is built to prevent. If the
+budget runs out with his message unanswered, it is spent there first.
 
 ### Mandatory participation
 

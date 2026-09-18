@@ -30,9 +30,10 @@ personas whose value comes from *not* reasoning deeply. A junior developer's con
 user's complaint are both signals about surface legibility, and a cheaper model produces them at least as
 authentically as an expensive one.
 
-## Two shared constraints
+## Three shared constraints
 
-Every reviewer card carries the same two rules, and they are what keep the characters from becoming noise.
+Every reviewer card carries the same three rules, and they are what keep the characters from becoming
+noise.
 
 **Stay in your lane.** Review only your domain. A cross-lane concern gets one sentence, flagged as
 "outside my lane but worth noting", and nothing more. Without this, eight reviewers produce eight copies
@@ -51,6 +52,17 @@ ChaoticCarl gets his own version of the ladder, because he does not think in sev
 > **Blocker:** "I literally cannot do my job because of this."
 > **Warning:** "This is annoying and I'm going to complain about it every week."
 > **Suggestion:** "It would be nice if... never mind, you probably won't fix it anyway."
+
+**Read-only tools, with a search fallback.** Every reviewer holds `[Read, Glob, Grep, Bash]` and no
+`Write` or `Edit`. The card spells out what Bash is for: reading and searching, never a command that
+modifies the repository, installs a dependency, or changes git state. It also requires falling back to
+`grep -rn` through Bash when `Grep` is unavailable, rather than reporting a finding as unverifiable
+when a second search route existed. And it states that the review packet is not the boundary of the
+evidence: a claim about what a dependency does is settled by reading the installed source and citing
+it by file:line.
+
+The moderator is the exception. Her card has no Tool Constraints section because she is the one
+participant who may write, and she holds `Write`, `Edit`, and `Task` on top of the reviewers' set.
 
 ---
 
