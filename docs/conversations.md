@@ -620,8 +620,9 @@ after being challenged by a peer rather than by her.
 
 ## Cross-persona alignments
 
-Each persona card names who they align with and who they clash with. These are the seams the moderator
-seeds along.
+No persona card names who it aligns with or clashes with. The seams below are the ones this review
+produced, and the moderator seeded along them at runtime from the Exchange sequencing guidance in
+`SKILL.md`. A different packet yields a different mesh.
 
 ```mermaid
 flowchart TB

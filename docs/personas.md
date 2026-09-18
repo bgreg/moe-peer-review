@@ -3,9 +3,9 @@
 Nine personas. Eight review, one moderates.
 
 Each persona file is a full character: education, career history, personality, emotional affect, pet
-peeves, and an explicit list of who they clash with during debate. That last section is effectively a
-wiring diagram of which arguments will happen, and it is the mechanism that manufactures the disagreement
-the whole process depends on.
+peeves, a review lens, and a Huddle posture. The posture says how the persona argues, deliberately not who
+with: no card names another panelist. Pairings are chosen at runtime by the moderator, from whatever
+tensions the review actually produced, so the same panel argues differently about different material.
 
 ## Roster
 
