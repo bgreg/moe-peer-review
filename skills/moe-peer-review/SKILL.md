@@ -7,9 +7,41 @@ description: Orchestrate a Mixture of Experts (MOE) peer review with 9 personas 
 
 This process is strictly advisory. The MOE review produces suggestions, not changes. NEVER apply any recommendation, fix, or modification to project files based on review findings. All output stays in the conversation thread and the review transcript files. After the synthesis is complete, present the full aggregated feedback to the user and wait for explicit instructions on which items (if any) to act on.
 
-# Moderator Persona
+# Roles
 
-You are Dr. Nina Simone-Bennett for the duration of this review. Read the moderator agent file at `${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md` and embody her facilitation style, communication patterns, and review standards throughout. She runs the review from the main conversation context to preserve live output visibility for the user.
+Three roles, and the session reading this file holds only the first.
+
+**The observer** is the main conversation. It launches the moderator, prints every phase block the
+moderator sends it, verbatim and in order, and after the moderator hands back it runs the validator
+and spawns the quality-assessment agent. It makes no review decisions. It does not verify claims,
+seed threads, nudge panelists or call time. If the user asks the observer a question mid-review, the
+observer answers from what it has been sent; it does not reach into the review.
+
+**The moderator** is Dr. Nina Simone-Bennett, a spawned agent defined at
+`${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md`. She spawns the eight personas, drives every phase,
+verifies in Phase 3, runs the Huddle, assembles the transcript and state file, and sends each phase
+to the observer as it completes. Everything below that says "the moderator" is addressed to her.
+
+**The panelists** are the eight personas in the roster.
+
+## Launch
+
+The observer spawns the moderator with the `moe-moderator` subagent type and this brief:
+
+```
+You are Dr. Nina Simone-Bennett. Run a full MOE peer review of: <target, e.g. branch name or path>
+Repository: <absolute path>
+Output directory: <resolved project-data path>/moe-reviews/
+Skill file: ${CLAUDE_PLUGIN_ROOT}/skills/moe-peer-review/SKILL.md - read it in full before doing
+anything, then follow it phase by phase.
+
+Send each phase's thread to `main` with SendMessage as soon as that phase closes, verbatim, in the
+Live Thread format. Send the Synthesis the same way, then hand back with the transcript path.
+```
+
+The observer then waits. It does not poll. Phase blocks arrive as messages; the observer prints each
+one as received, adding nothing. The moderator's hand-back carries the transcript path; the observer
+runs Self-Validation and Quality Assessment from that path.
 
 # Agent Roster
 
@@ -89,9 +121,12 @@ and applies to the moderator's Bash access exactly as it applies to Edit and Wri
 
 ## Live Thread Output
 
-Print the review as a group chat conversation so the user can watch it unfold in real time. The thread should read like an iMessage group thread: persona speaks, moderator responds, next persona speaks, moderator responds.
+The user watches the review as a group chat. The moderator produces it; the observer displays it.
+Wherever this file says "print", the moderator sends that block to `main` with `SendMessage`, and
+the observer prints it verbatim on arrival. The thread should read like an iMessage group thread:
+persona speaks, moderator responds, next persona speaks, moderator responds.
 
-After all agents return from a phase, print the exchange interleaved per persona. Format:
+After all agents return from a phase, send the exchange interleaved per persona. Format:
 
 ```
 ## Phase Name
@@ -163,7 +198,7 @@ Never condense the moderator's verification responses; the specific evidence is 
 
 ## State File
 
-Maintain a `moe-state.json` file in the review output directory. This is the source of truth for review progress and survives context compaction.
+The moderator maintains a `moe-state.json` file in the review output directory. This is the source of truth for review progress and survives context compaction. The observer may read it to answer a status question; the observer never writes it.
 
 Write to this file on EVERY state change (phase transition, agent spawn, agent done, exchange count update). Format:
 
@@ -196,7 +231,7 @@ Write to this file on EVERY state change (phase transition, agent spawn, agent d
 
 ## Todo List
 
-Create a task list at the start of every review using TaskCreate. Update both the state file AND the task list atomically on every state change. Never update one without the other.
+If TaskCreate is available to the moderator, create a task list at the start of every review and update both the state file AND the task list atomically on every state change. If it is not available, say so once in the first phase block sent to the observer and rely on the state file alone.
 
 Tasks to create:
 
@@ -213,11 +248,14 @@ TaskUpdate(taskId: "1", metadata: {"beyonce_id": "abc", "jill-scott_id": "def", 
 
 ## Recovery After Compaction
 
-If context was compacted, the moderator's first action is:
+If the moderator's context was compacted, her first action is:
 1. Read `moe-state.json` from the output directory
-2. Call TaskList to see current task status
-3. Reconcile state file with task list
-4. Resume from the current phase using agent IDs from state file or task metadata
+2. Call TaskList if available and reconcile it with the state file
+3. Resume from the current phase using the persona agent IDs in the state file
+
+If the observer's context was compacted, its first action is to read `moe-state.json` for the
+moderator's agent ID and send her one message asking which phase she is in. The observer does not
+restart the review.
 
 # Workflow
 
@@ -266,7 +304,7 @@ print.
 
 ### Step 1.2: Present to Panel
 
-Spawn 8 Task agents in parallel using the subagent_type from the roster.
+The moderator spawns the 8 persona agents in parallel with the Agent tool, using the subagent_type from the roster, and records every agent ID in `moe-state.json` immediately.
 
 For the 6 static personas:
 
@@ -322,7 +360,7 @@ any that are wrong:
 
 Agents ask the moderator focused questions. The moderator answers using source material, code verification, and technical knowledge.
 
-Resume each of the 8 Task agents:
+Resume each of the 8 persona agents:
 
 ```
 The moderator has received all initial impressions from the panel. Now ask your clarifying questions.
@@ -746,7 +784,7 @@ Create a `moe-reviews/` subdirectory inside `<project-data>/branches/<branch>/` 
 
 ## Self-Validation
 
-After writing the transcript file, run the transcript validator and print its full output to the user:
+The observer does this, after the moderator hands back with the transcript path. Run the transcript validator and print its full output to the user:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/tests/validate-moe-transcript.sh <path-to-transcript.md>
@@ -758,7 +796,7 @@ Report the validator output verbatim and interpret it: each failure indicates th
 
 ## Quality Assessment and Plugin Improvement
 
-After running the validator, capture its full output (save it to `[OUTPUT_DIR]/moe-reviews/validator-output.txt`) and spawn a background Task agent. Feed it BOTH the transcript AND the validator output. Its job is to score the review and to propose concrete improvements to THIS PLUGIN so the observed problems do not recur.
+The observer does this. After running the validator, capture its full output (save it to `[OUTPUT_DIR]/moe-reviews/validator-output.txt`) and spawn a background agent with the Agent tool. Feed it BOTH the transcript AND the validator output. Its job is to score the review and to propose concrete improvements to THIS PLUGIN so the observed problems do not recur.
 
 ```
 Read the MOE transcript at [PATH] and the validator output at [VALIDATOR_OUTPUT_PATH].
