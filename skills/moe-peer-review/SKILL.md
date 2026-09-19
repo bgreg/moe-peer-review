@@ -19,7 +19,7 @@ observer answers from what it has been sent; it does not reach into the review.
 
 **The moderator** is Dr. Nina Simone-Bennett, a spawned agent defined at
 `${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md`. She spawns the eight personas, drives every phase,
-verifies in Phase 3, runs the Huddle, assembles the transcript and state file, and sends each phase
+verifies in Phase 2, runs the Huddle, assembles the transcript and state file, and sends each phase
 to the observer as it completes. Everything below that says "the moderator" is addressed to her.
 
 **The panelists** are the eight personas in the roster.
@@ -95,7 +95,7 @@ Bash. Bash is restricted to read-only inspection: `git log`, `git diff`, `git sh
 `find`, `cat`, `wc`, `ls`. A persona must never run a command that writes to the repository,
 installs anything, or mutates git state.
 
-**Personas also have `SendMessage`, used only in Phase 4.** It is how they talk to each other
+**Personas also have `SendMessage`, used only in Phase 3.** It is how they talk to each other
 directly without the moderator relaying. They have no `ListAgents`, so they cannot discover each
 other; the moderator supplies the peer roster when the Huddle opens. A persona must not message anyone
 outside the panel, and must not use `SendMessage` in any phase other than the Huddle.
@@ -170,7 +170,7 @@ Never condense the moderator's verification responses; the specific evidence is 
   `complaint -> root cause -> fix` chain in Synthesis. The validator matches ASCII only, so a Unicode
   arrow `→` in either place fails the check. Inside quoted persona content a Unicode arrow is harmless
   (for example `54→51 fields`), but prefer ASCII everywhere for consistency.
-- Every phase uses this same first-person, blockquoted chat-bubble format. This includes Phase 2 (Clarifying Questions): quote each persona's questions in first person under their own `**Name**:` header and the moderator's answer under `**Dr. Nina Simone-Bennett** -> Name:`.
+- Every phase uses this same first-person, blockquoted chat-bubble format. This includes the verification that opens Phase 2: the moderator's verification of each persona's Phase 1 findings and answers to its `Q:` lines go under `**Dr. Nina Simone-Bennett** -> Name:`, and the persona's challenge follows in first person under its own header.
 - Do NOT narrate a persona in third person in any phase. Everything inside a persona's blockquote is that
   persona speaking, in their own voice, in first person. All of these are violations:
   - "Beyonce asked about X" (third-person report)
@@ -188,10 +188,10 @@ Never condense the moderator's verification responses; the specific evidence is 
   Stage directions and editorial context belong OUTSIDE the blockquote, in the moderator's own voice,
   under a `**Dr. Nina Simone-Bennett** -> Name:` header.
 - Agent-to-agent Huddle exchanges use `**Name** -> **Name**:` with each name in its own bold and the colon outside the bold.
-- Agent-to-moderator messages (the normal shape in Phase 3) use `**Name** -> **Dr. Nina
+- Agent-to-moderator messages (the normal shape in Phase 2) use `**Name** -> **Dr. Nina
   Simone-Bennett**:` with both names bolded, exactly like an agent-to-agent label. Every name
   adjacent to an arrow is bolded, in every phase, on both sides of the arrow. The one exception is
-  the moderator's Phase 1 and Phase 2 acknowledgement header, `**Dr. Nina Simone-Bennett** -> Name:`,
+  the moderator's Phase 1 acknowledgement header, `**Dr. Nina Simone-Bennett** -> Name:`,
   which is prescribed above.
 
 # State Management
@@ -219,7 +219,6 @@ Write to this file on EVERY state change (phase transition, agent spawn, agent d
   },
   "phases": {
     "kick-off": { "status": "pending|in_progress|completed", "task_id": "" },
-    "clarifying-questions": { "status": "pending|in_progress|completed", "task_id": "" },
     "interactive-session": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
     "the-huddle": { "status": "pending|in_progress|completed", "task_id": "" },
     "synthesis": { "status": "pending|in_progress|completed", "task_id": "" }
@@ -236,10 +235,9 @@ If TaskCreate is available to the moderator, create a task list at the start of 
 Tasks to create:
 
 1. **Kick-Off** (activeForm: "Presenting material to the panel")
-2. **Clarifying Questions** (activeForm: "Panel asking clarifying questions", blockedBy: [1])
-3. **Interactive Session** (activeForm: "Agents challenging and debating", blockedBy: [2])
-4. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [3])
-5. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [4])
+2. **Interactive Session** (activeForm: "Moderator verifying, agents challenging", blockedBy: [1])
+3. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [2])
+4. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [3])
 
 Store agent IDs in task metadata so they survive compaction:
 ```
@@ -293,6 +291,13 @@ LOCAL working state, never from the remote's view of it:
     - Unpushed commits at packet time: <count, or "none">
     - Working tree: <clean | list of dirty paths>
     - Generated: <YYYY-MM-DD HH:MM local>
+    - Verification performed: <method; engines/browsers; states exercised, e.g. default, hover, focus, each theme, each viewport>
+    - Not verified: <what that method could not observe, stated plainly>
+
+The two verification lines are required. A packet that asserts coverage without naming its method and
+its blind spots produces a round of "did you test X?" that the review should not have to spend; the
+answer belongs in the packet. "Not verified: hover states, Safari, dark theme at 420px" is a complete
+and acceptable entry.
 
 Do not spawn Kick-Off agents until this header exists and its "Unpushed commits" line is either "none" or
 explicitly acknowledged in the context notes.
@@ -317,6 +322,8 @@ Context: [CONTEXT_NOTES]
 Phase 1 (Kick-Off), Step 0 (do this BEFORE any findings): the packet above may be stale. Pick 3 specific claims the context notes make about the current state (a named function, a named constant, a described fix) and verify each one against the actual repository with Read or Grep. If the packet and the repository disagree, report it as PROCESS FLAG at the very top of your response, name the exact mismatch, and review the REPOSITORY, not the packet. Do not assume you have misread the packet; the packet is the thing most likely to be wrong.
 
 Phase 1 (Kick-Off): You are receiving this material for the first time. Provide your initial impressions and reactions from your professional perspective. Note 5-7 specific observations, concerns, or areas you want to explore further. Reference exact fields, values, or details from the content.
+
+End with up to 3 questions you need answered to complete your assessment, each on its own line beginning `Q:`. The moderator answers them at the start of Phase 2. "Not documented" is a legitimate answer you may receive.
 ```
 
 For whitney-houston, prepend the dynamic specialty:
@@ -338,6 +345,8 @@ Here is what the team is building/changing:
 Context: [CONTEXT_NOTES - translated to non-technical language]
 
 Phase 1 (Kick-Off): React to this as a user. What confuses you? What frustrates you? What can't you find? What did you try that didn't work? Give 5-7 specific complaints or questions, in your own words.
+
+End with up to 3 things you want somebody to explain to you, each on its own line starting with `Q:`.
 ```
 
 ChaoticCarl has no repository access in his prompt and cannot perform Step 0. If any panelist raises a
@@ -356,50 +365,23 @@ any that are wrong:
 4. After The Huddle, `huddle_exchanges` is non-empty.
 
 
-## Phase 2: Clarifying Questions
+## Phase 2: Interactive Session
 
-Agents ask the moderator focused questions. The moderator answers using source material, code verification, and technical knowledge.
-
-Resume each of the 8 persona agents:
-
-```
-The moderator has received all initial impressions from the panel. Now ask your clarifying questions.
-
-Phase 2 (Clarifying Questions): Ask 5-7 specific questions from your professional perspective that you need answered to form your assessment. Be precise. Reference exact details from the content.
-```
-
-For ChaoticCarl, translate the prompt to non-technical language.
-
-After all 8 agents return, formulate answers using context notes, source docs, and technical knowledge. Validate factual claims by reading code and checking docs. Admit "not documented" or "untested" where gaps exist. For ChaoticCarl's complaints, translate them into the technical root cause but preserve his original wording.
-
-Print `## Phase 2: Clarifying Questions` then for each persona, print their questions and the moderator's response as an interleaved chat exchange.
-
-A persona's questions may be condensed in the transcript file under the three condensing rules
-above. **The moderator's answers may not.** Every answer keeps its verification opener, its
-file:line citations, and its verdict, in full, in every phase. If a phase header in the transcript
-says "questions and answers condensed", that phase is in violation: rewrite the header and restore
-the answers. The evidence in the moderator's answers is the record; the questions are only the
-prompt for it.
-
-Update state file and mark Clarifying Questions task as completed.
-
-Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
-any that are wrong:
-1. `current_phase` names the phase you are about to start.
-2. No earlier phase is still `pending` or `in_progress`.
-3. Every agent's `status` and `exchanges` reflect the phase just finished.
-4. After The Huddle, `huddle_exchanges` is non-empty.
-
-
-## Phase 3: Interactive Session
-
-This is the maximum-adversarial fact-checking round: **moderator versus agent.** The moderator's default posture is disbelief. The moderator believes nothing an agent asserts until the agent proves it, or until the moderator independently verifies it against source material and code. The burden of proof is on the agent. The moderator's job here is not to collect opinions but to try to falsify every claim: assume each finding is wrong and hunt for the evidence that would disprove it. A claim survives only when it withstands that attempt. (Agent-versus-agent debate happens later, in Phase 4: The Huddle.)
+This is the maximum-adversarial fact-checking round: **moderator versus agent.** The moderator's default posture is disbelief. The moderator believes nothing an agent asserts until the agent proves it, or until the moderator independently verifies it against source material and code. The burden of proof is on the agent. The moderator's job here is not to collect opinions but to try to falsify every claim: assume each finding is wrong and hunt for the evidence that would disprove it. A claim survives only when it withstands that attempt. (Agent-versus-agent debate happens later, in Phase 3: The Huddle.)
 
 Agents challenge the moderator, make suggestions, and push back. The moderator does not simply accept any assertion; every claim is verified or refuted against source material and code.
 
+**The phase opens with the moderator's verification, not with a prompt.** Before resuming anyone,
+verify every finding each persona filed in Phase 1 against the repository, and answer every `Q:` line
+each persona attached. Every verification and every answer uses one of the four literal openers
+below. "Not documented" and "not verifiable from source" are legitimate answers; write them rather
+than inventing coverage. For ChaoticCarl, translate each complaint into its technical root cause but
+preserve his original wording. This verification is the moderator's opening block for each persona,
+and it is what the persona will be challenging.
+
 **What counts as an exchange**: one exchange is one resume of an agent plus that agent's reply. A
-prompt that bundles five questions is one exchange, not five. Phase 1 and Phase 2 resumes are not
-counted here; this line counts Phase 3 only.
+prompt that bundles five questions is one exchange, not five. The Phase 1 spawn is not
+counted here; this line counts Phase 2 only.
 
 **Exchange cap**: 3 exchanges per agent for this round. One is the baseline. Spend a second or a
 third only on an agent whose claim you are actively trying to falsify and who answered your last
@@ -407,7 +389,7 @@ probe with new evidence. Do not resume an agent that has stopped producing new e
 what the cap is for.
 
 **Satisfaction**: Every agent's stance is printed individually, in the agent's own blockquoted
-voice, at the end of its Phase 3 message. There are exactly two permitted forms and the literal
+voice, at the end of its Phase 2 message. There are exactly two permitted forms and the literal
 strings matter, because they are what the transcript validator counts:
 
 ```
@@ -431,7 +413,7 @@ Open items (blockers, conditions, unresolved concerns) are carried forward to Th
 Synthesis; the moderator does not resume agents for additional interactive rounds.
 
 **Exchange count tracking**: After the round, print one line naming the unit, and the count must
-equal the number of `**Persona** -> **Dr. Nina Simone-Bennett**:` blocks that persona has in Phase 3:
+equal the number of `**Persona** -> **Dr. Nina Simone-Bennett**:` blocks that persona has in Phase 2:
 
 ```
 Exchange counts this round (one exchange = one resume plus reply; cap 3): Beyonce Carter: 2,
@@ -446,11 +428,11 @@ carried to the Huddle unresolved." That sentence is the only reason this account
 Resume all 8 agents:
 
 ```
-Here are answers to your previous questions:
-[ANSWERS]
+Here is the moderator's verification of each finding you filed in Phase 1, and an answer to each question you asked:
+[VERIFICATION]
 
-Phase 3 (Interactive Session): Based on these answers:
-1. Challenge any answers that don't fully address your concerns
+Phase 2 (Interactive Session): Based on this verification:
+1. Challenge any verification or answer that does not fully address your concerns
 2. Provide specific recommendations (what to add, change, or call out)
 3. Push back on any claims you believe are incorrect or insufficiently supported
 4. State any standards or requirements you'd want documented
@@ -490,7 +472,7 @@ State your final stance explicitly: either "I am satisfied" (zero open items) or
   cannot count.
 - **Adversarially re-test every Blocker-severity finding before accepting it.** For each claim you would carry to Synthesis as a Blocker, do not stop at confirming the structural fact; try to disprove that the fact actually causes the claimed harm (check the surrounding call path, guards, and any compensating step). A Blocker that was only structurally confirmed, never attacked, is not verified.
 
-  Record every re-test in a table printed at the end of Phase 3, before the self-check. Every Blocker that
+  Record every re-test in a table printed at the end of Phase 2, before the self-check. Every Blocker that
   appears in the Synthesis Verdict Scoreboard must have a row here. A Blocker with no row is not eligible
   for Synthesis:
 
@@ -501,7 +483,7 @@ State your final stance explicitly: either "I am satisfied" (zero open items) or
   | ... | ... | ... | Survived / Downgraded to Warning / Refuted |
 - Seek consensus but accept "no consensus" as a valid outcome. When two agents take opposing positions on the same issue and neither concedes, label it explicitly: "No consensus between [Agent A] and [Agent B] on [topic]. Both positions carried to synthesis."
 - Name disagreements explicitly: "[Agent A] and [Agent B] disagree on X."
-- **Consensus is a required output, not a conditional one.** At the end of Phase 3 AND at the end of The
+- **Consensus is a required output, not a conditional one.** At the end of Phase 2 AND at the end of The
   Huddle, print a `Consensus Ledger` block. If there were no unresolved disagreements, print
   `Consensus Ledger: no unresolved disagreements this round.` Never print nothing.
 
@@ -527,14 +509,15 @@ be sent back once with the reminder repeated.
 - Whitney Houston-Davis: "Ground at least one finding in a named principle from your assigned specialty, and say which principle."
 - ChaoticCarl: "Stay in plain language. Use zero technical terms. Say what you tried and what happened, not what the code does."
 
-Print `## Phase 3: Interactive Session`. This phase produces exactly 2N blocks for N personas: one
-`**Persona Name** -> **Dr. Nina Simone-Bennett**:` block and one `**Dr. Nina Simone-Bennett** -> Persona Name:`
-block, in that order, for EVERY persona. Eight personas means sixteen blocks. There are no exceptions: a
+Print `## Phase 2: Interactive Session`. This phase produces exactly 3N blocks for N personas, in this
+order for EVERY persona: the moderator's verification block (`**Dr. Nina Simone-Bennett** -> Persona Name:`),
+the persona's challenge (`**Persona Name** -> **Dr. Nina Simone-Bennett**:`), and the moderator's response
+(`**Dr. Nina Simone-Bennett** -> Persona Name:`). Eight personas means twenty-four blocks. There are no exceptions: a
 persona who states "I am satisfied" still gets a moderator response naming which claims were verified and
 which were not. ChaoticCarl is a persona and is included; his prompt is translated to plain language, but
 he is never skipped.
 
-Before printing the phase, count your moderator blocks. If that count does not equal the number of
+Before printing the phase, count your moderator blocks. If that count does not equal twice the number of
 personas, you have skipped someone. Go back and answer them. This is the maximum-adversarial round; an
 unanswered claim is an unverified claim, and an unverified claim must not reach Synthesis.
 
@@ -551,11 +534,11 @@ any that are wrong:
 4. After The Huddle, `huddle_exchanges` is non-empty.
 
 
-## Phase 4: The Huddle
+## Phase 3: The Huddle
 
 This is the **agent-versus-agent** round, run as grand rounds. Every finding from every panelist
 goes on the board. Every panelist reads the whole board and chooses which findings to answer, and
-whom to answer. Where Phase 3 tested each claim against evidence, the Huddle tests each claim
+whom to answer. Where Phase 2 tested each claim against evidence, the Huddle tests each claim
 against the other experts' judgment.
 
 **The moderator has two jobs here and only two: make sure everyone participates, and make sure it
@@ -564,13 +547,13 @@ paraphrase one panelist's position to another, and does not brief either side of
 The moderator is not in the message path. Personas write to each other directly with
 `SendMessage`.
 
-**Verification does not happen here.** Phase 3 is where claims are falsified against evidence. If
-the moderator finds themselves checking a number mid-Huddle, that is Phase 3 work arriving late.
+**Verification does not happen here.** Phase 2 is where claims are falsified against evidence. If
+the moderator finds themselves checking a number mid-Huddle, that is Phase 2 work arriving late.
 Note it for the next run and let the Huddle proceed.
 
 ### The board
 
-Before the Huddle opens, the moderator compiles the Findings Board: every panelist's Phase 3 final
+Before the Huddle opens, the moderator compiles the Findings Board: every panelist's Phase 2 final
 stance, verbatim, in one document. All eight, in roster order, each under its own persona name.
 Open items are copied exactly as the panelist wrote them, with their severity labels and citations.
 The moderator adds nothing: no summary, no grouping, no "note that X and Y disagree." If two
@@ -692,7 +675,7 @@ Any panelist at zero after the nudge is a `[GAP]` with the reason written. "No g
 about the text above it; do not write it without counting. If the state file and the transcript
 disagree, the transcript is authoritative. Correct the state file, never the transcript.
 
-Print `## Phase 4: The Huddle`, then every exchange in chronological order in the agent-to-agent
+Print `## Phase 3: The Huddle`, then every exchange in chronological order in the agent-to-agent
 format, then the cross-check results, then the participation checklist.
 
 Update state file and mark The Huddle task as completed.
@@ -704,7 +687,7 @@ correcting any that are wrong:
 3. Every agent's `status` and `exchanges` reflect the phase just finished.
 4. After The Huddle, `huddle_exchanges` is non-empty.
 
-## Phase 5: Synthesis
+## Phase 4: Synthesis
 
 After all agents declare done or hit limits, the moderator launches the final aggregation.
 

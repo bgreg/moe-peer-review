@@ -27,7 +27,7 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 - Terminology: "moderator" not "orchestrator", "Dr. Nina Simone-Bennett" named
 - Naming: "ChaoticCarl" with abbreviation prevention, no bare "Carl"
 - Required sections: Guardrail, Roster, Dynamic Assignment, Naming, Tool Scope, Live Thread, State Management, The Huddle
-- Phase structure: all 5 phases referenced (Kick-Off through Synthesis)
+- Phase structure: all 4 phases referenced (Kick-Off, Interactive Session, The Huddle, Synthesis)
 - Exchange cap mentioned
 - Satisfaction handling rule present
 - iMessage format: interleaved, blockquoted, "Dr. Nina Simone-Bennett ->" pattern
@@ -43,11 +43,16 @@ Validates plugin structure, SKILL.md, all 9 agent files, and hooks:
 
 After running the MOE skill, verify:
 
+### Observer and Moderator Split
+- The main session spawns Dr. Nina Simone-Bennett as a `moe-moderator` agent and prints what she sends
+- The main session makes no review decisions and does not verify, seed, nudge, or call time
+- The moderator spawns the eight personas herself and records their IDs in moe-state.json
+
 ### Phase Discipline
-- All 5 phases executed in order (Kick-Off, Clarifying Questions, Interactive Session, The Huddle, Synthesis)
-- Exchange caps respected (3 per agent in Phase 3, 4 messages sent per agent in The Huddle)
-- Exchange-count line printed at the end of Phase 3
-- Every persona received a moderator response in Phase 3 (2N blocks for N personas)
+- All 4 phases executed in order (Kick-Off, Interactive Session, The Huddle, Synthesis)
+- Exchange caps respected (3 per agent in Phase 2, 4 messages sent per agent in The Huddle)
+- Exchange-count line printed at the end of Phase 2
+- Every persona received the moderator's opening verification and a response in Phase 2 (3N blocks for N personas)
 - Blocker Re-Test Ledger present, with a row for every Blocker reaching Synthesis
 
 ### Moderator Rigor (Dr. Nina Simone-Bennett)
@@ -70,7 +75,7 @@ After running the MOE skill, verify:
 - Task descriptions use full persona names
 
 ### Tool Scope
-- Moderator uses only Read, Grep, Glob, Bash, Write, Edit, Task
+- Moderator has full tool access and writes only to the review output directory
 - Persona Bash commands are read-only inspection only (git log/diff/show, grep, rg, find, cat, wc, ls)
 
 ### Review-Only Guardrail
@@ -79,15 +84,16 @@ After running the MOE skill, verify:
 
 ### State Management
 - moe-state.json created and updated throughout
-- Todo list tasks created and updated in sync with state file
+- Todo list tasks created and updated in sync with state file when TaskCreate is available to the moderator
 - Agent IDs stored in task metadata
 
 ### The Huddle
-- Agents engage directly with each other
-- ChaoticCarl demands ELI5 breakdowns
-- Agents recognize expertise but challenge claims
+- Every persona receives the full Findings Board (all eight Phase 2 stances, verbatim) and the peer roster
+- Personas choose whom to engage and message each other directly with SendMessage
+- The moderator is not in the message path; she checks participation, nudges anyone at zero once with no content, and calls time after at most two rounds
+- ChaoticCarl reads the board and picks like everyone else; the participation check confirms he was answered
+- SENT/RECEIVED logs collected from every persona and cross-checked pairwise before the transcript is printed
 - Best ideas surface through debate
-- Moderator intervenes only for circular conversations or steamrolling
 
 ### Synthesis
 - Verdict Scoreboard with all 8 personas

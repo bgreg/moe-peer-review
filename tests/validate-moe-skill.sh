@@ -113,7 +113,6 @@ done
 printf "\nPhase Structure\n"
 phases=(
   "Phase 1: Kick-Off"
-  "Phase 2: Clarifying Questions"
   "Interactive Session"
   "The Huddle"
   "Synthesis"
