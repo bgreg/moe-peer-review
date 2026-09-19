@@ -19,7 +19,7 @@ and chooses whom to engage, so the same panel argues differently about different
 | Doechii | PCI / HIPAA Compliance | `doechii` | sonnet |
 | Whitney Houston-Davis | Domain Specialist | `whitney-houston` | opus |
 | ChaoticCarl | End User | `chaotic-carl` | haiku |
-| Dr. Nina Simone-Bennett | Moderator | not spawnable | fable |
+| Dr. Nina Simone-Bennett | Moderator | `moe-moderator` | fable |
 
 Names are exact and never abbreviated. `ChaoticCarl` is one word. Both validators check this.
 
