@@ -8,19 +8,20 @@ The review is **strictly advisory**. It produces suggestions, never changes. All
 conversation and in review-transcript files; nothing in your project is modified.
 
 ```
-"peer review this"  ->  9 personas  ->  5 phases  ->  synthesis  ->  STOP
+"peer review this"  ->  9 personas  ->  4 phases  ->  synthesis  ->  STOP
 ```
 
 ## What it does
 
 Given content to review (a design, config, mockup, technical doc, code, or plan), the plugin:
 
-1. Presents the material to an 8-persona panel (Kick-Off).
-2. Collects clarifying questions and answers them against source material.
-3. Runs one maximum-adversarial round between the panel and the moderator, where her default posture is
-   disbelief and every claim is verified, refused, or refuted.
-4. Runs "The Huddle" — direct agent-to-agent challenges until the strongest ideas surface.
-5. Synthesizes a verdict scoreboard, blockers, warnings, and prioritized action items, then stops.
+1. Presents the material to an 8-persona panel, who return findings and up to three questions each (Kick-Off).
+2. Opens the adversarial round with the moderator's verification of every finding and an answer to every
+   question, then lets the panel challenge her; her default posture is disbelief and every claim is
+   verified, refused, or refuted (Interactive Session).
+3. Runs "The Huddle" as grand rounds: every persona holds every other persona's findings and chooses whom
+   to engage, messaging directly, with the moderator out of the path.
+4. Synthesizes a verdict scoreboard, blockers, warnings, and prioritized action items, then stops.
 
 Output reads like a live group chat so you can watch the deliberation unfold.
 
@@ -29,8 +30,8 @@ Output reads like a live group chat so you can watch the deliberation unfold.
 A single reviewer has one blind-spot map. Eight reviewers with deliberately incompatible priorities have
 almost none, provided something forces them to argue.
 
-Findings are squeezed along two independent axes before they reach you. **Phase 3 tests claims against
-evidence**, with the moderator trying to falsify each one against the actual code. **Phase 4 tests claims
+Findings are squeezed along two independent axes before they reach you. **Phase 2 tests claims against
+evidence**, with the moderator trying to falsify each one against the actual code. **Phase 3 tests claims
 against other experts**, with the moderator stepping out entirely. The bet is that these two filters fail
 in different ways, so what survives both is unusually likely to be real.
 
@@ -43,16 +44,23 @@ In practice the second filter produces findings no individual persona reached al
 |---|---|
 | [Architecture](docs/architecture.md) | The parts, the execution model, state, guardrails, self-validation |
 | [The Panel](docs/personas.md) | All nine personas, their lenses, and the two assigned per run |
-| [Workflow](docs/workflow.md) | The five phases in order, with the prompts each one sends |
+| [Workflow](docs/workflow.md) | The four phases in order, with the prompts each one sends |
 | [Conversations](docs/conversations.md) | Annotated example exchanges and the interaction map |
 
 A single-page visual version of all four is at [`docs/index.html`](docs/index.html).
+
+## Who runs it
+
+The session you are talking to does not run the review. It spawns the moderator, prints every phase she
+sends back as it arrives, and after she hands back it runs the validator. It makes no review decisions.
+The moderator spawns the eight personas herself, drives every phase, and messages each phase's thread to
+the main session so you can watch it happen.
 
 ## The panel
 
 | Persona | Role | Model |
 |---------|------|-------|
-| Dr. Nina Simone-Bennett | Moderator / facilitator | fable (declared; she runs in main context) |
+| Dr. Nina Simone-Bennett | Moderator / facilitator, spawned agent with full tool access | fable |
 | Beyonce Carter | Sr. Engineer | opus |
 | Jill Scott-Williams | Jr. Developer | haiku |
 | Janelle Monae Robinson | DevOps Engineer | sonnet |
@@ -70,7 +78,8 @@ user of the thing under review.
 
 The guarantee is layered rather than absolute. The eight persona agents are declared without `Write`
 or `Edit`, and their `Bash` access is restricted by instruction to read-only inspection. The moderator
-can write, but only to the review output directory. Every run ends with a literal `STOP` before any
+has full tool access and writes, by instruction, only to the review output directory. The main session
+makes no review decisions and touches no project file. Every run ends with a literal `STOP` before any
 action is taken.
 
 ## Install
@@ -107,14 +116,17 @@ Give the panel three things:
 2. **Context notes.** What it is for and why it exists.
 3. **Source material.** Docs or notes the moderator can answer questions from.
 
-Phase 2 is where a review either becomes grounded or drifts, and it can only be grounded against material
-you provided or code the personas can read for themselves.
+The opening of Phase 2, where the moderator verifies every finding and answers every question, is where a
+review either becomes grounded or drifts, and it can only be grounded against material you provided or
+code the personas can read for themselves.
 
 **For code reviews, build the packet from local state.** Use `git diff <base>...HEAD`, never
 `gh pr diff`, which reflects only pushed commits. The workflow requires a provenance header naming the
 command, the HEAD SHA, and any unpushed commits, and the moderator refuses to start without it. This rule
 exists because a real review was launched against a diff missing two local commits, and seven of eight
-panelists caught it by reading the repository directly.
+panelists caught it by reading the repository directly. The header also requires two verification lines,
+what was tested and what was not, because a later review spent a full round asking questions that belonged
+in the packet.
 
 ## Output location
 
@@ -135,7 +147,7 @@ location you prefer when the review starts.
 
 ```
 .claude-plugin/     plugin.json and the marketplace manifest
-agents/             nine persona cards, one per file
+agents/             nine agent files: eight personas and the moderator
 skills/             SKILL.md, the entire workflow
 hooks/              SubagentStop and PreCompact hooks
 tests/              two shell validators plus acceptance criteria

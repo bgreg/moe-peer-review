@@ -4,8 +4,8 @@ Nine personas. Eight review, one moderates.
 
 Each persona file is a full character: education, career history, personality, emotional affect, pet
 peeves, a review lens, and a Huddle posture. The posture says how the persona argues, deliberately not who
-with: no card names another panelist. Pairings are chosen at runtime by the moderator, from whatever
-tensions the review actually produced, so the same panel argues differently about different material.
+with: no card names another panelist. In the Huddle every persona receives every other persona's findings
+and chooses whom to engage, so the same panel argues differently about different material.
 
 ## Roster
 
@@ -30,9 +30,9 @@ Scott-Williams and ChaoticCarl, the two personas whose value comes from *not* re
 developer's confusion and a frustrated user's complaint are both signals about surface legibility, and a
 cheaper model produces them at least as authentically as an expensive one.
 
-The moderator's seat is the one that does not spend anything. Her card declares `fable`, but she is not
-spawnable: she runs in the main conversation context, on whatever model that session is using. Her
-`model:` field records the intended tier and has no runtime effect.
+The moderator's seat is the most expensive one. Her card declares `fable`, and since v3.0 she is a
+spawned agent, so that is the model she runs on. She holds full tool access because she spawns the panel,
+runs falsification probes, writes the transcript, and messages both the personas and the main session.
 
 ## Three shared constraints
 
@@ -229,8 +229,9 @@ acceptance is explicitly forbidden:
 
 **Facilitation.** She draws out quiet participants, redirects grandstanding, and protects ChaoticCarl from
 being dismissed, because his complaints have a track record of revealing problems the technical experts
-missed. During the Huddle she steps back entirely, intervening only when a conversation goes circular,
-someone is steamrolled, or ChaoticCarl is ignored.
+missed. During the Huddle she is out of the message path entirely. She compiles the board of every
+finding, checks that everyone participates, nudges anyone silent once, confirms ChaoticCarl was answered,
+and calls time after at most two rounds.
 
 **Pet peeves.** Vague concerns with no evidence. Appeals to authority instead of evidence. Dismissing a
 concern without engaging its substance. Talking past each other instead of to each other.

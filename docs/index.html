@@ -237,7 +237,7 @@
     <div class="col">
       <p class="kicker">A single reviewer has one blind-spot map. Eight reviewers with deliberately incompatible priorities have almost none, provided something forces them to argue.</p>
       <p>Ordinary AI review collapses to one voice with one set of instincts. This plugin breaks that voice into eight agents who cannot agree by construction: a security engineer who reads everything as an attack surface, a compliance officer who reads it as an audit exhibit, and a furious non-technical end user who cannot read it at all.</p>
-      <p>Findings are squeezed along two independent axes before reaching you. <strong>Phase 3 tests claims against evidence</strong>, with the moderator trying to falsify each one against the actual code. <strong>Phase 4 tests claims against other experts</strong>, with the moderator stepping out entirely. The bet is that these two filters fail differently, so what survives both is unusually likely to be real.</p>
+      <p>Findings are squeezed along two independent axes before reaching you. <strong>Phase 2 tests claims against evidence</strong>, with the moderator trying to falsify each one against the actual code. <strong>Phase 3 tests claims against other experts</strong>, with the moderator stepping out entirely. The bet is that these two filters fail differently, so what survives both is unusually likely to be real.</p>
     </div>
     <div class="note">
       <div class="note-tag">Review-only, and it is enforced</div>
@@ -248,7 +248,7 @@
   <section id="panel">
     <div class="sec-head"><span class="sec-num">02</span><h2>The panel</h2></div>
     <div class="col">
-      <p>Each persona file is a full character: education, career history, emotional affect, pet peeves, a review lens, and a Huddle posture that says how the persona argues, deliberately not who with. No card names another panelist. The moderator picks the pairings at runtime from whatever tensions the review actually produced.</p>
+      <p>Each persona file is a full character: education, career history, emotional affect, pet peeves, a review lens, and a Huddle posture that says how the persona argues, deliberately not who with. No card names another panelist. In the Huddle every persona receives every other persona's findings and picks whom to engage from whatever tensions the review actually produced.</p>
       <p>Three constraints keep the characters from becoming noise. <strong>Stay in your lane</strong> forbids reviewing outside your domain, capped at one sentence for cross-lane concerns. <strong>Graduated severity</strong> forces every finding into one of three buckets. <strong>Tool constraints</strong> hold every reviewer to reading and searching, and require falling back to <code>grep -rn</code> through Bash rather than calling a finding unverifiable when a second search route existed.</p>
     </div>
 
@@ -311,7 +311,7 @@
       </div>
       <div class="np" style="--tier:var(--fable)">
         <div class="np-top"><div class="np-name">Dr. Nina Simone-Bennett</div><div class="np-model">fable</div></div>
-        <div class="np-role">Moderator &middot; not a subagent</div>
+        <div class="np-role">Moderator &middot; spawned agent, full tool access</div>
         <p class="np-lens">PhD in Group Decision Science, running an adapted Delphi method. The only participant who may write, and only to the review output directory.</p>
         <p class="np-tell">"What's your evidence for that?" Draws out quiet participants, protects ChaoticCarl from dismissal.</p>
       </div>
@@ -333,13 +333,13 @@
   <section id="exec">
     <div class="sec-head"><span class="sec-num">03</span><h2>How it executes</h2></div>
     <div class="col">
-      <p>The most important structural decision: <strong>the moderator is not a subagent.</strong> Her file says so explicitly. The main conversation reads it and becomes her.</p>
-      <p>The reason is visibility. A subagent's work is compressed into a final report, and only its return value reaches you. Because the moderator runs in the main context, every exchange prints live and you watch the review happen.</p>
-      <p>The eight personas are spawned once, in parallel, then <em>resumed</em>, never respawned. Their agent IDs live in <code>moe-state.json</code>, which is what lets a persona carry its Phase 1 memory into Phase 4, and what makes recovery after context compaction possible.</p>
+      <p>The most important structural decision: <strong>the moderator is a spawned agent, and the main conversation only observes.</strong> The session you are talking to launches her, prints every phase she sends it, and makes no review decisions. She spawns the eight personas herself and holds full tool access.</p>
+      <p>Visibility is kept by messaging, not by placement. At the close of every phase she sends that phase's thread to the main session with <code>SendMessage</code>, verbatim, and it prints as it arrives. You watch the review happen in a session that is not the one running it.</p>
+      <p>The eight personas are spawned once by the moderator, in parallel, then <em>resumed</em>, never respawned. Their agent IDs live in <code>moe-state.json</code>, which is what lets a persona carry its Phase 1 memory into Phase 3, and what makes recovery after context compaction possible. In the Huddle they message each other directly.</p>
     </div>
 
     <figure>
-      <svg viewBox="0 0 880 296" role="img" aria-label="The moderator runs in the main conversation context and spawns eight persona subagents once in parallel, then resumes those same agent IDs across every later phase.">
+      <svg viewBox="0 0 880 296" role="img" aria-label="The main session spawns the moderator; the moderator spawns eight persona subagents once in parallel, then resumes those same agent IDs across every later phase.">
         <defs>
           <marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
             <polygon points="0,1 9,5 0,9" fill="var(--accent)"/>
@@ -379,36 +379,31 @@
         <rect class="svg-box" x="784" y="204" width="96" height="52" rx="2" stroke="var(--haiku)" stroke-dasharray="5 3"/>
         <text class="svg-label" x="794" y="224" fill="var(--haiku)">chaotic-…</text><text class="svg-note" x="794" y="242">plain lang.</text>
 
-        <text class="svg-note" x="0" y="282">Same agent_id resumed for Phase 2, Phase 3, and each Huddle relay. Memory persists across all five phases.</text>
+        <text class="svg-note" x="0" y="282">Same agent_id resumed for Phase 2, then messaging peers directly in the Huddle. Memory persists across all four phases.</text>
       </svg>
-      <figcaption><strong>One spawn, three resume phases.</strong> Border color marks the model tier. Because agents are resumed rather than re-spawned, Beyonce Carter argues in the Huddle from what she personally said in Phase 1.</figcaption>
+      <figcaption><strong>One spawn, one resume phase, then a mesh.</strong> Border color marks the model tier. Because agents are resumed rather than re-spawned, Beyonce Carter argues in the Huddle from what she personally said in Phase 1.</figcaption>
     </figure>
   </section>
 
   <section id="phases">
-    <div class="sec-head"><span class="sec-num">04</span><h2>The five phases</h2></div>
+    <div class="sec-head"><span class="sec-num">04</span><h2>The four phases</h2></div>
     <ol class="phases">
       <li class="phase" data-n="1">
         <div class="phase-name">Kick-Off</div>
         <div class="phase-key">kick-off &middot; 8 agents spawned in parallel</div>
-        <p>Material presented cold, with conversation context deliberately withheld so reactions aren't anchored to prior conclusions. Each persona first verifies three claims against the real repository, then returns 5&ndash;7 observations. The moderator only confirms receipt.</p>
+        <p>Material presented cold, with conversation context deliberately withheld so reactions aren't anchored to prior conclusions. Each persona first verifies three claims against the real repository, then returns 5&ndash;7 observations and up to three questions. The moderator only confirms receipt.</p>
       </li>
       <li class="phase" data-n="2">
-        <div class="phase-name">Clarifying Questions</div>
-        <div class="phase-key">clarifying-questions &middot; 8 agents resumed</div>
-        <p>Each persona asks 5&ndash;7 precise questions. The moderator answers from source material and by reading actual code, and must admit "not documented" where the gap is real rather than inventing coverage.</p>
-      </li>
-      <li class="phase" data-n="3">
         <div class="phase-name">Interactive Session</div>
         <div class="phase-key">interactive-session &middot; moderator vs. agent &middot; cap 3/agent</div>
-        <p>The adversarial fact-check. Default posture is disbelief; the burden of proof sits with the agent. The phase must produce exactly 2N blocks for N personas, and closes with a Blocker Re-Test Ledger, a Consensus Ledger, and the moderator's public self-check.</p>
+        <p>The adversarial fact-check. It opens with the moderator's verification of every Phase 1 finding and an answer to every question, using four literal openers; "not documented" is a legitimate answer. The panel then challenges her. Default posture is disbelief; the burden of proof sits with the agent. The phase produces exactly 3N blocks for N personas, and closes with a Blocker Re-Test Ledger, a Consensus Ledger, and the moderator's public self-check.</p>
       </li>
-      <li class="phase" data-n="4">
+      <li class="phase" data-n="3">
         <div class="phase-name">The Huddle</div>
         <div class="phase-key">the-huddle &middot; agent vs. agent &middot; cap 4 sent/agent</div>
-        <p>The moderator steps back and relays messages between experts. Anyone leaving Phase 3 with open items must participate, and ChaoticCarl is seeded first, against at least three different experts. Every message needs a reply, an exit declaration, or a moderator last-word line; anything else is a dropped relay. Closes with a participation checklist marking gaps.</p>
+        <p>Grand rounds. Every persona receives every other persona's stance, verbatim, plus the peer roster, and chooses whom to engage. They message each other directly; the moderator is out of the path and does only two things: checks that everyone sent at least one message, nudging anyone silent once, and calls time after at most two rounds. Logs are collected and cross-checked pairwise. Closes with a participation checklist marking gaps.</p>
       </li>
-      <li class="phase" data-n="5">
+      <li class="phase" data-n="4">
         <div class="phase-name">Synthesis</div>
         <div class="phase-key">synthesis &middot; moderator alone</div>
         <p>Ten required sections, deduplicated, ordered by severity. An empty section still prints its header with "None identified". Then a literal <code>STOP</code>.</p>
@@ -430,6 +425,7 @@
 
     <div class="imsg">
 
+      <div class="imsg-note"><b>Recorded under v2.6.</b> This exchange ran the five-phase workflow with a relay Huddle. In v3.0, Clarifying Questions folds into the Interactive Session, the Huddle is grand rounds with the personas messaging each other directly, and the moderator is a spawned agent observed by the main session. Round numbers below are the v2.6 numbers.</div>
       <div class="imsg-day">Round 1 &middot; Kick-Off &middot; 16 turns &middot; panel speaks, moderator only acknowledges</div>
 
       <div class="imsg-row" style="--who:var(--w-bey)">
@@ -912,7 +908,7 @@
         <thead><tr><th>Mechanism</th><th>Rule</th></tr></thead>
         <tbody>
           <tr><td>Three-response rule</td><td>Every factual claim gets "I verified this" with <code>file:line</code>, "I cannot verify this", or "This is incorrect". Bulk acceptance is forbidden.</td></tr>
-          <tr><td>2N block count</td><td>Phase 3 produces one persona block and one moderator block per persona. The moderator counts her own blocks before printing.</td></tr>
+          <tr><td>3N block count</td><td>Phase 2 opens with the moderator's verification block, then one persona block and one moderator block per persona. The moderator counts her own blocks before printing.</td></tr>
           <tr><td>Blocker Re-Test Ledger</td><td>Try to disprove that a confirmed fact causes the claimed harm. Every Blocker reaching Synthesis needs a row, or it is not eligible.</td></tr>
           <tr><td>30% self-audit</td><td>If more than 30% of responses lack one of the three templates, pause and re-verify.</td></tr>
           <tr><td>Self-incrimination check</td><td>Before the Huddle, answer publicly: "Did I reject any claim? If not, why not?"</td></tr>
@@ -949,7 +945,7 @@
   </section>
 
   <footer>
-    MOE Peer Review v2.6.1 · nine personas · five phases · MIT licensed<br>
+    MOE Peer Review v3.0.0 · nine personas · four phases · MIT licensed<br>
     Full documentation: architecture.md · personas.md · workflow.md · conversations.md<br>
     Example exchanges adapted from a recorded 728-line review
   </footer>
