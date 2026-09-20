@@ -217,6 +217,31 @@ else
   fail "Missing Huddle participation checklist (SKILL.md Phase 3)"
 fi
 
+if contains "### Reconciliation"; then
+  pass "Reconciliation step present"
+else
+  fail "Missing Reconciliation step (SKILL.md Phase 3)"
+fi
+
+if contains "Verified by me after the round closed"; then
+  pass "Post-Huddle verification line present"
+else
+  fail "Missing 'Verified by me after the round closed' line (SKILL.md Phase 3, Reconciliation)"
+fi
+
+final_stances=$(grep -c '^> *Final open items:' "$TRANSCRIPT" 2>/dev/null) || true
+if [ "${final_stances:-0}" -ge 8 ]; then
+  pass "Final stances recorded ($final_stances)"
+else
+  fail "Only ${final_stances:-0} of 8 'Final open items:' lines found (SKILL.md Phase 3, Reconciliation)"
+fi
+
+if contains "Huddle Consensus Ledger"; then
+  pass "Huddle Consensus Ledger present"
+else
+  fail "Missing Huddle Consensus Ledger (SKILL.md Phase 3, Reconciliation)"
+fi
+
 if contains "Blocker Re-Test Ledger"; then
   pass "Blocker re-test ledger present"
 else

@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "moe-peer-review",
-      "description": "Mixture of Experts peer review with 9 specialized personas (8 reviewers + 1 moderator). Four-phase structured deliberation: the moderator is a spawned agent observed by the main session, and the Huddle is grand rounds with direct persona-to-persona messaging.",
+      "description": "Mixture of Experts peer review with 9 specialized personas (8 reviewers + 1 moderator). Four-phase structured deliberation: the moderator is a spawned agent observed by the main session, and the Huddle is grand rounds with direct persona-to-persona messaging, closed by a Reconciliation step that verifies what the Huddle produced and collects every persona's final stance.",
       "author": {
         "name": "Greg McGuirk"
       },

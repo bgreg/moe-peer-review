@@ -167,8 +167,9 @@ Where Phase 2 tested each claim against evidence, the Huddle tests it against th
 judgment. The moderator is not in the message path. Personas write to each other directly with
 `SendMessage`.
 
-**Verification does not happen here.** If the moderator finds herself checking a number mid-Huddle, that
-is Phase 2 work arriving late.
+**Verification does not happen during the round.** If the moderator finds herself checking a number
+mid-Huddle, that is Phase 2 work arriving late. It does happen after the round closes, in Reconciliation,
+because the Huddle is where personas first read outside the packet and first hear each other.
 
 ### The board
 
@@ -238,8 +239,26 @@ Every printed message is followed by a reply, by the sender's own closing declar
 line stating that time was called. An unanswered message to or from ChaoticCarl is named as the failure
 this phase exists to prevent.
 
-The phase closes with a participation checklist built by counting printed blocks, with anyone at zero
-after the nudge marked `[GAP]` and the reason written.
+The participation checklist is built by counting printed blocks, with anyone at zero after the nudge
+marked `[GAP]` and the reason written.
+
+### Reconciliation
+
+The Huddle produces two things Phase 2 could not: facts that first appeared in a persona-to-persona
+message, and stances that moved while nobody was recording them. On the first v3 run the moderator
+verified the new facts after the round on her own initiative, and still recorded one persona's restored
+Blocker as a Warning because no step asked the persona what her stance was. Reconciliation is that step.
+
+1. The moderator lists every claim that appears in the Huddle and in no Phase 2 block, verifies each
+   with the four literal openers, and re-runs the Blocker Re-Test Ledger for any Blocker the Huddle
+   moved. The block opens with `Verified by me after the round closed against <ref>, read-only.`
+2. She resumes every persona once, ChaoticCarl included, with a fixed message: restate your open items
+   under a `Final open items:` line, say what changed and on whose evidence, deliver any correction you
+   owe a counterpart, and answer any message left open when time was called. One message, one reply,
+   by hand-back rather than `SendMessage`.
+3. The eight replies print verbatim under `**Final stances**`, and the Huddle Consensus Ledger is built
+   from them. A final stance that contradicts the persona's own Huddle messages is quoted on both sides;
+   the final stance governs the scoreboard and the contradiction stays on the record.
 
 ---
 
@@ -248,7 +267,8 @@ after the nudge marked `[GAP]` and the reason written.
 `synthesis` · moderator alone
 
 Ten required sections, deduplicated across personas, ordered by severity. A section with nothing in it
-still prints its header with "None identified", so silence never looks like absence of a category.
+still prints its header with "None identified", so silence never looks like absence of a category. The
+Verdict Scoreboard is counted from the eight Reconciliation final stances and from nothing else.
 
 | Section | Contents |
 |---|---|

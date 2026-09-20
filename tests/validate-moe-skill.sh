@@ -101,6 +101,7 @@ sections=(
   "Live Thread Output"
   "State Management"
   "The Huddle"
+  "Reconciliation"
 )
 for section in "${sections[@]}"; do
   if contains "$section" "$SKILL"; then

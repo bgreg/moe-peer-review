@@ -20,7 +20,8 @@ Given content to review (a design, config, mockup, technical doc, code, or plan)
    question, then lets the panel challenge her; her default posture is disbelief and every claim is
    verified, refused, or refuted (Interactive Session).
 3. Runs "The Huddle" as grand rounds: every persona holds every other persona's findings and chooses whom
-   to engage, messaging directly, with the moderator out of the path.
+   to engage, messaging directly, with the moderator out of the path. The round closes with Reconciliation:
+   the moderator verifies what the Huddle produced and resumes each persona once for a final stance.
 4. Synthesizes a verdict scoreboard, blockers, warnings, and prioritized action items, then stops.
 
 Output reads like a live group chat so you can watch the deliberation unfold.

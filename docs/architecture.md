@@ -72,15 +72,16 @@ flowchart TB
     OBS -->|"Agent() once"| MOD
     MOD -.->|"each phase, verbatim<br/>SendMessage to main"| OBS
     MOD -->|"Agent() x 8, parallel, once"| subs
-    MOD <-->|"SendMessage, Phase 2"| subs
+    MOD <-->|"SendMessage, Phase 2<br/>and Reconciliation"| subs
     subs <-->|"SendMessage, Phase 3<br/>persona to persona"| subs
 ```
 
 The eight personas are spawned once, in parallel, during Kick-Off. Phase 2 **resumes** those same agent
 IDs with `SendMessage`; a persona resumed by the moderator replies to the moderator, not to the observer.
-In Phase 3 the personas message each other directly and the moderator is out of the path. Synthesis
-resumes no one. That is what lets Beyonce Carter argue in the Huddle from what she personally said in
-Phase 1.
+In Phase 3 the personas message each other directly and the moderator is out of the path until the round
+closes; Reconciliation then resumes each persona once more for a final stance. Synthesis resumes no one.
+That is what lets Beyonce Carter argue in the Huddle from what she personally said in Phase 1, and what
+lets the scoreboard record what she said last rather than what the moderator inferred.
 
 Personas have no `ListAgents`, so they cannot discover each other. The moderator hands out a roster of
 agent IDs when the Huddle opens.
@@ -171,7 +172,7 @@ What it checks:
 | Phase structure | A header for each of the four phases |
 | Chat format | Moderator labels, agent-to-agent labels, blockquotes, ASCII arrows |
 | Persona names | All eight plus the moderator appear; no bare `Carl` |
-| Workflow artifacts | Exchange counts, Huddle participation, Blocker Re-Test Ledger, self-check, Consensus Ledger |
+| Workflow artifacts | Exchange counts, Huddle participation, Blocker Re-Test Ledger, self-check, Consensus Ledger, Reconciliation with its post-Huddle verification line, eight `Final open items:` stances and the Huddle Consensus Ledger |
 | First-person discipline | No third-person narration markers inside blockquotes |
 | Synthesis | All ten required section headers |
 | Guardrail | The literal string `STOP` |

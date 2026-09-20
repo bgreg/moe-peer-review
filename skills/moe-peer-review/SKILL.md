@@ -19,8 +19,9 @@ observer answers from what it has been sent; it does not reach into the review.
 
 **The moderator** is Dr. Nina Simone-Bennett, a spawned agent defined at
 `${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md`. She spawns the eight personas, drives every phase,
-verifies in Phase 2, runs the Huddle, assembles the transcript and state file, and sends each phase
-to the observer as it completes. Everything below that says "the moderator" is addressed to her.
+verifies in Phase 2, runs the Huddle and closes it with Reconciliation, assembles the transcript and
+state file, and sends each phase to the observer as it completes. Everything below that says "the
+moderator" is addressed to her.
 
 **The panelists** are the eight personas in the roster.
 
@@ -98,7 +99,9 @@ installs anything, or mutates git state.
 **Personas also have `SendMessage`, used only in Phase 3.** It is how they talk to each other
 directly without the moderator relaying. They have no `ListAgents`, so they cannot discover each
 other; the moderator supplies the peer roster when the Huddle opens. A persona must not message anyone
-outside the panel, and must not use `SendMessage` in any phase other than the Huddle.
+outside the panel, and must not use `SendMessage` in any phase other than the Huddle. In Reconciliation,
+the step that closes the Huddle, a persona answers the moderator's resume message by handing back,
+exactly as in Phase 2; that is not a `SendMessage` and does not count against the Huddle cap.
 
 **The moderator may execute code, and is expected to.** Verification by experiment outranks
 verification by reading, and outranks argument entirely. The moderator has Bash for four purposes:
@@ -547,9 +550,12 @@ paraphrase one panelist's position to another, and does not brief either side of
 The moderator is not in the message path. Personas write to each other directly with
 `SendMessage`.
 
-**Verification does not happen here.** Phase 2 is where claims are falsified against evidence. If
-the moderator finds themselves checking a number mid-Huddle, that is Phase 2 work arriving late.
-Note it for the next run and let the Huddle proceed.
+**Verification does not happen during the round.** Phase 2 is where claims are falsified against
+evidence. If the moderator finds themselves checking a number mid-Huddle, that is Phase 2 work arriving
+late. Note it and let the Huddle proceed; do not interrupt a thread to correct a figure. Verification
+does happen after the round closes, in the Reconciliation step that follows Closing, and there it is required:
+the Huddle is where panelists first read outside the packet and first hear each other, so it produces
+claims Phase 2 could not have tested.
 
 ### The board
 
@@ -675,23 +681,91 @@ Any panelist at zero after the nudge is a `[GAP]` with the reason written. "No g
 about the text above it; do not write it without counting. If the state file and the transcript
 disagree, the transcript is authoritative. Correct the state file, never the transcript.
 
+### Reconciliation
+
+The Huddle produces two things Phase 2 could not: factual claims that first appeared in a
+persona-to-persona message, and stances that moved while nobody was recording them. Neither reaches
+Synthesis untested. Reconciliation is the moderator's step, between the participation checklist and the
+Phase 4 header, and it is the only place after Phase 2 where the moderator addresses a panelist about
+content.
+
+**Verify what the Huddle produced.** Before resuming anyone:
+
+1. List every factual claim that appears in the Huddle thread and in no Phase 2 block: a file nobody had
+   read, a query result, a count, a specificity or contrast derivation, a path on another clone, a live
+   SHA.
+2. Verify each one yourself with the same four literal openers Phase 2 uses. A claim you cannot verify is
+   carried with `I cannot verify this:` attached, never adopted silently.
+3. Re-run the Blocker Re-Test Ledger for any Blocker the Huddle created, raised or lowered. A severity
+   that moved during the Huddle has not been attacked yet.
+
+Open this block with one line naming what you verified against: `Verified by me after the round closed
+against <ref>, read-only.`
+
+**Collect final stances.** Resume every panelist once, ChaoticCarl included, with the message below.
+One message, one reply, no second exchange; the reply is a hand-back, exactly as in Phase 2, not a
+`SendMessage`. Where a message addressed to that panelist was left open when time was called, append it
+to their copy under the heading `Left open when time was called:` with the sender's full name. Adapt the
+wording to plain language for ChaoticCarl and say that you have.
+
+```
+RECONCILIATION. The Huddle is closed. This is one message and one reply. Do not use SendMessage;
+reply by handing back, as you did in the Interactive Session.
+
+1. Restate your open items as they stand now, after everything you read and wrote in the Huddle.
+   Put the line `Final open items:` on its own line, then one line per item starting with
+   [Blocker], [Warning] or [Suggestion], each with its file:line citation. If you have none, write
+   `Final open items: none`.
+2. For every item whose severity or fix changed during the Huddle, say in one sentence what it
+   was, what it is now, and whose evidence moved it.
+3. If you owe a counterpart a correction you could not send, write it here, addressed to them by
+   full name. It is delivered as part of the record.
+4. If a message addressed to you is listed below as left open, answer it here, addressed to the
+   sender by full name, or write that you decline and why.
+
+First person, verbatim. The Verdict Scoreboard is built from this reply and from nothing else you
+said in the Huddle.
+```
+
+**Print the final stances.** Under `**Final stances**`, in roster order, one block per panelist as
+`**Name** -> **Dr. Nina Simone-Bennett**:` with the reply blockquoted verbatim. Eight blocks, no
+summaries. An answer to a left-open message is printed inside that block and counts as the reply the
+message was owed; update the "time was called" line above it to say so.
+
+**Huddle Consensus Ledger.** Built from the eight final stances, not from the thread. Two lists,
+`Converged` and `Not converged`, each entry quoting the final-stance lines it rests on. If a final stance
+contradicts that panelist's own Huddle messages, quote both sides in the ledger; the final stance governs
+the scoreboard and the contradiction stays on the record. An item that changed severity in the Huddle
+and is absent from the final stance is listed as `unrestated`, with the last severity the panelist
+wrote; the moderator does not guess which one they meant, and the scoreboard counts only what the final
+stance lists.
+
 Print `## Phase 3: The Huddle`, then every exchange in chronological order in the agent-to-agent
-format, then the cross-check results, then the participation checklist.
+format, then the cross-check results, then the participation checklist, then `### Reconciliation` with
+the verification block, the final stances and the Huddle Consensus Ledger, in that order.
 
-Update state file and mark The Huddle task as completed.
+Update state file, record `final_stances: 8` inside `huddle_exchanges`, and mark The Huddle task as
+completed.
 
-Before printing the next phase header, re-read `moe-state.json` and confirm all four of these,
+Before printing the next phase header, re-read `moe-state.json` and confirm all five of these,
 correcting any that are wrong:
 1. `current_phase` names the phase you are about to start.
 2. No earlier phase is still `pending` or `in_progress`.
 3. Every agent's `status` and `exchanges` reflect the phase just finished.
 4. After The Huddle, `huddle_exchanges` is non-empty.
+5. `huddle_exchanges.final_stances` is 8.
 
 ## Phase 4: Synthesis
 
 After all agents declare done or hit limits, the moderator launches the final aggregation.
 
 Print `## Synthesis` and compile across all 8 personas. ALL sections below are REQUIRED. If a section has no items, include the header with "None identified." Do not skip any section.
+
+The Verdict Scoreboard counts each panelist's `Final open items:` from Reconciliation and nothing else. A
+panelist whose final stance says Blocker is a Blocker on the scoreboard whatever an earlier Huddle
+message said; a panelist whose final stance dropped an item has zero of it. Unresolved Disagreements are
+carried from the Phase 2 Consensus Ledger and the Huddle Consensus Ledger, each side named by the final
+stance that holds it.
 
 **Verdict Scoreboard**
 
@@ -732,7 +806,7 @@ undercounts the end-user impact.
 **Improvements** (content/framing changes):
 - Table: Improvement | Source Persona | Severity
 
-**Unresolved Disagreements** (carried from the Consensus Ledgers; "None identified." if empty)
+**Unresolved Disagreements** (carried from the Phase 2 Consensus Ledger and the Huddle Consensus Ledger, each side named by its final stance; "None identified." if empty)
 - [topic]: [Agent A]'s position vs. [Agent B]'s position, both carried forward
 
 **Key Insight** (single most important finding across all reviewers)

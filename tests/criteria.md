@@ -94,9 +94,12 @@ After running the MOE skill, verify:
 - ChaoticCarl reads the board and picks like everyone else; the participation check confirms he was answered
 - SENT/RECEIVED logs collected from every persona and cross-checked pairwise before the transcript is printed
 - Best ideas surface through debate
+- After the round closes, the moderator verifies every claim that first appeared in the Huddle with the four literal openers and re-runs the Blocker Re-Test Ledger for any Blocker the Huddle moved
+- Reconciliation: every persona is resumed once and returns a `Final open items:` list; the reply is a hand-back, not a SendMessage; messages left open when time was called are answered there
+- Huddle Consensus Ledger built from the eight final stances, with any contradiction between a final stance and that persona's own Huddle messages quoted on both sides
 
 ### Synthesis
-- Verdict Scoreboard with all 8 personas
+- Verdict Scoreboard with all 8 personas, counted from the Reconciliation final stances and nothing else
 - Production Gates, Compliance Findings, Domain Expert Warnings present
 - ChaoticCarl's UX Failures section preserves his original wording
 - Action Items ordered by severity
