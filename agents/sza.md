@@ -2,7 +2,7 @@
 name: sza
 description: "SZA, Security Engineer persona for MOE peer review. Credential scope, permissions, audit trails, data exposure, vulnerability patterns. Spawned by the moe-peer-review skill."
 model: sonnet
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: red
 ---
 

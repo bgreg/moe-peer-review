@@ -5,9 +5,16 @@ Every turn of a real review, round by round.
 This page is a full worked review, **60 turns** across four rounds, with who addressed whom and what each
 said. Nothing is skipped.
 
-It documents the **current** workflow: the sequence below is the shape a review is required to produce
-today. The findings, the voices, and the technical substance are adapted from recorded reviews of a
-pull request that rebuilt an LLM risk-scoring pipeline. Text is condensed for length.
+> **Recorded under v2.6.** This review ran the five-phase workflow with a relay Huddle and the moderator
+> in the main conversation. Three things changed in v3.0. Clarifying Questions is folded into the
+> Interactive Session: questions attach to Phase 1 findings and the moderator's verification opens
+> Phase 2. The Huddle is grand rounds: every persona holds every other persona's findings, chooses whom
+> to engage, and messages them directly, with the moderator out of the message path and responsible only
+> for participation and the clock. And the moderator is a spawned agent observed by the main session.
+> The exchanges below are unchanged, because they are a record. Round numbers are the v2.6 numbers.
+
+The findings, the voices, and the technical substance are adapted from recorded reviews of a pull request
+that rebuilt an LLM risk-scoring pipeline. Text is condensed for length.
 
 ## Turn budget
 
@@ -19,8 +26,9 @@ pull request that rebuilt an LLM risk-scoring pipeline. Text is condensed for le
 | 4 · The Huddle | 9 | 0 | 9 |
 | **Total** | **33** | **27** | **60** |
 
-Rounds 1, 2 and 3 are symmetric by rule: **2N blocks for N personas.** The Huddle is not, because it
-pairs experts rather than polling them, and the moderator only relays.
+Rounds 1, 2 and 3 were symmetric by rule: **2N blocks for N personas.** The Huddle is not, because it
+pairs experts rather than polling them. In v2.6 the moderator relayed every Huddle message; in v3.0 she
+relays nothing and the personas write to each other.
 
 ## Each round has a different shape
 
@@ -63,7 +71,8 @@ flowchart LR
     classDef faded stroke-dasharray: 4 3
 ```
 
-The moderator says nothing. Experts pair off across domain boundaries.
+The moderator says nothing. Experts pair off across domain boundaries. Under v3.0 the pairs are chosen
+by the personas from the Findings Board rather than seeded by the moderator.
 
 ---
 
@@ -518,8 +527,9 @@ correctness, and the moderator **reverses herself** when a persona shows she ans
 
 # Round 4: The Huddle
 
-Nine turns, no moderator replies. She seeds the pairings and then relays messages between isolated agents
-who cannot address each other directly.
+Nine turns, no moderator replies. In this v2.6 run she seeded the pairings and relayed every message
+between agents that could not address each other directly. In v3.0 the personas hold `SendMessage`, receive
+the full board, and choose their own counterparts.
 
 ### 52 · Erykah Badu-Johnson @Beyonce Carter
 
@@ -621,8 +631,8 @@ after being challenged by a peer rather than by her.
 ## Cross-persona alignments
 
 No persona card names who it aligns with or clashes with. The seams below are the ones this review
-produced, and the moderator seeded along them at runtime from the Exchange sequencing guidance in
-`SKILL.md`. A different packet yields a different mesh.
+produced. In this v2.6 run the moderator seeded along them; in v3.0 the personas find them on the board
+themselves. A different packet yields a different mesh.
 
 ```mermaid
 flowchart TB
@@ -656,8 +666,9 @@ ChaoticCarl both care about legibility and arrive from opposite ends of politene
 
 Three questions answer whether a review was rigorous, and all three are checkable by eye:
 
-1. **Does Round 3 have a moderator reply for every persona?** Count the blocks. Anything short of 2N means
-   claims reached the Synthesis unchallenged.
+1. **Does the Interactive Session have a moderator reply for every persona?** Count the blocks. In v3.0 the
+   phase opens with her verification, so the shape is 3N; anything short means claims reached the
+   Synthesis unchallenged.
 2. **Is there a Blocker Re-Test Ledger with a row per Blocker?** Blockers without a recorded attack were
    confirmed, not verified.
 3. **Did the moderator reject anything?** The self-check answers this in her own words. A review where

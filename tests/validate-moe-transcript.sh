@@ -53,22 +53,16 @@ else
   fail "Missing Phase 1 header"
 fi
 
-if contains "Phase 2"; then
-  pass "Phase 2 (Clarifying Questions) header present"
-else
-  fail "Missing Phase 2 header"
-fi
-
-phase3_found=false
-if contains "Phase 3" || contains "Interactive Session"; then
-  phase3_found=true
-  pass "Phase 3+ (Interactive Session) header present"
+phase2_found=false
+if contains "Phase 2" || contains "Interactive Session"; then
+  phase2_found=true
+  pass "Phase 2 (Interactive Session) header present"
 else
   if contains "Skipped.*all personas satisfied"; then
-    phase3_found=true
+    phase2_found=true
     pass "Interactive sessions skipped (early satisfaction)"
   else
-    fail "Missing Phase 3+ header or skip notice"
+    fail "Missing Phase 2 header or skip notice"
   fi
 fi
 
@@ -170,16 +164,16 @@ stance_satisfied=$(grep -c '^> *I am satisfied' "$TRANSCRIPT" 2>/dev/null) || tr
 stance_open=$(grep -c '^> *Open items:' "$TRANSCRIPT" 2>/dev/null) || true
 stance_total=$((${stance_satisfied:-0} + ${stance_open:-0}))
 if [ "$stance_total" -ge 8 ]; then
-  pass "Per-agent Phase 3 stances recorded ($stance_satisfied satisfied, $stance_open open-item lists)"
+  pass "Per-agent Phase 2 stances recorded ($stance_satisfied satisfied, $stance_open open-item lists)"
 else
-  fail "Only $stance_total of 8 explicit Phase 3 stances found; an aggregate count does not satisfy the per-agent rule"
+  fail "Only $stance_total of 8 explicit Phase 2 stances found; an aggregate count does not satisfy the per-agent rule"
 fi
 
 openers=$(grep -oE 'I verified this:|I cannot verify this:|This is incorrect:|I tested this:' "$TRANSCRIPT" 2>/dev/null | wc -l | tr -d ' ')
 if [ "${openers:-0}" -ge 8 ]; then
   pass "Literal verification openers present ($openers)"
 else
-  fail "Only ${openers:-0} literal verification openers found; the moderator is summarizing rather than verifying (SKILL.md Phase 3)"
+  fail "Only ${openers:-0} literal verification openers found; the moderator is summarizing rather than verifying (SKILL.md Phase 2)"
 fi
 
 printf "\nSynthesis Structure\n"
@@ -207,38 +201,63 @@ printf "\nReview-Only Guardrail\n"
 if grep -q '^\*\*STOP\.\*\*' "$TRANSCRIPT" 2>/dev/null; then
   pass "STOP guardrail block present in transcript"
 else
-  fail "Missing '**STOP.**' guardrail block in the transcript file (SKILL.md Phase 5)"
+  fail "Missing '**STOP.**' guardrail block in the transcript file (SKILL.md Phase 4)"
 fi
 
 printf "\nWorkflow Artifacts\n"
 if contains "Exchange counts"; then
-  pass "Phase 3 exchange counts recorded"
+  pass "Phase 2 exchange counts recorded"
 else
-  fail "Missing 'Exchange counts this round' line (SKILL.md Phase 3)"
+  fail "Missing 'Exchange counts this round' line (SKILL.md Phase 2)"
 fi
 
 if contains "Huddle Participation"; then
   pass "Huddle participation checklist present"
 else
-  fail "Missing Huddle participation checklist (SKILL.md Phase 4)"
+  fail "Missing Huddle participation checklist (SKILL.md Phase 3)"
+fi
+
+if contains "### Reconciliation"; then
+  pass "Reconciliation step present"
+else
+  fail "Missing Reconciliation step (SKILL.md Phase 3)"
+fi
+
+if contains "Verified by me after the round closed"; then
+  pass "Post-Huddle verification line present"
+else
+  fail "Missing 'Verified by me after the round closed' line (SKILL.md Phase 3, Reconciliation)"
+fi
+
+final_stances=$(grep -c '^> *Final open items:' "$TRANSCRIPT" 2>/dev/null) || true
+if [ "${final_stances:-0}" -ge 8 ]; then
+  pass "Final stances recorded ($final_stances)"
+else
+  fail "Only ${final_stances:-0} of 8 'Final open items:' lines found (SKILL.md Phase 3, Reconciliation)"
+fi
+
+if contains "Huddle Consensus Ledger"; then
+  pass "Huddle Consensus Ledger present"
+else
+  fail "Missing Huddle Consensus Ledger (SKILL.md Phase 3, Reconciliation)"
 fi
 
 if contains "Blocker Re-Test Ledger"; then
   pass "Blocker re-test ledger present"
 else
-  fail "Missing Blocker Re-Test Ledger (SKILL.md Phase 3)"
+  fail "Missing Blocker Re-Test Ledger (SKILL.md Phase 2)"
 fi
 
 if contains "Self-check before The Huddle"; then
   pass "Pre-Huddle moderator self-check present"
 else
-  fail "Missing 'Self-check before The Huddle' (SKILL.md Phase 3)"
+  fail "Missing 'Self-check before The Huddle' (SKILL.md Phase 2)"
 fi
 
 if contains "Consensus Ledger"; then
   pass "Consensus Ledger present"
 else
-  fail "Missing Consensus Ledger (SKILL.md Phase 3 and Phase 4)"
+  fail "Missing Consensus Ledger (SKILL.md Phase 2 and Phase 2)"
 fi
 
 printf "\nFirst-Person Discipline\n"
@@ -257,7 +276,7 @@ STATE="$transcript_dir/moe-state.json"
 if [ -f "$STATE" ]; then
   pass "State file exists alongside transcript"
   if grep -q '"synthesis"[^}]*"completed"' "$STATE" 2>/dev/null; then
-    if grep -qE '"(kick-off|clarifying-questions|interactive-session|the-huddle)"[^}]*"(pending|in_progress)"' "$STATE" 2>/dev/null; then
+    if grep -qE '"(kick-off|interactive-session|the-huddle)"[^}]*"(pending|in_progress)"' "$STATE" 2>/dev/null; then
       fail "State file inconsistent: synthesis completed while an earlier phase is pending/in_progress"
     else
       pass "State file phase statuses are internally consistent"

@@ -1,22 +1,34 @@
 # Workflow
 
-Five phases, in order, each blocked by the one before it.
+Four phases, in order, each blocked by the one before it.
 
 ```mermaid
 flowchart LR
-    P1["1 · Kick-Off<br/><i>spawn 8</i>"] --> P2["2 · Clarifying<br/>Questions"]
-    P2 --> P3["3 · Interactive<br/>Session"]
-    P3 --> P4["4 · The<br/>Huddle"]
-    P4 --> P5["5 · Synthesis"]
-    P5 --> STOP(["STOP<br/>wait for the user"])
+    P1["1 · Kick-Off<br/><i>spawn 8, findings + questions</i>"] --> P2["2 · Interactive<br/>Session<br/><i>verify, then challenge</i>"]
+    P2 --> P3["3 · The<br/>Huddle<br/><i>grand rounds</i>"]
+    P3 --> P4["4 · Synthesis"]
+    P4 --> STOP(["STOP<br/>wait for the user"])
 ```
 
-The state file and the task list are updated together on every transition. The skill is explicit: never
-one without the other.
+## Who does what
+
+Three roles. The session you are talking to holds only the first.
+
+| Role | Who | Does |
+|---|---|---|
+| Observer | The main conversation | Spawns the moderator. Prints every phase block she sends, verbatim, as it arrives. After her hand-back, runs the validator and the quality-assessment agent. Makes no review decisions. |
+| Moderator | Dr. Nina Simone-Bennett, a spawned agent | Builds the packet. Spawns the eight personas. Drives every phase. Verifies in Phase 2. Runs the Huddle's participation check and clock. Assembles the transcript and state file. |
+| Panelists | The eight personas | Review, challenge, argue. |
+
+The moderator sends each phase to the main session with `SendMessage` the moment it closes, so the
+live thread reaches you even though the review is running in an agent you are not talking to.
+
+The state file is updated on every transition. If `TaskCreate` is available to the moderator, the
+task list is updated with it; if not, the state file alone is the record.
 
 ## Before Phase 1: preparation
 
-Two things happen before any agent is spawned.
+Three things happen before any persona is spawned.
 
 **Dynamic assignment.** The moderator reads the content, decides its dominant technical domain, and
 assigns Whitney Houston-Davis a PhD specialty and ChaoticCarl a backstory. Both are recorded in the state
@@ -34,20 +46,25 @@ content file must open with:
 - Unpushed commits at packet time: <count, or "none">
 - Working tree: <clean | list of dirty paths>
 - Generated: <YYYY-MM-DD HH:MM local>
+- Verification performed: <method; engines; states exercised>
+- Not verified: <what that method could not observe>
 ```
 
-The moderator refuses to start Kick-Off without this header. The rule exists because a real review was
-launched against a diff missing two local commits while the context notes described them as landed. Seven
-of eight panelists caught it by reading the repository directly, and the review had to be rewound.
+The moderator refuses to start Kick-Off without this header. The provenance lines exist because a real
+review was launched against a diff missing two local commits, and seven of eight panelists caught it by
+reading the repository directly. The two verification lines exist because a later review spent a full
+round asking "did you test hover?", "which browser?", "which theme at 420px?", all of which belong in the
+packet rather than in a question.
 
 ---
 
 ## Phase 1: Kick-Off
 
-`kick-off` · eight agents spawned in parallel
+`kick-off` · eight personas spawned in parallel by the moderator
 
 The moderator presents the material cold. Full conversation context is deliberately withheld, so the
-panel's reactions are not anchored to whatever you and Claude already concluded.
+panel's reactions are not anchored to whatever you and Claude already concluded. No persona sees another
+persona's response.
 
 Each persona is asked to verify the packet before producing any findings:
 
@@ -61,6 +78,10 @@ Then the actual ask:
 > Provide your initial impressions and reactions from your professional perspective. Note **5-7 specific
 > observations**, concerns, or areas you want to explore further. Reference exact fields, values, or
 > details from the content.
+>
+> End with up to 3 questions you need answered to complete your assessment, each on its own line
+> beginning `Q:`. The moderator answers them at the start of Phase 2. "Not documented" is a legitimate
+> answer you may receive.
 
 **ChaoticCarl gets a different prompt entirely.** He receives a user-facing description instead of code,
 context translated out of technical language, and a request for complaints rather than observations. He
@@ -70,30 +91,33 @@ The moderator answers nothing here. She confirms receipt only: *"Noted, [Name]. 
 
 ---
 
-## Phase 2: Clarifying Questions
-
-`clarifying-questions` · eight agents resumed
-
-Each persona asks 5&ndash;7 precise questions from its own lens. The moderator answers using the context
-notes, the source material, and by reading the actual code.
-
-She is required to admit **"not documented"** or **"untested"** where the gap is real, rather than
-inventing coverage. ChaoticCarl's complaints get translated into their technical root cause, but his
-original wording is preserved, a rule that carries all the way through to the Synthesis.
-
-This is the phase where a review either becomes grounded or drifts.
-
----
-
-## Phase 3: Interactive Session
+## Phase 2: Interactive Session
 
 `interactive-session` · moderator versus agent · cap 3 exchanges per agent
 
 The maximum-adversarial fact-check. The moderator's job here is explicitly **not** to collect opinions but
 to try to falsify each one.
 
-> Phase 3 (Interactive Session): Based on these answers:
-> 1. Challenge any answers that don't fully address your concerns
+### It opens with verification, not with a prompt
+
+Before resuming anyone, the moderator verifies every finding each persona filed in Phase 1 against the
+repository and answers every `Q:` line. Every verification and every answer uses one of four literal
+openers, so a reader can count them:
+
+- `I verified this:` with file:line evidence
+- `I tested this:` with the command run and its raw output
+- `I cannot verify this:` with what was checked and why it was inconclusive
+- `This is incorrect:` with the contradicting evidence
+
+"Not documented" and "not verifiable from source" are legitimate answers. Writing them is required;
+inventing coverage is not permitted. For ChaoticCarl, each complaint is translated into its technical
+root cause with his original wording preserved.
+
+That verification is the moderator's opening block for each persona, and it is what the persona then
+challenges:
+
+> Phase 2 (Interactive Session): Based on this verification:
+> 1. Challenge any verification or answer that does not fully address your concerns
 > 2. Provide specific recommendations
 > 3. Push back on any claims you believe are incorrect or insufficiently supported
 > 4. State any standards or requirements you'd want documented
@@ -103,11 +127,12 @@ to try to falsify each one.
 
 ### The shape is mandatory
 
-This phase produces exactly **2N blocks for N personas**: one persona block and one moderator block, in
-that order, for every persona. Eight personas means sixteen blocks. A persona who says "I am satisfied"
-still gets a moderator response naming what was verified. ChaoticCarl is included and is never skipped.
+This phase produces exactly **3N blocks for N personas**, in this order for every persona: the
+moderator's verification, the persona's challenge, the moderator's response. Eight personas means
+twenty-four blocks. A persona who says "I am satisfied" still gets a moderator response naming what was
+verified. ChaoticCarl is included and is never skipped.
 
-Before printing the phase, the moderator counts her own blocks. If the count does not equal the number of
+Before printing the phase, the moderator counts her own blocks. If the count is not twice the number of
 personas, she has skipped someone and goes back. An unanswered claim is an unverified claim, and an
 unverified claim must not reach Synthesis.
 
@@ -128,87 +153,122 @@ Never printed as nothing.
 
 **Self-check.** Under the exact header `**Self-check before The Huddle**:`, the moderator answers
 publicly: *"Did I reject any claim from any agent in this review? If not, why not?"* A zero-rejection
-review must state whether that indicates insufficient rigor. The check works by making the absence of
-skepticism visible rather than by demanding skepticism.
+review must state whether that indicates insufficient rigor.
 
 Plus an exchange-count line listing all eight personas, so cap compliance is visible.
 
 ---
 
-## Phase 4: The Huddle
+## Phase 3: The Huddle
 
-`the-huddle` · agent versus agent · cap 4 messages sent per agent; mandatory replies do not count
+`the-huddle` · agent versus agent · grand rounds · cap 4 messages sent per agent; mandatory replies do not count
 
-The moderator steps back and lets the experts engage directly, like grand rounds. Where Phase 3 tested
-each claim against evidence, the Huddle tests it against the other experts' judgment.
+Where Phase 2 tested each claim against evidence, the Huddle tests it against the other experts'
+judgment. The moderator is not in the message path. Personas write to each other directly with
+`SendMessage`.
 
-### Subagents cannot talk to each other
+**Verification does not happen during the round.** If the moderator finds herself checking a number
+mid-Huddle, that is Phase 2 work arriving late. It does happen after the round closes, in Reconciliation,
+because the Huddle is where personas first read outside the packet and first hear each other.
 
-There is no channel between two `Task` agents, so the debate is relayed. The moderator becomes a message
-bus:
+### The board
+
+The moderator compiles the Findings Board: every persona's Phase 2 final stance, verbatim, all eight in
+roster order, with severities and citations exactly as written. She adds nothing. No summary, no grouping,
+no "note that X and Y disagree." If two personas filed opposite fixes for the same defect, both sit on the
+board and the personas find it themselves.
+
+Every persona, ChaoticCarl included, receives the whole board, the peer roster of agent IDs, and the same
+rules block. Nobody is assigned a counterpart. Each one reads everything and chooses which findings to
+answer and whom to write to.
 
 ```mermaid
-sequenceDiagram
-    participant A as Beyonce Carter
-    participant M as Moderator
-    participant B as SZA
-    M->>A: resume with B's message
-    A-->>M: response
-    M->>B: resume with A's response
-    B-->>M: response
-    Note over M: repeat until both declare done<br/>or hit the cap
+flowchart LR
+    subgraph board["Findings Board · all eight stances, verbatim"]
+        direction LR
+    end
+    board --> B["Beyonce"] & W["Whitney"] & S["SZA"] & D["Doechii"] & JM["Janelle"] & E["Erykah"] & J["Jill"] & C["ChaoticCarl"]
+    B <--> E
+    W <--> J
+    S <--> D
+    C --> W
+    C --> B
+    C --> JM
+    M(("MOD")):::out
+    classDef out stroke-dasharray: 4 3
 ```
 
-Every exchange costs two agent resumptions, which is why the moderator seeds a handful of high-friction
-pairings rather than letting all eight talk freely.
+Personas cannot discover each other: `ListAgents` is not available inside a subagent, so the roster the
+moderator hands out is the only way anyone can address anyone.
 
-### Seeding
+### Rules every persona receives
 
-Before relaying anything, the moderator identifies three to five unresolved cross-persona tensions and
-seeds them deliberately, prioritizing pairs whose concerns overlap but do not align:
+- Send at least one message. Send at most four. A reply to someone who wrote to you does not count against
+  the four and is mandatory unless they declared they were done.
+- Address people by their full name from the roster. Never abbreviate.
+- When you have nothing further for a counterpart, your final message to them ends with exactly:
+  `I have nothing more to add.`
+- Keep a verbatim log of every message sent and received, in `SENT ->` / `RECEIVED <-` form. The
+  transcript is reconstructed from these logs and cross-checked against your counterparts' logs.
 
-- Architecture versus research: Beyonce Carter and Whitney Houston-Davis
-- Security versus compliance implementation: SZA and Doechii
-- Operational requirements versus infrastructure proposals: Janelle Monae Robinson and Whitney Houston-Davis
-- User impact versus technical root cause: ChaoticCarl and any technical persona
+### What the moderator does: participation and the clock
 
-### Rules
+Two jobs, and only two.
 
-- Agents recognize each other's expertise but never hesitate to push back on claims.
-- **ChaoticCarl demands "explain like I'm five".** If an expert cannot explain their concern simply, he
-  says so loudly. He must be seeded against **at least three different experts**, chosen from whoever
-  raised the Blockers that touch his workflow, and his threads are seeded **first**, before
-  expert-versus-expert threads consume the budget. One exchange is not participation for him: he is the
-  only panelist who can show whether a Blocker survives contact with the person who runs the tool. The
-  rule has a floor and an ordering because two consecutive runs seeded him against only one or two
-  experts.
-- The moderator intervenes only for three reasons: the conversation is circular, someone is being
-  steamrolled, or ChaoticCarl is being ignored. She calls "last word" when exchanges plateau.
+**Participation.** When every persona has gone idle, count who has sent at least one message. Being
+written to and never answering is not participation. Anyone at zero gets exactly one nudge, and the nudge
+names no finding, no counterpart and no topic. If a persona ignores it, that is recorded as a gap and there
+is no second nudge. The check also asks: did anyone answer ChaoticCarl? If he wrote to someone who has not
+replied, that reply obligation is enforced first.
 
-### Completing the relay is mandatory
+**The clock.** At most two rounds. If round one leaves every message answered or closed, the Huddle is
+over. If messages are unanswered or a thread is mid-exchange, round two opens: every persona receives the
+round-one transcript, reconstructed verbatim from the logs, and may respond to anything in it. That is
+how every panelist hears what every other panelist said. After round two, time is called regardless.
+Anything still open goes to Synthesis as unresolved, with both positions stated.
 
-Every `**A** -> **B**:` message printed in the Huddle must be followed by one of exactly three things:
-B's reply, the sender's own "I have nothing more to add", or an explicit moderator last-word line saying
-why the thread ends there. Anything else is a dropped relay, not a completed exchange, and the moderator
-counts the arrows before printing the participation checklist to catch it.
+### Closing: logs and the cross-check
 
-A dropped relay addressed to ChaoticCarl is the specific failure this phase is built to prevent. If the
-budget runs out with his message unanswered, it is spent there first.
+The moderator asks every persona for its log and assembles the transcript from those, not from memory.
+For every `SENT -> B` in A's log there must be a `RECEIVED <- A` in B's log with the same text, and the
+reverse. A mismatch means a message was lost, a log was summarized, or an exchange was invented, and it is
+stated in the participation checklist rather than quietly reconciled. On the first live run this check
+caught a persona whose log omitted her own third message.
 
-### Mandatory participation
+Every printed message is followed by a reply, by the sender's own closing declaration, or by a moderator
+line stating that time was called. An unanswered message to or from ChaoticCarl is named as the failure
+this phase exists to prevent.
 
-Anyone who left Phase 3 with open items, conditions, or blockers **must** participate in at least one
-exchange. Satisfied agents may sit out. The phase closes with a checklist naming who participated, and
-anyone with unresolved concerns who did not is marked `[GAP]` with an explanation owed.
+The participation checklist is built by counting printed blocks, with anyone at zero after the nudge
+marked `[GAP]` and the reason written.
+
+### Reconciliation
+
+The Huddle produces two things Phase 2 could not: facts that first appeared in a persona-to-persona
+message, and stances that moved while nobody was recording them. On the first v3 run the moderator
+verified the new facts after the round on her own initiative, and still recorded one persona's restored
+Blocker as a Warning because no step asked the persona what her stance was. Reconciliation is that step.
+
+1. The moderator lists every claim that appears in the Huddle and in no Phase 2 block, verifies each
+   with the four literal openers, and re-runs the Blocker Re-Test Ledger for any Blocker the Huddle
+   moved. The block opens with `Verified by me after the round closed against <ref>, read-only.`
+2. She resumes every persona once, ChaoticCarl included, with a fixed message: restate your open items
+   under a `Final open items:` line, say what changed and on whose evidence, deliver any correction you
+   owe a counterpart, and answer any message left open when time was called. One message, one reply,
+   by hand-back rather than `SendMessage`.
+3. The eight replies print verbatim under `**Final stances**`, and the Huddle Consensus Ledger is built
+   from them. A final stance that contradicts the persona's own Huddle messages is quoted on both sides;
+   the final stance governs the scoreboard and the contradiction stays on the record.
 
 ---
 
-## Phase 5: Synthesis
+## Phase 4: Synthesis
 
 `synthesis` · moderator alone
 
 Ten required sections, deduplicated across personas, ordered by severity. A section with nothing in it
-still prints its header with "None identified", so silence never looks like absence of a category.
+still prints its header with "None identified", so silence never looks like absence of a category. The
+Verdict Scoreboard is counted from the eight Reconciliation final stances and from nothing else.
 
 | Section | Contents |
 |---|---|
@@ -229,16 +289,20 @@ never left blank, or the Overall line undercounts end-user impact.
 
 ### Then it stops
 
-The skill ends with a literal `STOP`, repeated twice in the file. Present the synthesis. Change nothing.
-Wait for the user to pick which action items to pursue.
+The skill ends with a literal `STOP`, repeated twice in the file. The moderator sends the Synthesis to
+the main session and hands back with the transcript path. Nothing is changed. The user picks which action
+items to pursue.
 
 ---
 
 ## After the review
 
-1. The transcript is written to `moe_section_<N>_review_transcript.md`.
-2. `validate-moe-transcript.sh` runs, and its full output is printed verbatim and saved.
-3. A background agent scores the run on six dimensions and writes `plugin-improvements.md`.
+The observer takes over.
+
+1. The transcript is at `moe_section_<N>_review_transcript.md`, written by the moderator.
+2. The observer runs `validate-moe-transcript.sh` and prints its full output verbatim, saving it alongside.
+3. The observer spawns a background agent that scores the run on six dimensions and writes
+   `plugin-improvements.md`.
 
 Failing checks are never resolved by editing the transcript. See
 [Architecture](architecture.md#self-validation).

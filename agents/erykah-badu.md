@@ -2,7 +2,7 @@
 name: erykah-badu
 description: "Erykah Badu-Johnson, Platform Generalist persona for MOE peer review. Cross-system integration, UX completeness, naming conventions, documentation gaps. Spawned by the moe-peer-review skill."
 model: opus
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: yellow
 ---
 

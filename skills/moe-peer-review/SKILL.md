@@ -7,9 +7,42 @@ description: Orchestrate a Mixture of Experts (MOE) peer review with 9 personas 
 
 This process is strictly advisory. The MOE review produces suggestions, not changes. NEVER apply any recommendation, fix, or modification to project files based on review findings. All output stays in the conversation thread and the review transcript files. After the synthesis is complete, present the full aggregated feedback to the user and wait for explicit instructions on which items (if any) to act on.
 
-# Moderator Persona
+# Roles
 
-You are Dr. Nina Simone-Bennett for the duration of this review. Read the moderator agent file at `${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md` and embody her facilitation style, communication patterns, and review standards throughout. She runs the review from the main conversation context to preserve live output visibility for the user.
+Three roles, and the session reading this file holds only the first.
+
+**The observer** is the main conversation. It launches the moderator, prints every phase block the
+moderator sends it, verbatim and in order, and after the moderator hands back it runs the validator
+and spawns the quality-assessment agent. It makes no review decisions. It does not verify claims,
+seed threads, nudge panelists or call time. If the user asks the observer a question mid-review, the
+observer answers from what it has been sent; it does not reach into the review.
+
+**The moderator** is Dr. Nina Simone-Bennett, a spawned agent defined at
+`${CLAUDE_PLUGIN_ROOT}/agents/moe-moderator.md`. She spawns the eight personas, drives every phase,
+verifies in Phase 2, runs the Huddle and closes it with Reconciliation, assembles the transcript and
+state file, and sends each phase to the observer as it completes. Everything below that says "the
+moderator" is addressed to her.
+
+**The panelists** are the eight personas in the roster.
+
+## Launch
+
+The observer spawns the moderator with the `moe-moderator` subagent type and this brief:
+
+```
+You are Dr. Nina Simone-Bennett. Run a full MOE peer review of: <target, e.g. branch name or path>
+Repository: <absolute path>
+Output directory: <resolved project-data path>/moe-reviews/
+Skill file: ${CLAUDE_PLUGIN_ROOT}/skills/moe-peer-review/SKILL.md - read it in full before doing
+anything, then follow it phase by phase.
+
+Send each phase's thread to `main` with SendMessage as soon as that phase closes, verbatim, in the
+Live Thread format. Send the Synthesis the same way, then hand back with the transcript path.
+```
+
+The observer then waits. It does not poll. Phase blocks arrive as messages; the observer prints each
+one as received, adding nothing. The moderator's hand-back carries the transcript path; the observer
+runs Self-Validation and Quality Assessment from that path.
 
 # Agent Roster
 
@@ -63,6 +96,13 @@ Bash. Bash is restricted to read-only inspection: `git log`, `git diff`, `git sh
 `find`, `cat`, `wc`, `ls`. A persona must never run a command that writes to the repository,
 installs anything, or mutates git state.
 
+**Personas also have `SendMessage`, used only in Phase 3.** It is how they talk to each other
+directly without the moderator relaying. They have no `ListAgents`, so they cannot discover each
+other; the moderator supplies the peer roster when the Huddle opens. A persona must not message anyone
+outside the panel, and must not use `SendMessage` in any phase other than the Huddle. In Reconciliation,
+the step that closes the Huddle, a persona answers the moderator's resume message by handing back,
+exactly as in Phase 2; that is not a `SendMessage` and does not count against the Huddle cap.
+
 **The moderator may execute code, and is expected to.** Verification by experiment outranks
 verification by reading, and outranks argument entirely. The moderator has Bash for four purposes:
 
@@ -84,9 +124,12 @@ and applies to the moderator's Bash access exactly as it applies to Edit and Wri
 
 ## Live Thread Output
 
-Print the review as a group chat conversation so the user can watch it unfold in real time. The thread should read like an iMessage group thread: persona speaks, moderator responds, next persona speaks, moderator responds.
+The user watches the review as a group chat. The moderator produces it; the observer displays it.
+Wherever this file says "print", the moderator sends that block to `main` with `SendMessage`, and
+the observer prints it verbatim on arrival. The thread should read like an iMessage group thread:
+persona speaks, moderator responds, next persona speaks, moderator responds.
 
-After all agents return from a phase, print the exchange interleaved per persona. Format:
+After all agents return from a phase, send the exchange interleaved per persona. Format:
 
 ```
 ## Phase Name
@@ -130,7 +173,7 @@ Never condense the moderator's verification responses; the specific evidence is 
   `complaint -> root cause -> fix` chain in Synthesis. The validator matches ASCII only, so a Unicode
   arrow `→` in either place fails the check. Inside quoted persona content a Unicode arrow is harmless
   (for example `54→51 fields`), but prefer ASCII everywhere for consistency.
-- Every phase uses this same first-person, blockquoted chat-bubble format. This includes Phase 2 (Clarifying Questions): quote each persona's questions in first person under their own `**Name**:` header and the moderator's answer under `**Dr. Nina Simone-Bennett** -> Name:`.
+- Every phase uses this same first-person, blockquoted chat-bubble format. This includes the verification that opens Phase 2: the moderator's verification of each persona's Phase 1 findings and answers to its `Q:` lines go under `**Dr. Nina Simone-Bennett** -> Name:`, and the persona's challenge follows in first person under its own header.
 - Do NOT narrate a persona in third person in any phase. Everything inside a persona's blockquote is that
   persona speaking, in their own voice, in first person. All of these are violations:
   - "Beyonce asked about X" (third-person report)
@@ -148,17 +191,17 @@ Never condense the moderator's verification responses; the specific evidence is 
   Stage directions and editorial context belong OUTSIDE the blockquote, in the moderator's own voice,
   under a `**Dr. Nina Simone-Bennett** -> Name:` header.
 - Agent-to-agent Huddle exchanges use `**Name** -> **Name**:` with each name in its own bold and the colon outside the bold.
-- Agent-to-moderator messages (the normal shape in Phase 3) use `**Name** -> **Dr. Nina
+- Agent-to-moderator messages (the normal shape in Phase 2) use `**Name** -> **Dr. Nina
   Simone-Bennett**:` with both names bolded, exactly like an agent-to-agent label. Every name
   adjacent to an arrow is bolded, in every phase, on both sides of the arrow. The one exception is
-  the moderator's Phase 1 and Phase 2 acknowledgement header, `**Dr. Nina Simone-Bennett** -> Name:`,
+  the moderator's Phase 1 acknowledgement header, `**Dr. Nina Simone-Bennett** -> Name:`,
   which is prescribed above.
 
 # State Management
 
 ## State File
 
-Maintain a `moe-state.json` file in the review output directory. This is the source of truth for review progress and survives context compaction.
+The moderator maintains a `moe-state.json` file in the review output directory. This is the source of truth for review progress and survives context compaction. The observer may read it to answer a status question; the observer never writes it.
 
 Write to this file on EVERY state change (phase transition, agent spawn, agent done, exchange count update). Format:
 
@@ -179,7 +222,6 @@ Write to this file on EVERY state change (phase transition, agent spawn, agent d
   },
   "phases": {
     "kick-off": { "status": "pending|in_progress|completed", "task_id": "" },
-    "clarifying-questions": { "status": "pending|in_progress|completed", "task_id": "" },
     "interactive-session": { "status": "pending|in_progress|completed|skipped", "task_id": "" },
     "the-huddle": { "status": "pending|in_progress|completed", "task_id": "" },
     "synthesis": { "status": "pending|in_progress|completed", "task_id": "" }
@@ -191,15 +233,14 @@ Write to this file on EVERY state change (phase transition, agent spawn, agent d
 
 ## Todo List
 
-Create a task list at the start of every review using TaskCreate. Update both the state file AND the task list atomically on every state change. Never update one without the other.
+If TaskCreate is available to the moderator, create a task list at the start of every review and update both the state file AND the task list atomically on every state change. If it is not available, say so once in the first phase block sent to the observer and rely on the state file alone.
 
 Tasks to create:
 
 1. **Kick-Off** (activeForm: "Presenting material to the panel")
-2. **Clarifying Questions** (activeForm: "Panel asking clarifying questions", blockedBy: [1])
-3. **Interactive Session** (activeForm: "Agents challenging and debating", blockedBy: [2])
-4. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [3])
-5. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [4])
+2. **Interactive Session** (activeForm: "Moderator verifying, agents challenging", blockedBy: [1])
+3. **The Huddle** (activeForm: "Agents debating each other", blockedBy: [2])
+4. **Synthesis** (activeForm: "Aggregating review findings", blockedBy: [3])
 
 Store agent IDs in task metadata so they survive compaction:
 ```
@@ -208,11 +249,14 @@ TaskUpdate(taskId: "1", metadata: {"beyonce_id": "abc", "jill-scott_id": "def", 
 
 ## Recovery After Compaction
 
-If context was compacted, the moderator's first action is:
+If the moderator's context was compacted, her first action is:
 1. Read `moe-state.json` from the output directory
-2. Call TaskList to see current task status
-3. Reconcile state file with task list
-4. Resume from the current phase using agent IDs from state file or task metadata
+2. Call TaskList if available and reconcile it with the state file
+3. Resume from the current phase using the persona agent IDs in the state file
+
+If the observer's context was compacted, its first action is to read `moe-state.json` for the
+moderator's agent ID and send her one message asking which phase she is in. The observer does not
+restart the review.
 
 # Workflow
 
@@ -250,6 +294,13 @@ LOCAL working state, never from the remote's view of it:
     - Unpushed commits at packet time: <count, or "none">
     - Working tree: <clean | list of dirty paths>
     - Generated: <YYYY-MM-DD HH:MM local>
+    - Verification performed: <method; engines/browsers; states exercised, e.g. default, hover, focus, each theme, each viewport>
+    - Not verified: <what that method could not observe, stated plainly>
+
+The two verification lines are required. A packet that asserts coverage without naming its method and
+its blind spots produces a round of "did you test X?" that the review should not have to spend; the
+answer belongs in the packet. "Not verified: hover states, Safari, dark theme at 420px" is a complete
+and acceptable entry.
 
 Do not spawn Kick-Off agents until this header exists and its "Unpushed commits" line is either "none" or
 explicitly acknowledged in the context notes.
@@ -261,7 +312,7 @@ print.
 
 ### Step 1.2: Present to Panel
 
-Spawn 8 Task agents in parallel using the subagent_type from the roster.
+The moderator spawns the 8 persona agents in parallel with the Agent tool, using the subagent_type from the roster, and records every agent ID in `moe-state.json` immediately.
 
 For the 6 static personas:
 
@@ -274,6 +325,8 @@ Context: [CONTEXT_NOTES]
 Phase 1 (Kick-Off), Step 0 (do this BEFORE any findings): the packet above may be stale. Pick 3 specific claims the context notes make about the current state (a named function, a named constant, a described fix) and verify each one against the actual repository with Read or Grep. If the packet and the repository disagree, report it as PROCESS FLAG at the very top of your response, name the exact mismatch, and review the REPOSITORY, not the packet. Do not assume you have misread the packet; the packet is the thing most likely to be wrong.
 
 Phase 1 (Kick-Off): You are receiving this material for the first time. Provide your initial impressions and reactions from your professional perspective. Note 5-7 specific observations, concerns, or areas you want to explore further. Reference exact fields, values, or details from the content.
+
+End with up to 3 questions you need answered to complete your assessment, each on its own line beginning `Q:`. The moderator answers them at the start of Phase 2. "Not documented" is a legitimate answer you may receive.
 ```
 
 For whitney-houston, prepend the dynamic specialty:
@@ -295,6 +348,8 @@ Here is what the team is building/changing:
 Context: [CONTEXT_NOTES - translated to non-technical language]
 
 Phase 1 (Kick-Off): React to this as a user. What confuses you? What frustrates you? What can't you find? What did you try that didn't work? Give 5-7 specific complaints or questions, in your own words.
+
+End with up to 3 things you want somebody to explain to you, each on its own line starting with `Q:`.
 ```
 
 ChaoticCarl has no repository access in his prompt and cannot perform Step 0. If any panelist raises a
@@ -313,50 +368,23 @@ any that are wrong:
 4. After The Huddle, `huddle_exchanges` is non-empty.
 
 
-## Phase 2: Clarifying Questions
+## Phase 2: Interactive Session
 
-Agents ask the moderator focused questions. The moderator answers using source material, code verification, and technical knowledge.
-
-Resume each of the 8 Task agents:
-
-```
-The moderator has received all initial impressions from the panel. Now ask your clarifying questions.
-
-Phase 2 (Clarifying Questions): Ask 5-7 specific questions from your professional perspective that you need answered to form your assessment. Be precise. Reference exact details from the content.
-```
-
-For ChaoticCarl, translate the prompt to non-technical language.
-
-After all 8 agents return, formulate answers using context notes, source docs, and technical knowledge. Validate factual claims by reading code and checking docs. Admit "not documented" or "untested" where gaps exist. For ChaoticCarl's complaints, translate them into the technical root cause but preserve his original wording.
-
-Print `## Phase 2: Clarifying Questions` then for each persona, print their questions and the moderator's response as an interleaved chat exchange.
-
-A persona's questions may be condensed in the transcript file under the three condensing rules
-above. **The moderator's answers may not.** Every answer keeps its verification opener, its
-file:line citations, and its verdict, in full, in every phase. If a phase header in the transcript
-says "questions and answers condensed", that phase is in violation: rewrite the header and restore
-the answers. The evidence in the moderator's answers is the record; the questions are only the
-prompt for it.
-
-Update state file and mark Clarifying Questions task as completed.
-
-Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
-any that are wrong:
-1. `current_phase` names the phase you are about to start.
-2. No earlier phase is still `pending` or `in_progress`.
-3. Every agent's `status` and `exchanges` reflect the phase just finished.
-4. After The Huddle, `huddle_exchanges` is non-empty.
-
-
-## Phase 3: Interactive Session
-
-This is the maximum-adversarial fact-checking round: **moderator versus agent.** The moderator's default posture is disbelief. The moderator believes nothing an agent asserts until the agent proves it, or until the moderator independently verifies it against source material and code. The burden of proof is on the agent. The moderator's job here is not to collect opinions but to try to falsify every claim: assume each finding is wrong and hunt for the evidence that would disprove it. A claim survives only when it withstands that attempt. (Agent-versus-agent debate happens later, in Phase 4: The Huddle.)
+This is the maximum-adversarial fact-checking round: **moderator versus agent.** The moderator's default posture is disbelief. The moderator believes nothing an agent asserts until the agent proves it, or until the moderator independently verifies it against source material and code. The burden of proof is on the agent. The moderator's job here is not to collect opinions but to try to falsify every claim: assume each finding is wrong and hunt for the evidence that would disprove it. A claim survives only when it withstands that attempt. (Agent-versus-agent debate happens later, in Phase 3: The Huddle.)
 
 Agents challenge the moderator, make suggestions, and push back. The moderator does not simply accept any assertion; every claim is verified or refuted against source material and code.
 
+**The phase opens with the moderator's verification, not with a prompt.** Before resuming anyone,
+verify every finding each persona filed in Phase 1 against the repository, and answer every `Q:` line
+each persona attached. Every verification and every answer uses one of the four literal openers
+below. "Not documented" and "not verifiable from source" are legitimate answers; write them rather
+than inventing coverage. For ChaoticCarl, translate each complaint into its technical root cause but
+preserve his original wording. This verification is the moderator's opening block for each persona,
+and it is what the persona will be challenging.
+
 **What counts as an exchange**: one exchange is one resume of an agent plus that agent's reply. A
-prompt that bundles five questions is one exchange, not five. Phase 1 and Phase 2 resumes are not
-counted here; this line counts Phase 3 only.
+prompt that bundles five questions is one exchange, not five. The Phase 1 spawn is not
+counted here; this line counts Phase 2 only.
 
 **Exchange cap**: 3 exchanges per agent for this round. One is the baseline. Spend a second or a
 third only on an agent whose claim you are actively trying to falsify and who answered your last
@@ -364,7 +392,7 @@ probe with new evidence. Do not resume an agent that has stopped producing new e
 what the cap is for.
 
 **Satisfaction**: Every agent's stance is printed individually, in the agent's own blockquoted
-voice, at the end of its Phase 3 message. There are exactly two permitted forms and the literal
+voice, at the end of its Phase 2 message. There are exactly two permitted forms and the literal
 strings matter, because they are what the transcript validator counts:
 
 ```
@@ -388,7 +416,7 @@ Open items (blockers, conditions, unresolved concerns) are carried forward to Th
 Synthesis; the moderator does not resume agents for additional interactive rounds.
 
 **Exchange count tracking**: After the round, print one line naming the unit, and the count must
-equal the number of `**Persona** -> **Dr. Nina Simone-Bennett**:` blocks that persona has in Phase 3:
+equal the number of `**Persona** -> **Dr. Nina Simone-Bennett**:` blocks that persona has in Phase 2:
 
 ```
 Exchange counts this round (one exchange = one resume plus reply; cap 3): Beyonce Carter: 2,
@@ -403,11 +431,11 @@ carried to the Huddle unresolved." That sentence is the only reason this account
 Resume all 8 agents:
 
 ```
-Here are answers to your previous questions:
-[ANSWERS]
+Here is the moderator's verification of each finding you filed in Phase 1, and an answer to each question you asked:
+[VERIFICATION]
 
-Phase 3 (Interactive Session): Based on these answers:
-1. Challenge any answers that don't fully address your concerns
+Phase 2 (Interactive Session): Based on this verification:
+1. Challenge any verification or answer that does not fully address your concerns
 2. Provide specific recommendations (what to add, change, or call out)
 3. Push back on any claims you believe are incorrect or insufficiently supported
 4. State any standards or requirements you'd want documented
@@ -447,7 +475,7 @@ State your final stance explicitly: either "I am satisfied" (zero open items) or
   cannot count.
 - **Adversarially re-test every Blocker-severity finding before accepting it.** For each claim you would carry to Synthesis as a Blocker, do not stop at confirming the structural fact; try to disprove that the fact actually causes the claimed harm (check the surrounding call path, guards, and any compensating step). A Blocker that was only structurally confirmed, never attacked, is not verified.
 
-  Record every re-test in a table printed at the end of Phase 3, before the self-check. Every Blocker that
+  Record every re-test in a table printed at the end of Phase 2, before the self-check. Every Blocker that
   appears in the Synthesis Verdict Scoreboard must have a row here. A Blocker with no row is not eligible
   for Synthesis:
 
@@ -458,7 +486,7 @@ State your final stance explicitly: either "I am satisfied" (zero open items) or
   | ... | ... | ... | Survived / Downgraded to Warning / Refuted |
 - Seek consensus but accept "no consensus" as a valid outcome. When two agents take opposing positions on the same issue and neither concedes, label it explicitly: "No consensus between [Agent A] and [Agent B] on [topic]. Both positions carried to synthesis."
 - Name disagreements explicitly: "[Agent A] and [Agent B] disagree on X."
-- **Consensus is a required output, not a conditional one.** At the end of Phase 3 AND at the end of The
+- **Consensus is a required output, not a conditional one.** At the end of Phase 2 AND at the end of The
   Huddle, print a `Consensus Ledger` block. If there were no unresolved disagreements, print
   `Consensus Ledger: no unresolved disagreements this round.` Never print nothing.
 
@@ -484,14 +512,15 @@ be sent back once with the reminder repeated.
 - Whitney Houston-Davis: "Ground at least one finding in a named principle from your assigned specialty, and say which principle."
 - ChaoticCarl: "Stay in plain language. Use zero technical terms. Say what you tried and what happened, not what the code does."
 
-Print `## Phase 3: Interactive Session`. This phase produces exactly 2N blocks for N personas: one
-`**Persona Name** -> **Dr. Nina Simone-Bennett**:` block and one `**Dr. Nina Simone-Bennett** -> Persona Name:`
-block, in that order, for EVERY persona. Eight personas means sixteen blocks. There are no exceptions: a
+Print `## Phase 2: Interactive Session`. This phase produces exactly 3N blocks for N personas, in this
+order for EVERY persona: the moderator's verification block (`**Dr. Nina Simone-Bennett** -> Persona Name:`),
+the persona's challenge (`**Persona Name** -> **Dr. Nina Simone-Bennett**:`), and the moderator's response
+(`**Dr. Nina Simone-Bennett** -> Persona Name:`). Eight personas means twenty-four blocks. There are no exceptions: a
 persona who states "I am satisfied" still gets a moderator response naming which claims were verified and
 which were not. ChaoticCarl is a persona and is included; his prompt is translated to plain language, but
 he is never skipped.
 
-Before printing the phase, count your moderator blocks. If that count does not equal the number of
+Before printing the phase, count your moderator blocks. If that count does not equal twice the number of
 personas, you have skipped someone. Go back and answer them. This is the maximum-adversarial round; an
 unanswered claim is an unverified claim, and an unverified claim must not reach Synthesis.
 
@@ -508,109 +537,235 @@ any that are wrong:
 4. After The Huddle, `huddle_exchanges` is non-empty.
 
 
-## Phase 4: The Huddle
+## Phase 3: The Huddle
 
-This is the **agent-versus-agent** round, the counterpart to Phase 3's moderator-versus-agent fact-check. The moderator steps back and lets experts challenge each other directly. The intent is like grand rounds: experts offer counterpoints to each other until the best ideas surface naturally because they will have the least concerns. Where Phase 3 tested each claim against evidence, the Huddle tests each claim against the other experts' judgment.
+This is the **agent-versus-agent** round, run as grand rounds. Every finding from every panelist
+goes on the board. Every panelist reads the whole board and chooses which findings to answer, and
+whom to answer. Where Phase 2 tested each claim against evidence, the Huddle tests each claim
+against the other experts' judgment.
 
-**Caps**: 4 messages sent per agent, and every message received gets a reply unless the sender
-declared done or the moderator called "last word" on that thread. The reply is not optional and does
-not count against the sender's cap; see "Completing the relay" below.
+**The moderator has two jobs here and only two: make sure everyone participates, and make sure it
+ends.** The moderator does not choose who talks to whom, does not name the tensions, does not
+paraphrase one panelist's position to another, and does not brief either side of a disagreement.
+The moderator is not in the message path. Personas write to each other directly with
+`SendMessage`.
 
-**Rules for The Huddle:**
-- Agents must recognize each other's expertise but never be afraid to push back on claims from experts.
-- ChaoticCarl demands "explain like I'm five" breakdowns from the experts. If an expert can't
-  explain their concern simply, ChaoticCarl says so loudly. **Seed him against at least three
-  different experts**, chosen from whoever raised the Blockers that touch his workflow. One
-  exchange is not participation for him; he is the only panelist who can show whether a Blocker
-  survives contact with the person who runs the tool. Two consecutive runs have seeded him against
-  one or two experts, so seed his threads FIRST, before the expert-versus-expert threads consume the
-  budget.
-- The moderator intervenes only when conversation becomes circular, when someone is being steamrolled, or when ChaoticCarl is being ignored.
-- The moderator calls "last word" when exchanges plateau.
+**Verification does not happen during the round.** Phase 2 is where claims are falsified against
+evidence. If the moderator finds themselves checking a number mid-Huddle, that is Phase 2 work arriving
+late. Note it and let the Huddle proceed; do not interrupt a thread to correct a figure. Verification
+does happen after the round closes, in the Reconciliation step that follows Closing, and there it is required:
+the Huddle is where panelists first read outside the packet and first hear each other, so it produces
+claims Phase 2 could not have tested.
 
-**Mandatory participation**: Any agent who exits the Interactive Session with open items, conditions, blockers, or exceptions MUST participate in at least one Huddle exchange. Satisfied agents with zero open items may optionally participate. The moderator must not skip any agent with unresolved concerns.
+### The board
 
-**Moderator Huddle seeding**: Before launching Huddle exchanges, the moderator identifies 3-5 unresolved cross-persona tensions and seeds targeted exchanges. Example seeds:
-- "[Agent A] has an open [blocker/concern]. [Agent B] proposed a fix in that area. Discuss whether the fix addresses the concern."
-- "[Agent A] and [Agent B] took opposing positions on [topic]. Engage directly."
-- "ChaoticCarl's complaint about [X] maps to [Agent A]'s technical finding. Discuss in plain language."
+Before the Huddle opens, the moderator compiles the Findings Board: every panelist's Phase 2 final
+stance, verbatim, in one document. All eight, in roster order, each under its own persona name.
+Open items are copied exactly as the panelist wrote them, with their severity labels and citations.
+The moderator adds nothing: no summary, no grouping, no "note that X and Y disagree." If two
+panelists filed opposite fixes for the same defect, the board shows both and the panelists find it
+themselves. That is the point.
 
-**Exchange sequencing**: Prioritize exchanges between personas with overlapping but different concerns to maximize cross-domain friction:
-- Architecture vs. research (Beyonce/Whitney)
-- Security vs. compliance implementation (SZA/Doechii)
-- Operational requirements vs. infrastructure proposals (Janelle/Whitney)
-- User impact vs. technical root cause (ChaoticCarl/any technical persona)
+### Opening
 
-**Implementation**: The moderator acts as a message relay between agents. For each exchange:
-1. Resume Agent A with Agent B's message
-2. Collect Agent A's response
-3. Resume Agent B with Agent A's response
-4. Continue until both agents declare done or hit caps
+Send every panelist the same message, containing in this order:
 
-**Completing the relay is mandatory.** Every message printed in the Huddle must be followed by the
-addressee's reply, by the sender's own "I have nothing more to add", or by an explicit moderator
-line stating why the thread ends there:
+1. The Findings Board, complete.
+2. The peer roster, all eight names mapped to agent IDs. Personas have no `ListAgents` and cannot
+   discover each other; the roster is the only way they can address anyone.
+3. The rules block below, verbatim.
+
+ChaoticCarl receives the same board and the same roster. His copy of the rules block is in plain
+language and says so. He is not steered toward particular experts; he reads the board and picks.
+
+Use this block verbatim in every opening message:
 
 ```
-**Dr. Nina Simone-Bennett** -> **Whitney Houston-Davis** and **Beyonce Carter**:
-> Last word called. Converged: [design]. Open for Synthesis: [point], because Whitney did not answer
-> Beyonce's amendment before close.
+GRAND ROUNDS. Every panelist's findings are on the board above. Read all of it. Then choose:
+which findings do you disagree with, which can you refute, which can you strengthen, and which
+ask a question only you can answer. Write directly to the author of each one you choose. You pick
+whom to engage. Nobody is assigning you a counterpart.
+
+To send a message, call SendMessage with `to` set to the agent ID from the roster, a short
+`summary`, and your message in `message`. Write in first person, in your own voice, addressed to
+that person by their full name. Your message is delivered to them verbatim. The moderator does
+not see it.
+
+RULES:
+- Send at least 1 message. You may send at most 4. A reply to someone who wrote to you does not
+  count against your 4 and is mandatory unless they declared they were done.
+- Address people by their full name from the roster. Never abbreviate. "ChaoticCarl" is one word
+  and is never shortened, including when you are speaking to him directly.
+- When you have nothing further for a counterpart, your final message to them ends with exactly
+  this line: I have nothing more to add.
+
+LOGGING, required. Keep a verbatim record of every message you send and every message you receive.
+When the moderator asks for your Huddle log, return it in this format and nothing else,
+chronologically:
+
+SENT -> <Full Name>: <verbatim text>
+RECEIVED <- <Full Name>: <verbatim text>
+
+Do not summarize, paraphrase, shorten or tidy anything. The transcript is reconstructed from
+these logs and cross-checked against your counterparts' logs. An omission shows up as a mismatch.
 ```
 
-Before printing the participation checklist, count the arrows: every `**A** -> **B**:` block either
-has a `**B** -> **A**:` block after it, ends in the sender's own exit declaration, or is followed by
-a moderator last-word line. An unanswered message with none of those three is a dropped relay, not a
-completed exchange. **A dropped relay addressed to ChaoticCarl is the specific failure this phase is
-built to prevent** (see "The moderator intervenes ... when ChaoticCarl is being ignored"). If you
-find yourself out of budget with his message unanswered, spend the budget there first.
+### While it runs
 
-The moderator tracks exchange counts per agent in the state file.
+The moderator waits. Do not poll in a loop. Completion notifications arrive on their own. The
+moderator sends no message about content to anyone during this time.
 
-Agents exit The Huddle by declaring "I have nothing more to add" or by hitting their message cap.
-That declaration is printed in the transcript in the agent's own voice, blockquoted like any other
-message. If no agent ever declares it, the Huddle did not reach a natural end and you must say so in
-the participation checklist.
+**Participation check.** When every panelist has gone idle, the moderator counts who has sent at
+least one message. "Participated" means sent at least one message to another panelist. Being
+written to and never answering is not participation.
 
-**Huddle participation checklist**: After The Huddle, print a summary noting which agents participated and which did not, with reason. Mark any non-participating agent with open items as `[GAP]`. If gaps exist, the moderator must explain why those exchanges were not seeded.
+Anyone at zero gets exactly one nudge, and the nudge carries no content:
 
-**Build this checklist by counting the blocks you just printed, not from memory or intent.** For
-each of the eight personas, find the actual `**Name** ->` blocks in the Huddle section and count
-them. If you cannot point to a printed block, the agent did not participate, regardless of what you
-intended to seed or what the state file says.
+```
+You have not sent a message this round. Every finding on the board is open to you. Choose one
+whose author you disagree with, or whose author asked something you can answer, and write to them.
+```
 
-The number in parentheses is the count of messages that persona SENT, and it must equal the number
-of `**Name** ->` blocks printed above. Do not count a thread's total traffic as the persona's own
-messages: an agent who sent one message into a three-message thread sent one, not three. Name the
-counterpart and the count separately, like this:
+The nudge does not name a finding, a counterpart, or a topic. If a panelist ignores the nudge, that
+is recorded as a gap with the reason "declined after nudge" and the moderator does not nudge twice.
+
+**ChaoticCarl.** He is the only panelist who can show whether a Blocker survives contact with the
+person who runs the tool, and he is the panelist most likely to be ignored. The participation check
+therefore also asks: did anyone answer him? If ChaoticCarl sent a message and its addressee has not
+replied, that addressee gets the reply-obligation reminder before anything else the moderator does.
+
+### The clock
+
+A round ends when every panelist has gone idle. The Huddle runs **at most two rounds**.
+
+After round one, the moderator collects every log, cross-checks them, and decides:
+
+- If every message has been answered or closed with a declaration, the Huddle is over. Do not open
+  round two to see if anything else happens.
+- If messages are unanswered, or a thread is mid-exchange, open round two by sending every panelist
+  the round-one transcript, reconstructed verbatim from the logs, with the same rules block. This is
+  how every panelist hears what every other panelist said. They may respond to anything in it. Same
+  caps, same reply obligation, same logging.
+
+After round two the moderator calls time regardless of what is still moving. Anything unresolved is
+carried to Synthesis as unresolved, in the Consensus Ledger, with both positions stated. That is a
+valid outcome, and it is a better outcome than a third round.
+
+### Closing
+
+**Collect the logs.** Ask every panelist for its Huddle log in the format above. The transcript is
+assembled from these logs, not from memory and not from the moderator's notes.
+
+**Cross-check before printing.** For every `SENT -> B` in A's log there must be a `RECEIVED <- A`
+in B's log with the same text, and the reverse. A mismatch means a message was lost, a log was
+summarized, or an exchange was invented. Each mismatch is stated in the participation checklist
+with both sides quoted. Never reconcile one quietly.
+
+**Every message gets an answer, in both directions.** Every printed `**A** -> **B**:` block is
+followed by a `**B** -> **A**:` block, or by the sender's own closing declaration, or by a
+moderator line stating that time was called with the thread open. A message with none of those is
+a dropped message and is listed as one. A message to ChaoticCarl that went unanswered, and a
+message from ChaoticCarl that went unanswered, are both named as the failure this phase exists to
+prevent.
+
+**Participation checklist**, built by counting the printed blocks, not from memory or intent. The
+number is messages SENT. Name each counterpart and count separately:
 
 ```
 Huddle Participation:
 - Erykah Badu-Johnson: 3 sent (Whitney Houston-Davis x2, Jill Scott-Williams x1); closed with declaration
-- SZA: did not participate (open blocker unresolved) [GAP]
+- SZA: 0 sent; declined after nudge [GAP]
 ```
 
-Any agent with open items and no printed block is a `[GAP]`, and a `[GAP]` requires a written
-reason. "No gaps" is a claim about the text above it. Do not write it without checking. If the state
-file and the transcript disagree about who participated or how many messages they sent, the
-transcript is authoritative; correct the state file, never the transcript.
+Any panelist at zero after the nudge is a `[GAP]` with the reason written. "No gaps" is a claim
+about the text above it; do not write it without counting. If the state file and the transcript
+disagree, the transcript is authoritative. Correct the state file, never the transcript.
 
-Print `## Phase 4: The Huddle` then print all exchanges in chronological order using the agent-to-agent format, followed by the participation checklist.
+### Reconciliation
 
-Update state file and mark The Huddle task as completed.
+The Huddle produces two things Phase 2 could not: factual claims that first appeared in a
+persona-to-persona message, and stances that moved while nobody was recording them. Neither reaches
+Synthesis untested. Reconciliation is the moderator's step, between the participation checklist and the
+Phase 4 header, and it is the only place after Phase 2 where the moderator addresses a panelist about
+content.
 
-Before printing the next phase header, re-read `moe-state.json` and confirm all four of these, correcting
-any that are wrong:
+**Verify what the Huddle produced.** Before resuming anyone:
+
+1. List every factual claim that appears in the Huddle thread and in no Phase 2 block: a file nobody had
+   read, a query result, a count, a specificity or contrast derivation, a path on another clone, a live
+   SHA.
+2. Verify each one yourself with the same four literal openers Phase 2 uses. A claim you cannot verify is
+   carried with `I cannot verify this:` attached, never adopted silently.
+3. Re-run the Blocker Re-Test Ledger for any Blocker the Huddle created, raised or lowered. A severity
+   that moved during the Huddle has not been attacked yet.
+
+Open this block with one line naming what you verified against: `Verified by me after the round closed
+against <ref>, read-only.`
+
+**Collect final stances.** Resume every panelist once, ChaoticCarl included, with the message below.
+One message, one reply, no second exchange; the reply is a hand-back, exactly as in Phase 2, not a
+`SendMessage`. Where a message addressed to that panelist was left open when time was called, append it
+to their copy under the heading `Left open when time was called:` with the sender's full name. Adapt the
+wording to plain language for ChaoticCarl and say that you have.
+
+```
+RECONCILIATION. The Huddle is closed. This is one message and one reply. Do not use SendMessage;
+reply by handing back, as you did in the Interactive Session.
+
+1. Restate your open items as they stand now, after everything you read and wrote in the Huddle.
+   Put the line `Final open items:` on its own line, then one line per item starting with
+   [Blocker], [Warning] or [Suggestion], each with its file:line citation. If you have none, write
+   `Final open items: none`.
+2. For every item whose severity or fix changed during the Huddle, say in one sentence what it
+   was, what it is now, and whose evidence moved it.
+3. If you owe a counterpart a correction you could not send, write it here, addressed to them by
+   full name. It is delivered as part of the record.
+4. If a message addressed to you is listed below as left open, answer it here, addressed to the
+   sender by full name, or write that you decline and why.
+
+First person, verbatim. The Verdict Scoreboard is built from this reply and from nothing else you
+said in the Huddle.
+```
+
+**Print the final stances.** Under `**Final stances**`, in roster order, one block per panelist as
+`**Name** -> **Dr. Nina Simone-Bennett**:` with the reply blockquoted verbatim. Eight blocks, no
+summaries. An answer to a left-open message is printed inside that block and counts as the reply the
+message was owed; update the "time was called" line above it to say so.
+
+**Huddle Consensus Ledger.** Built from the eight final stances, not from the thread. Two lists,
+`Converged` and `Not converged`, each entry quoting the final-stance lines it rests on. If a final stance
+contradicts that panelist's own Huddle messages, quote both sides in the ledger; the final stance governs
+the scoreboard and the contradiction stays on the record. An item that changed severity in the Huddle
+and is absent from the final stance is listed as `unrestated`, with the last severity the panelist
+wrote; the moderator does not guess which one they meant, and the scoreboard counts only what the final
+stance lists.
+
+Print `## Phase 3: The Huddle`, then every exchange in chronological order in the agent-to-agent
+format, then the cross-check results, then the participation checklist, then `### Reconciliation` with
+the verification block, the final stances and the Huddle Consensus Ledger, in that order.
+
+Update state file, record `final_stances: 8` inside `huddle_exchanges`, and mark The Huddle task as
+completed.
+
+Before printing the next phase header, re-read `moe-state.json` and confirm all five of these,
+correcting any that are wrong:
 1. `current_phase` names the phase you are about to start.
 2. No earlier phase is still `pending` or `in_progress`.
 3. Every agent's `status` and `exchanges` reflect the phase just finished.
 4. After The Huddle, `huddle_exchanges` is non-empty.
+5. `huddle_exchanges.final_stances` is 8.
 
-
-## Phase 5: Synthesis
+## Phase 4: Synthesis
 
 After all agents declare done or hit limits, the moderator launches the final aggregation.
 
 Print `## Synthesis` and compile across all 8 personas. ALL sections below are REQUIRED. If a section has no items, include the header with "None identified." Do not skip any section.
+
+The Verdict Scoreboard counts each panelist's `Final open items:` from Reconciliation and nothing else. A
+panelist whose final stance says Blocker is a Blocker on the scoreboard whatever an earlier Huddle
+message said; a panelist whose final stance dropped an item has zero of it. Unresolved Disagreements are
+carried from the Phase 2 Consensus Ledger and the Huddle Consensus Ledger, each side named by the final
+stance that holds it.
 
 **Verdict Scoreboard**
 
@@ -651,7 +806,7 @@ undercounts the end-user impact.
 **Improvements** (content/framing changes):
 - Table: Improvement | Source Persona | Severity
 
-**Unresolved Disagreements** (carried from the Consensus Ledgers; "None identified." if empty)
+**Unresolved Disagreements** (carried from the Phase 2 Consensus Ledger and the Huddle Consensus Ledger, each side named by its final stance; "None identified." if empty)
 - [topic]: [Agent A]'s position vs. [Agent B]'s position, both carried forward
 
 **Key Insight** (single most important finding across all reviewers)
@@ -686,7 +841,7 @@ Create a `moe-reviews/` subdirectory inside `<project-data>/branches/<branch>/` 
 
 ## Self-Validation
 
-After writing the transcript file, run the transcript validator and print its full output to the user:
+The observer does this, after the moderator hands back with the transcript path. Run the transcript validator and print its full output to the user:
 
 ```
 ${CLAUDE_PLUGIN_ROOT}/tests/validate-moe-transcript.sh <path-to-transcript.md>
@@ -698,7 +853,7 @@ Report the validator output verbatim and interpret it: each failure indicates th
 
 ## Quality Assessment and Plugin Improvement
 
-After running the validator, capture its full output (save it to `[OUTPUT_DIR]/moe-reviews/validator-output.txt`) and spawn a background Task agent. Feed it BOTH the transcript AND the validator output. Its job is to score the review and to propose concrete improvements to THIS PLUGIN so the observed problems do not recur.
+The observer does this. After running the validator, capture its full output (save it to `[OUTPUT_DIR]/moe-reviews/validator-output.txt`) and spawn a background agent with the Agent tool. Feed it BOTH the transcript AND the validator output. Its job is to score the review and to propose concrete improvements to THIS PLUGIN so the observed problems do not recur.
 
 ```
 Read the MOE transcript at [PATH] and the validator output at [VALIDATOR_OUTPUT_PATH].

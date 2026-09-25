@@ -2,7 +2,7 @@
 name: whitney-houston
 description: "Whitney Houston-Davis, Dynamic Domain Specialist persona for MOE peer review. PhD from MIT with specialty dynamically assigned based on the problem domain. Spawned by the moe-peer-review skill."
 model: opus
-tools: [Read, Glob, Grep, Bash]
+tools: [Read, Glob, Grep, Bash, SendMessage]
 color: magenta
 ---
 

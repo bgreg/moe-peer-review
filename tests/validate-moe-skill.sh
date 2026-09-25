@@ -101,6 +101,7 @@ sections=(
   "Live Thread Output"
   "State Management"
   "The Huddle"
+  "Reconciliation"
 )
 for section in "${sections[@]}"; do
   if contains "$section" "$SKILL"; then
@@ -113,7 +114,6 @@ done
 printf "\nPhase Structure\n"
 phases=(
   "Phase 1: Kick-Off"
-  "Phase 2: Clarifying Questions"
   "Interactive Session"
   "The Huddle"
   "Synthesis"
